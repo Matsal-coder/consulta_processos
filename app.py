@@ -20,6 +20,10 @@ from consulta_processos.history_repository import (
     marcar_movimentacoes_novas,
     salvar_movimentacoes_do_processo,
 )
+from consulta_processos.monitoring_repository import (
+    adicionar_processo_monitorado,
+    carregar_processos_monitorados,
+)
 
 load_dotenv()
 
@@ -35,169 +39,194 @@ st.set_page_config(
 )
 
 st.title("⚖️ Consulta de Processos")
-tab_consulta, tab_historico = st.tabs(
-    ["🔎 Consulta", "🗂 Histórico local"]
-)
-st.write("Consulte movimentações processuais usando a API pública do DataJud/CNJ.")
 
-numeros_processos_texto = st.text_area(
-    "Números dos processos",
-    placeholder=(
-        "Digite um processo por linha:\n"
-        "1111111-11.1111.1.11.1111\n"
-        "0000000-00.0000.0.00.0000"
-    ),
-    height=150,
-)
-
-data_base = st.date_input(
-    "Buscar movimentações a partir de",
-    value=date.today(),
-)
-
-base = st.selectbox(
-    "Base de consulta",
-    options=["tjrj_datajud"],
-    format_func=lambda x: "TJRJ - DataJud" if x == "tjrj_datajud" else x,
-)
-
-consultar = st.button("Consultar processo", type="primary")
-
-if consultar:
-    numeros_processos = [
-        numero.strip()
-        for numero in numeros_processos_texto.splitlines()
-        if numero.strip()
+tab_consulta, tab_historico, tab_monitorados = st.tabs(
+    [
+        "🔎 Consulta",
+        "🗂 Histórico local",
+        "⭐ Monitorados",
     ]
+)
 
-    if not numeros_processos:
-        st.error("Informe ao menos um número de processo.")
-        st.stop()
+with tab_consulta:
+    st.write("Consulte movimentações processuais usando a API pública do DataJud/CNJ.")
 
-    payload = ConsultaInput.model_validate(
-        {
-            "processos": [
-                {
-                    "numero_processo": numero,
-                    "base": base,
-                    "data_base": data_base.isoformat(),
-                }
-                for numero in numeros_processos
-            ]
-        }
+    numeros_processos_texto = st.text_area(
+        "Números dos processos",
+        placeholder=(
+            "Digite um processo por linha:\n"
+            "1111111-11.1111.1.11.1111\n"
+            "0000000-00.0000.0.00.0000"
+        ),
+        height=150,
     )
 
-    with st.spinner("Consultando processos..."):
-        resultado = consultar_processos(payload)
+    data_base = st.date_input(
+        "Buscar movimentações a partir de",
+        value=date.today(),
+    )
 
-    st.subheader("Resultado da consulta")
+    base = st.selectbox(
+        "Base de consulta",
+        options=["tjrj_datajud"],
+        format_func=lambda x: "TJRJ - DataJud" if x == "tjrj_datajud" else x,
+    )
 
-    linhas = []
+    consultar = st.button("Consultar processo", type="primary")
 
-    for processo in resultado.processos:
-        st.write(f"### Processo {processo.numero_processo}")
-        st.write(f"**Fonte:** {processo.fonte}")
+    if consultar:
+        numeros_processos = [
+            numero.strip()
+            for numero in numeros_processos_texto.splitlines()
+            if numero.strip()
+        ]
 
-        if processo.data_ultima_atualizacao_fonte:
-            data_formatada = (
-                processo.data_ultima_atualizacao_fonte
-                .strftime("%d/%m/%Y %H:%M")
-            )
+        if not numeros_processos:
+            st.error("Informe ao menos um número de processo.")
+            st.stop()
 
-            st.write(
-                f"**Última atualização da fonte:** {data_formatada}"
-            )
+        payload = ConsultaInput.model_validate(
+            {
+                "processos": [
+                    {
+                        "numero_processo": numero,
+                        "base": base,
+                        "data_base": data_base.isoformat(),
+                    }
+                    for numero in numeros_processos
+                ]
+            }
+        )
 
-        if processo.observacao:
-            st.warning(processo.observacao)
+        with st.spinner("Consultando processos..."):
+            resultado = consultar_processos(payload)
 
-        if ENABLE_LOCAL_HISTORY:
-            processo.atualizacoes = marcar_movimentacoes_novas(
-                numero_processo=processo.numero_processo,
-                base=processo.base,
-                atualizacoes=processo.atualizacoes,
-            )
+        st.subheader("Resultado da consulta")
 
-        if ENABLE_LOCAL_HISTORY:
-            novas = salvar_movimentacoes_do_processo(
-                numero_processo=processo.numero_processo,
-                base=processo.base,
-                atualizacoes=processo.atualizacoes,
-                data_ultima_atualizacao_fonte=(
-                    processo.data_ultima_atualizacao_fonte.isoformat()
-                    if processo.data_ultima_atualizacao_fonte
-                    else None
-                ),
-            )
+        linhas = []
 
-            st.success(f"{novas} movimentação(ões) nova(s) salva(s) no histórico local.")
+        for processo in resultado.processos:
+            st.write(f"### Processo {processo.numero_processo}")
+            col1, col2 = st.columns([4, 1])
 
-        if not processo.atualizacoes:
-            st.info("Nenhuma movimentação encontrada a partir da data-base informada.")
-            continue
+            with col2:
+                monitorado = st.button(
+                    "⭐ Monitorar",
+                    key=f"monitorar_{processo.numero_processo}",
+                )
 
-        for atualizacao in processo.atualizacoes:
-            linhas.append(
-                {
-                    "Processo": processo.numero_processo,
-                    "Data": atualizacao.data_movimentacao.strftime("%d/%m/%Y %H:%M"),
-                    "Descrição": atualizacao.descricao,
-                    "Código": atualizacao.codigo,
-                    "Órgão julgador": atualizacao.orgao_julgador,
-                    "Nova": (
-                        "Sim"
-                        if atualizacao.nova is True
-                        else "Não"
-                        if atualizacao.nova is False
-                        else "Histórico desativado"
+            if monitorado:
+                foi_adicionado = adicionar_processo_monitorado(
+                    numero_processo=processo.numero_processo,
+                    base=processo.base,
+                )
+
+                if foi_adicionado:
+                    st.success("Processo adicionado aos monitorados.")
+                else:
+                    st.info("Processo já estava monitorado.")
+            st.write(f"**Fonte:** {processo.fonte}")
+
+            if processo.data_ultima_atualizacao_fonte:
+                data_formatada = (
+                    processo.data_ultima_atualizacao_fonte
+                    .strftime("%d/%m/%Y %H:%M")
+                )
+
+                st.write(
+                    f"**Última atualização da fonte:** {data_formatada}"
+                )
+
+            if processo.observacao:
+                st.warning(processo.observacao)
+
+            if ENABLE_LOCAL_HISTORY:
+                processo.atualizacoes = marcar_movimentacoes_novas(
+                    numero_processo=processo.numero_processo,
+                    base=processo.base,
+                    atualizacoes=processo.atualizacoes,
+                )
+
+            if ENABLE_LOCAL_HISTORY:
+                novas = salvar_movimentacoes_do_processo(
+                    numero_processo=processo.numero_processo,
+                    base=processo.base,
+                    atualizacoes=processo.atualizacoes,
+                    data_ultima_atualizacao_fonte=(
+                        processo.data_ultima_atualizacao_fonte.isoformat()
+                        if processo.data_ultima_atualizacao_fonte
+                        else None
                     ),
-                }
+                )
+
+                st.success(f"{novas} movimentação(ões) nova(s) salva(s) no histórico local.")
+
+            if not processo.atualizacoes:
+                st.info("Nenhuma movimentação encontrada a partir da data-base informada.")
+                continue
+
+            for atualizacao in processo.atualizacoes:
+                linhas.append(
+                    {
+                        "Processo": processo.numero_processo,
+                        "Data": atualizacao.data_movimentacao.strftime("%d/%m/%Y %H:%M"),
+                        "Descrição": atualizacao.descricao,
+                        "Código": atualizacao.codigo,
+                        "Órgão julgador": atualizacao.orgao_julgador,
+                        "Nova": (
+                            "Sim"
+                            if atualizacao.nova is True
+                            else "Não"
+                            if atualizacao.nova is False
+                            else "Histórico desativado"
+                        ),
+                    }
+                )
+
+        if linhas:
+            df = pd.DataFrame(linhas)
+
+            col1, col2, col3 = st.columns(3)
+
+            col1.metric("Processos consultados", len(resultado.processos))
+            col2.metric("Movimentações encontradas", len(df))
+
+            data_mais_recente = df["Data"].max()
+            col3.metric("Movimentação mais recente", data_mais_recente)
+
+            st.divider()
+
+            filtro_texto = st.text_input(
+                "Filtrar movimentações",
+                placeholder="Ex: Publicação, Petição, Conclusão...",
             )
 
-    if linhas:
-        df = pd.DataFrame(linhas)
+            df_filtrado = df.copy()
 
-        col1, col2, col3 = st.columns(3)
+            if filtro_texto:
+                filtro = filtro_texto.lower()
 
-        col1.metric("Processos consultados", len(resultado.processos))
-        col2.metric("Movimentações encontradas", len(df))
+                df_filtrado = df_filtrado[
+                    df_filtrado["Descrição"].str.lower().str.contains(filtro)
+                    | df_filtrado["Processo"].str.lower().str.contains(filtro)
+                    | df_filtrado["Órgão julgador"].fillna("").str.lower().str.contains(filtro)
+                    | df_filtrado["Código"].astype(str).str.contains(filtro)
+                ]
 
-        data_mais_recente = df["Data"].max()
-        col3.metric("Movimentação mais recente", data_mais_recente)
+            st.dataframe(
+                df_filtrado,
+                use_container_width=True,
+                hide_index=True,
+            )
 
-        st.divider()
+            csv = df_filtrado.to_csv(index=False).encode("utf-8-sig")
 
-        filtro_texto = st.text_input(
-            "Filtrar movimentações",
-            placeholder="Ex: Publicação, Petição, Conclusão...",
-        )
-
-        df_filtrado = df.copy()
-
-        if filtro_texto:
-            filtro = filtro_texto.lower()
-
-            df_filtrado = df_filtrado[
-                df_filtrado["Descrição"].str.lower().str.contains(filtro)
-                | df_filtrado["Processo"].str.lower().str.contains(filtro)
-                | df_filtrado["Órgão julgador"].fillna("").str.lower().str.contains(filtro)
-                | df_filtrado["Código"].astype(str).str.contains(filtro)
-            ]
-
-        st.dataframe(
-            df_filtrado,
-            use_container_width=True,
-            hide_index=True,
-        )
-
-        csv = df_filtrado.to_csv(index=False).encode("utf-8-sig")
-
-        st.download_button(
-            label="Baixar resultado filtrado em CSV",
-            data=csv,
-            file_name="resultado_consulta_processos.csv",
-            mime="text/csv",
-        )
+            st.download_button(
+                label="Baixar resultado filtrado em CSV",
+                data=csv,
+                file_name="resultado_consulta_processos.csv",
+                mime="text/csv",
+            )
 
 with tab_historico:
     st.subheader("Histórico local de movimentações")
@@ -258,3 +287,26 @@ with tab_historico:
                 file_name="historico_movimentacoes.csv",
                 mime="text/csv",
             )
+
+with tab_monitorados:
+    st.subheader("Processos monitorados")
+
+    processos_monitorados = (
+        carregar_processos_monitorados()
+    )
+
+    if not processos_monitorados:
+        st.info(
+            "Nenhum processo monitorado."
+        )
+
+    else:
+        df_monitorados = pd.DataFrame(
+            processos_monitorados
+        )
+
+        st.dataframe(
+            df_monitorados,
+            use_container_width=True,
+            hide_index=True,
+        )
