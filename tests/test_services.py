@@ -6,6 +6,7 @@ from consulta_processos.models import (
 )
 from consulta_processos.services import consultar_processos
 import pytest
+from consulta_processos.exceptions import BaseNaoSuportadaError
 
 def test_consultar_processos_com_base_tjrj_datajud(monkeypatch):
     monkeypatch.setenv("DATAJUD_API_KEY", "fake-api-key")
@@ -85,5 +86,5 @@ def test_consultar_processos_com_base_nao_suportada(monkeypatch):
         }
     )
 
-    with pytest.raises(ValueError, match="Base ainda não suportada"):
+    with pytest.raises(BaseNaoSuportadaError, match="Base ainda não suportada"):
         consultar_processos(payload)

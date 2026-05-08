@@ -1,4 +1,7 @@
 import requests
+from requests import RequestException
+
+from consulta_processos.exceptions import FonteExternaError
 
 
 DATAJUD_ENDPOINTS = {
@@ -33,15 +36,16 @@ class DataJudClient:
             }
         }
 
-        response = requests.post(
-            endpoint,
-            headers=headers,
-            json=payload,
-            timeout=self.timeout,
-        )
-        response.raise_for_status()
-
-        return response.json()
+        try:
+            response = requests.post(
+                endpoint,
+                headers=headers,
+                json=payload,
+                timeout=self.timeout,
+            )
+            response.raise_for_status()
+        except RequestException as exc:
+            raise FonteExternaError("Erro ao consultar a API pública do DataJud.") from exc
 
     @staticmethod
     def _limpar_numero_processo(numero_processo: str) -> str:

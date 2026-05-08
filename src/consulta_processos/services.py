@@ -6,12 +6,15 @@ from consulta_processos.models import (
     ProcessoResultado,
 )
 from consulta_processos.scrapers.datajud_tjrj import consultar_processo_datajud_tjrj
+from consulta_processos.exceptions import BaseNaoSuportadaError, ConfiguracaoError
 
 
 def consultar_processos(payload: ConsultaInput) -> ConsultaResultado:
     resultados = []
+    api_key = os.getenv("DATAJUD_API_KEY")
 
-    api_key = os.environ["DATAJUD_API_KEY"]
+    if not api_key:
+        raise ConfiguracaoError("Variável de ambiente DATAJUD_API_KEY não configurada.")
 
     for processo in payload.processos:
         if processo.base == "tjrj_datajud":
@@ -21,7 +24,7 @@ def consultar_processos(payload: ConsultaInput) -> ConsultaResultado:
                 api_key=api_key,
             )
         else:
-            raise ValueError(f"Base ainda não suportada: {processo.base}")
+            raise BaseNaoSuportadaError(f"Base ainda não suportada: {processo.base}")
 
         resultados.append(
             ProcessoResultado(
