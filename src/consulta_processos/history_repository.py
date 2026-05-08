@@ -91,3 +91,25 @@ def salvar_movimentacoes_do_processo(
             novas += 1
 
     return novas
+
+def marcar_movimentacoes_novas(
+    numero_processo: str,
+    base: str,
+    atualizacoes: list[AtualizacaoProcesso],
+) -> list[AtualizacaoProcesso]:
+    atualizacoes_marcadas = []
+
+    for atualizacao in atualizacoes:
+        existe = movimento_existe(
+            numero_processo=numero_processo,
+            base=base,
+            atualizacao=atualizacao,
+        )
+
+        atualizacoes_marcadas.append(
+            atualizacao.model_copy(
+                update={"nova": not existe},
+            )
+        )
+
+    return atualizacoes_marcadas

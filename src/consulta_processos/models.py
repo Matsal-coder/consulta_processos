@@ -18,6 +18,7 @@ class AtualizacaoProcesso(BaseModel):
     descricao: str
     data_movimentacao: datetime
     orgao_julgador: str | None = None
+    nova: bool | None = None    
 
 
 class ProcessoResultado(BaseModel):

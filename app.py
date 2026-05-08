@@ -15,7 +15,10 @@ from consulta_processos.services import consultar_processos
 import os
 
 from consulta_processos.database import initialize_database
-from consulta_processos.history_repository import salvar_movimentacoes_do_processo
+from consulta_processos.history_repository import (
+    marcar_movimentacoes_novas,
+    salvar_movimentacoes_do_processo,
+)
 
 load_dotenv()
 
@@ -105,6 +108,13 @@ if consultar:
             st.warning(processo.observacao)
 
         if ENABLE_LOCAL_HISTORY:
+            processo.atualizacoes = marcar_movimentacoes_novas(
+                numero_processo=processo.numero_processo,
+                base=processo.base,
+                atualizacoes=processo.atualizacoes,
+            )
+
+        if ENABLE_LOCAL_HISTORY:
             novas = salvar_movimentacoes_do_processo(
                 numero_processo=processo.numero_processo,
                 base=processo.base,
@@ -130,6 +140,13 @@ if consultar:
                     "Descrição": atualizacao.descricao,
                     "Código": atualizacao.codigo,
                     "Órgão julgador": atualizacao.orgao_julgador,
+                    "Nova": (
+                        "Sim"
+                        if atualizacao.nova is True
+                        else "Não"
+                        if atualizacao.nova is False
+                        else "Histórico desativado"
+                    ),
                 }
             )
 
