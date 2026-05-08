@@ -23,8 +23,15 @@ class AtualizacaoProcesso(BaseModel):
 class ProcessoResultado(BaseModel):
     numero_processo: str
     base: str
+    fonte: str
+    data_ultima_atualizacao_fonte: datetime | None = None
+    observacao: str | None = None
     atualizacoes: list[AtualizacaoProcesso]
 
 
 class ConsultaResultado(BaseModel):
     processos: list[ProcessoResultado]
+
+class ResultadoConsultaProcesso(BaseModel):
+    atualizacoes: list[AtualizacaoProcesso]
+    data_ultima_atualizacao_fonte: datetime | None = None

@@ -15,7 +15,7 @@ def consultar_processos(payload: ConsultaInput) -> ConsultaResultado:
 
     for processo in payload.processos:
         if processo.base == "tjrj_datajud":
-            atualizacoes = consultar_processo_datajud_tjrj(
+            resultado_consulta = consultar_processo_datajud_tjrj(
                 numero_processo=processo.numero_processo,
                 data_base=processo.data_base,
                 api_key=api_key,
@@ -27,7 +27,15 @@ def consultar_processos(payload: ConsultaInput) -> ConsultaResultado:
             ProcessoResultado(
                 numero_processo=processo.numero_processo,
                 base=processo.base,
-                atualizacoes=atualizacoes,
+                fonte="datajud",
+                data_ultima_atualizacao_fonte=(
+                    resultado_consulta.data_ultima_atualizacao_fonte
+                ),
+                observacao=(
+                    "A fonte DataJud pode ter defasagem em relação "
+                    "ao sistema original do tribunal."
+                ),
+                atualizacoes=resultado_consulta.atualizacoes,
             )
         )
 

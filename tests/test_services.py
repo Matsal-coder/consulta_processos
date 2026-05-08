@@ -1,5 +1,9 @@
 from datetime import date, datetime, timezone
-from consulta_processos.models import AtualizacaoProcesso, ConsultaInput
+from consulta_processos.models import (
+    AtualizacaoProcesso,
+    ConsultaInput,
+    ResultadoConsultaProcesso,
+)
 from consulta_processos.services import consultar_processos
 import pytest
 
@@ -15,14 +19,24 @@ def test_consultar_processos_com_base_tjrj_datajud(monkeypatch):
         assert data_base == date(2025, 1, 1)
         assert api_key == "fake-api-key"
 
-        return [
-            AtualizacaoProcesso(
-                codigo=92,
-                descricao="Publicação",
-                data_movimentacao=datetime(2025, 1, 23, tzinfo=timezone.utc),
-                orgao_julgador="7ª Vara da Fazenda Pública da Comarca da Capital",
-            )
-        ]
+        return ResultadoConsultaProcesso(
+            data_ultima_atualizacao_fonte=datetime(
+                2026,
+                3,
+                10,
+                14,
+                40,
+                tzinfo=timezone.utc,
+            ),
+            atualizacoes=[
+                AtualizacaoProcesso(
+                    codigo=92,
+                    descricao="Publicação",
+                    data_movimentacao=datetime(2025, 1, 23, tzinfo=timezone.utc),
+                    orgao_julgador="7ª Vara da Fazenda Pública da Comarca da Capital",
+                )
+            ],
+        )
 
     monkeypatch.setattr(
         "consulta_processos.services.consultar_processo_datajud_tjrj",
@@ -48,6 +62,12 @@ def test_consultar_processos_com_base_tjrj_datajud(monkeypatch):
     assert resultado.processos[0].base == "tjrj_datajud"
     assert len(resultado.processos[0].atualizacoes) == 1
     assert resultado.processos[0].atualizacoes[0].descricao == "Publicação"
+    assert resultado.processos[0].fonte == "datajud"
+    assert (
+        resultado.processos[0].data_ultima_atualizacao_fonte
+        == datetime(2026, 3, 10, 14, 40, tzinfo=timezone.utc)
+    )
+    assert resultado.processos[0].observacao is not None
 
 
 def test_consultar_processos_com_base_nao_suportada(monkeypatch):
