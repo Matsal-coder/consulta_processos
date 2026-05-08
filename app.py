@@ -12,7 +12,17 @@ from dotenv import load_dotenv
 from consulta_processos.models import ConsultaInput
 from consulta_processos.services import consultar_processos
 
+import os
+
+from consulta_processos.database import initialize_database
+from consulta_processos.history_repository import salvar_movimentacoes_do_processo
+
 load_dotenv()
+
+ENABLE_LOCAL_HISTORY = os.getenv("ENABLE_LOCAL_HISTORY", "false").lower() == "true"
+
+if ENABLE_LOCAL_HISTORY:
+    initialize_database()
 
 st.set_page_config(
     page_title="Consulta de Processos",
@@ -93,6 +103,20 @@ if consultar:
 
         if processo.observacao:
             st.warning(processo.observacao)
+
+        if ENABLE_LOCAL_HISTORY:
+            novas = salvar_movimentacoes_do_processo(
+                numero_processo=processo.numero_processo,
+                base=processo.base,
+                atualizacoes=processo.atualizacoes,
+                data_ultima_atualizacao_fonte=(
+                    processo.data_ultima_atualizacao_fonte.isoformat()
+                    if processo.data_ultima_atualizacao_fonte
+                    else None
+                ),
+            )
+
+            st.success(f"{novas} movimentação(ões) nova(s) salva(s) no histórico local.")
 
         if not processo.atualizacoes:
             st.info("Nenhuma movimentação encontrada a partir da data-base informada.")
