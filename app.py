@@ -103,16 +103,43 @@ if consultar:
     if linhas:
         df = pd.DataFrame(linhas)
 
+        col1, col2, col3 = st.columns(3)
+
+        col1.metric("Processos consultados", len(resultado.processos))
+        col2.metric("Movimentações encontradas", len(df))
+
+        data_mais_recente = df["Data"].max()
+        col3.metric("Movimentação mais recente", data_mais_recente)
+
+        st.divider()
+
+        filtro_texto = st.text_input(
+            "Filtrar movimentações",
+            placeholder="Ex: Publicação, Petição, Conclusão...",
+        )
+
+        df_filtrado = df.copy()
+
+        if filtro_texto:
+            filtro = filtro_texto.lower()
+
+            df_filtrado = df_filtrado[
+                df_filtrado["Descrição"].str.lower().str.contains(filtro)
+                | df_filtrado["Processo"].str.lower().str.contains(filtro)
+                | df_filtrado["Órgão julgador"].fillna("").str.lower().str.contains(filtro)
+                | df_filtrado["Código"].astype(str).str.contains(filtro)
+            ]
+
         st.dataframe(
-            df,
+            df_filtrado,
             use_container_width=True,
             hide_index=True,
         )
 
-        csv = df.to_csv(index=False).encode("utf-8-sig")
+        csv = df_filtrado.to_csv(index=False).encode("utf-8-sig")
 
         st.download_button(
-            label="Baixar resultado em CSV",
+            label="Baixar resultado filtrado em CSV",
             data=csv,
             file_name="resultado_consulta_processos.csv",
             mime="text/csv",
