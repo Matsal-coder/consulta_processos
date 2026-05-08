@@ -7,6 +7,11 @@ from dotenv import load_dotenv
 from consulta_processos.models import ConsultaInput
 from consulta_processos.services import consultar_processos
 
+import sys
+from pathlib import Path
+
+sys.path.append(str(Path(__file__).parent / "src"))
+
 load_dotenv()
 
 st.set_page_config(
