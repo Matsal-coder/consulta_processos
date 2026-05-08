@@ -1,13 +1,7 @@
 from datetime import date, datetime
 
-import requests
-
+from consulta_processos.datajud_client import DataJudClient
 from consulta_processos.models import AtualizacaoProcesso
-
-
-DATAJUD_TJRJ_URL = (
-    "https://api-publica.datajud.cnj.jus.br/api_publica_tjrj/_search"
-)
 
 
 def consultar_processo_datajud_tjrj(
@@ -15,36 +9,12 @@ def consultar_processo_datajud_tjrj(
     data_base: date,
     api_key: str,
 ) -> list[AtualizacaoProcesso]:
+    client = DataJudClient(api_key=api_key)
 
-    numero_limpo = (
-        numero_processo
-        .replace(".", "")
-        .replace("-", "")
+    data = client.buscar_processo(
+        tribunal="tjrj",
+        numero_processo=numero_processo,
     )
-
-    headers = {
-        "Authorization": f"APIKey {api_key}",
-        "Content-Type": "application/json",
-    }
-
-    payload = {
-        "query": {
-            "match": {
-                "numeroProcesso": numero_limpo
-            }
-        }
-    }
-
-    response = requests.post(
-        DATAJUD_TJRJ_URL,
-        headers=headers,
-        json=payload,
-        timeout=30,
-    )
-
-    response.raise_for_status()
-
-    data = response.json()
 
     hits = data["hits"]["hits"]
 
@@ -52,7 +22,6 @@ def consultar_processo_datajud_tjrj(
         return []
 
     source = hits[0]["_source"]
-
     movimentos = source.get("movimentos", [])
 
     atualizacoes = []
@@ -65,20 +34,15 @@ def consultar_processo_datajud_tjrj(
         if data_movimento.date() < data_base:
             continue
 
-        atualizacao = AtualizacaoProcesso(
-            codigo=movimento["codigo"],
-            descricao=movimento["nome"],
-            data_movimentacao=data_movimento,
-            orgao_julgador=movimento.get(
-                "orgaoJulgador",
-                {},
-            ).get("nome"),
+        atualizacoes.append(
+            AtualizacaoProcesso(
+                codigo=movimento["codigo"],
+                descricao=movimento["nome"],
+                data_movimentacao=data_movimento,
+                orgao_julgador=movimento.get("orgaoJulgador", {}).get("nome"),
+            )
         )
 
-        atualizacoes.append(atualizacao)
-
-    atualizacoes.sort(
-        key=lambda x: x.data_movimentacao
-    )
+    atualizacoes.sort(key=lambda x: x.data_movimentacao)
 
     return atualizacoes
