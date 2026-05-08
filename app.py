@@ -82,9 +82,13 @@ if consultar:
         st.write(f"**Fonte:** {processo.fonte}")
 
         if processo.data_ultima_atualizacao_fonte:
+            data_formatada = (
+                processo.data_ultima_atualizacao_fonte
+                .strftime("%d/%m/%Y %H:%M")
+            )
+
             st.write(
-                "**Última atualização da fonte:** "
-                f"{processo.data_ultima_atualizacao_fonte}"
+                f"**Última atualização da fonte:** {data_formatada}"
             )
 
         if processo.observacao:
