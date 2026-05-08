@@ -18,9 +18,14 @@ st.set_page_config(
 st.title("⚖️ Consulta de Processos")
 st.write("Consulte movimentações processuais usando a API pública do DataJud/CNJ.")
 
-numero_processo = st.text_input(
-    "Número do processo",
-    placeholder="Ex: 0964024-67.2024.8.19.0001",
+numeros_processos_texto = st.text_area(
+    "Números dos processos",
+    placeholder=(
+        "Digite um processo por linha:\n"
+        "0964024-67.2024.8.19.0001\n"
+        "0000000-00.0000.0.00.0000"
+    ),
+    height=150,
 )
 
 data_base = st.date_input(
@@ -37,58 +42,78 @@ base = st.selectbox(
 consultar = st.button("Consultar processo", type="primary")
 
 if consultar:
-    if not numero_processo:
-        st.error("Informe o número do processo.")
+    numeros_processos = [
+        numero.strip()
+        for numero in numeros_processos_texto.splitlines()
+        if numero.strip()
+    ]
+
+    if not numeros_processos:
+        st.error("Informe ao menos um número de processo.")
         st.stop()
 
     payload = ConsultaInput.model_validate(
         {
             "processos": [
                 {
-                    "numero_processo": numero_processo,
+                    "numero_processo": numero,
                     "base": base,
                     "data_base": data_base.isoformat(),
                 }
+                for numero in numeros_processos
             ]
         }
     )
 
-    with st.spinner("Consultando processo..."):
+    with st.spinner("Consultando processos..."):
         resultado = consultar_processos(payload)
-
-    processo = resultado.processos[0]
 
     st.subheader("Resultado da consulta")
 
-    st.write(f"**Processo:** {processo.numero_processo}")
-    st.write(f"**Fonte:** {processo.fonte}")
+    linhas = []
 
-    if processo.data_ultima_atualizacao_fonte:
-        st.write(
-            "**Última atualização da fonte:** "
-            f"{processo.data_ultima_atualizacao_fonte}"
-        )
+    for processo in resultado.processos:
+        st.write(f"### Processo {processo.numero_processo}")
+        st.write(f"**Fonte:** {processo.fonte}")
 
-    if processo.observacao:
-        st.warning(processo.observacao)
+        if processo.data_ultima_atualizacao_fonte:
+            st.write(
+                "**Última atualização da fonte:** "
+                f"{processo.data_ultima_atualizacao_fonte}"
+            )
 
-    if not processo.atualizacoes:
-        st.info("Nenhuma movimentação encontrada a partir da data-base informada.")
-    else:
-        dados = [
-            {
-                "Data": atualizacao.data_movimentacao.strftime("%d/%m/%Y %H:%M"),
-                "Descrição": atualizacao.descricao,
-                "Código": atualizacao.codigo,
-                "Órgão julgador": atualizacao.orgao_julgador,
-            }
-            for atualizacao in processo.atualizacoes
-        ]
+        if processo.observacao:
+            st.warning(processo.observacao)
 
-        df = pd.DataFrame(dados)
+        if not processo.atualizacoes:
+            st.info("Nenhuma movimentação encontrada a partir da data-base informada.")
+            continue
+
+        for atualizacao in processo.atualizacoes:
+            linhas.append(
+                {
+                    "Processo": processo.numero_processo,
+                    "Data": atualizacao.data_movimentacao.strftime("%d/%m/%Y %H:%M"),
+                    "Descrição": atualizacao.descricao,
+                    "Código": atualizacao.codigo,
+                    "Órgão julgador": atualizacao.orgao_julgador,
+                }
+            )
+
+    if linhas:
+        df = pd.DataFrame(linhas)
 
         st.dataframe(
             df,
             use_container_width=True,
             hide_index=True,
+        )
+
+        csv = df.to_csv(index=False).encode("utf-8-sig")
+
+        st.download_button(
+            label="Baixar resultado em CSV",
+            data=csv,
+            file_name="resultado_consulta_processos.csv",
+            mime="text/csv",
         )
