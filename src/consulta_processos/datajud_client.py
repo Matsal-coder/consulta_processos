@@ -46,6 +46,7 @@ class DataJudClient:
             response.raise_for_status()
         except RequestException as exc:
             raise FonteExternaError("Erro ao consultar a API pública do DataJud.") from exc
+        return response.json()
 
     @staticmethod
     def _limpar_numero_processo(numero_processo: str) -> str:
