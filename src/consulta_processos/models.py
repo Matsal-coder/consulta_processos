@@ -1,21 +1,11 @@
-from datetime import date
-from pydantic import BaseModel, Field
+from datetime import date, datetime
 from typing import Literal
+from pydantic import BaseModel, Field
 
 
 class ProcessoConsulta(BaseModel):
-    numero_processo: str = Field(
-        ...,
-        description="Número CNJ do processo"
-    )
-
-    base: Literal[
-        "tjsp",
-        "tjrj",
-        "trf2",
-        "djen"
-    ]
-
+    numero_processo: str = Field(..., description="Número CNJ do processo")
+    base: Literal["tjrj_datajud", "tjrj_eproc", "tjsp", "trf2", "djen"]
     data_base: date
 
 
@@ -24,8 +14,10 @@ class ConsultaInput(BaseModel):
 
 
 class AtualizacaoProcesso(BaseModel):
-    data_movimentacao: date
+    codigo: int
     descricao: str
+    data_movimentacao: datetime
+    orgao_julgador: str | None = None
 
 
 class ProcessoResultado(BaseModel):
