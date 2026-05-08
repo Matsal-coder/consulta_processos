@@ -113,3 +113,23 @@ def marcar_movimentacoes_novas(
         )
 
     return atualizacoes_marcadas
+
+def listar_movimentacoes_salvas() -> list[dict]:
+    with get_connection() as connection:
+        rows = connection.execute(
+            """
+            SELECT
+                numero_processo,
+                base,
+                codigo,
+                descricao,
+                data_movimentacao,
+                orgao_julgador,
+                data_ultima_atualizacao_fonte,
+                created_at
+            FROM movimentacoes_consultadas
+            ORDER BY data_movimentacao DESC;
+            """
+        ).fetchall()
+
+    return [dict(row) for row in rows]

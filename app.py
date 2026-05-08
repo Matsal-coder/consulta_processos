@@ -16,6 +16,7 @@ import os
 
 from consulta_processos.database import initialize_database
 from consulta_processos.history_repository import (
+    listar_movimentacoes_salvas,
     marcar_movimentacoes_novas,
     salvar_movimentacoes_do_processo,
 )
@@ -34,6 +35,9 @@ st.set_page_config(
 )
 
 st.title("⚖️ Consulta de Processos")
+tab_consulta, tab_historico = st.tabs(
+    ["🔎 Consulta", "🗂 Histórico local"]
+)
 st.write("Consulte movimentações processuais usando a API pública do DataJud/CNJ.")
 
 numeros_processos_texto = st.text_area(
@@ -194,3 +198,63 @@ if consultar:
             file_name="resultado_consulta_processos.csv",
             mime="text/csv",
         )
+
+with tab_historico:
+    st.subheader("Histórico local de movimentações")
+
+    if not ENABLE_LOCAL_HISTORY:
+        st.warning(
+            "Histórico local desabilitado. "
+            "Ative ENABLE_LOCAL_HISTORY=true no .env."
+        )
+
+    else:
+        movimentacoes_salvas = listar_movimentacoes_salvas()
+
+        if not movimentacoes_salvas:
+            st.info("Nenhuma movimentação salva ainda.")
+
+        else:
+            df_historico = pd.DataFrame(
+                movimentacoes_salvas
+            )
+
+            df_historico["data_movimentacao"] = pd.to_datetime(
+                df_historico["data_movimentacao"]
+            )
+
+            df_historico["created_at"] = pd.to_datetime(
+                df_historico["created_at"]
+            )
+
+            filtro_processo = st.text_input(
+                "Filtrar por processo",
+                key="historico_filtro_processo",
+            )
+
+            if filtro_processo:
+                df_historico = df_historico[
+                    df_historico["numero_processo"]
+                    .str.contains(
+                        filtro_processo,
+                        case=False,
+                        na=False,
+                    )
+                ]
+
+            st.dataframe(
+                df_historico,
+                use_container_width=True,
+                hide_index=True,
+            )
+
+            csv = df_historico.to_csv(
+                index=False
+            ).encode("utf-8-sig")
+
+            st.download_button(
+                label="Baixar histórico em CSV",
+                data=csv,
+                file_name="historico_movimentacoes.csv",
+                mime="text/csv",
+            )
