@@ -5,8 +5,7 @@ certifi==2026.4.22
 charset-normalizer==3.4.7
 click==8.3.3
 colorama==0.4.6
-# Editable Git install with no remote (consulta-processos==0.1.0)
--e d:\repositorio_codigos\consulta_processos
+-e git+https://github.com/Matsal-coder/consulta_processos.git@d22c000953b90562d849a0c9caaac27955419ffe#egg=consulta_processos
 fastapi==0.136.1
 greenlet==3.5.0
 h11==0.16.0
@@ -22,6 +21,7 @@ pydantic_core==2.46.4
 pyee==13.0.1
 Pygments==2.20.0
 pytest==9.0.3
+python-dotenv==1.2.2
 requests==2.33.1
 ruff==0.15.12
 starlette==1.0.0

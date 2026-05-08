@@ -7,7 +7,9 @@ from consulta_processos.models import (
 )
 from consulta_processos.scrapers.datajud_tjrj import consultar_processo_datajud_tjrj
 from consulta_processos.exceptions import BaseNaoSuportadaError, ConfiguracaoError
+from dotenv import load_dotenv
 
+load_dotenv()
 
 def consultar_processos(payload: ConsultaInput) -> ConsultaResultado:
     resultados = []
