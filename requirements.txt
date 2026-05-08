@@ -9,7 +9,6 @@ certifi==2026.4.22
 charset-normalizer==3.4.7
 click==8.3.3
 colorama==0.4.6
--e git+https://github.com/Matsal-coder/consulta_processos.git@9b08b24e26fa4881470cda5949d10ab8eec0b004#egg=consulta_processos
 fastapi==0.136.1
 gitdb==4.0.12
 GitPython==3.1.50
