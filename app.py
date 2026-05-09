@@ -295,6 +295,11 @@ with tab_monitorados:
         carregar_processos_monitorados()
     )
 
+    consultar_monitorados = st.button(
+        "Consultar processos monitorados",
+        type="primary",
+    )
+
     if not processos_monitorados:
         st.info(
             "Nenhum processo monitorado."
@@ -310,3 +315,101 @@ with tab_monitorados:
             use_container_width=True,
             hide_index=True,
         )
+    if consultar_monitorados:
+        if not processos_monitorados:
+            st.warning("Nenhum processo monitorado para consultar.")
+            st.stop()
+
+        data_base_monitorados = date.today().replace(year=date.today().year - 1)
+
+        payload = ConsultaInput.model_validate(
+            {
+                "processos": [
+                    {
+                        "numero_processo": processo["numero_processo"],
+                        "base": processo["base"],
+                        "data_base": data_base_monitorados.isoformat(),
+                    }
+                    for processo in processos_monitorados
+                ]
+            }
+        )
+
+        with st.spinner("Consultando processos monitorados..."):
+            resultado_monitorados = consultar_processos(payload)
+
+        linhas_monitorados = []
+
+        for processo in resultado_monitorados.processos:
+            if ENABLE_LOCAL_HISTORY:
+                processo.atualizacoes = marcar_movimentacoes_novas(
+                    numero_processo=processo.numero_processo,
+                    base=processo.base,
+                    atualizacoes=processo.atualizacoes,
+                )
+
+                salvar_movimentacoes_do_processo(
+                    numero_processo=processo.numero_processo,
+                    base=processo.base,
+                    atualizacoes=processo.atualizacoes,
+                    data_ultima_atualizacao_fonte=(
+                        processo.data_ultima_atualizacao_fonte.isoformat()
+                        if processo.data_ultima_atualizacao_fonte
+                        else None
+                    ),
+                )
+
+            for atualizacao in processo.atualizacoes:
+                linhas_monitorados.append(
+                    {
+                        "Processo": processo.numero_processo,
+                        "Nova": (
+                            "Sim"
+                            if atualizacao.nova is True
+                            else "Não"
+                            if atualizacao.nova is False
+                            else "Histórico desativado"
+                        ),
+                        "Data": atualizacao.data_movimentacao.strftime("%d/%m/%Y %H:%M"),
+                        "Descrição": atualizacao.descricao,
+                        "Código": atualizacao.codigo,
+                        "Órgão julgador": atualizacao.orgao_julgador,
+                        "Última atualização DataJud": (
+                            processo.data_ultima_atualizacao_fonte.strftime(
+                                "%d/%m/%Y %H:%M"
+                            )
+                            if processo.data_ultima_atualizacao_fonte
+                            else None
+                        ),
+                    }
+                )
+
+        if not linhas_monitorados:
+            st.info("Nenhuma movimentação encontrada para os processos monitorados.")
+        else:
+            df_monitorados_resultado = pd.DataFrame(linhas_monitorados)
+
+            novas_qtd = (
+                df_monitorados_resultado["Nova"]
+                .eq("Sim")
+                .sum()
+            )
+
+            st.metric("Novas movimentações encontradas", int(novas_qtd))
+
+            st.dataframe(
+                df_monitorados_resultado,
+                use_container_width=True,
+                hide_index=True,
+            )
+
+            csv_monitorados = df_monitorados_resultado.to_csv(
+                index=False
+            ).encode("utf-8-sig")
+
+            st.download_button(
+                label="Baixar resultado dos monitorados em CSV",
+                data=csv_monitorados,
+                file_name="resultado_processos_monitorados.csv",
+                mime="text/csv",
+            )
