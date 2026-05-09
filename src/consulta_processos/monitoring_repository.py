@@ -64,3 +64,27 @@ def adicionar_processo_monitorado(
     salvar_processos_monitorados(processos)
 
     return True
+
+def remover_processo_monitorado(
+    numero_processo: str,
+    base: str,
+) -> bool:
+    processos = carregar_processos_monitorados()
+
+    processos_filtrados = [
+        processo
+        for processo in processos
+        if not (
+            processo["numero_processo"] == numero_processo
+            and processo["base"] == base
+        )
+    ]
+
+    if len(processos_filtrados) == len(processos):
+        return False
+
+    salvar_processos_monitorados(
+        processos_filtrados
+    )
+
+    return True

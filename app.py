@@ -23,6 +23,7 @@ from consulta_processos.history_repository import (
 from consulta_processos.monitoring_repository import (
     adicionar_processo_monitorado,
     carregar_processos_monitorados,
+    remover_processo_monitorado,
 )
 
 load_dotenv()
@@ -189,64 +190,64 @@ with tab_consulta:
                     }
                 )
 
-    if linhas:
-        df = pd.DataFrame(linhas)
-        df["Data movimentação"] = pd.to_datetime(
-            df["Data movimentação"],
-            utc=True,
-        )
+                if linhas:
+                    df = pd.DataFrame(linhas)
+                    df["Data movimentação"] = pd.to_datetime(
+                        df["Data movimentação"],
+                        utc=True,
+                    )
 
-        df = df.sort_values(
-            by="Data movimentação",
-            ascending=False,
-        )
+                    df = df.sort_values(
+                        by="Data movimentação",
+                        ascending=False,
+                    )
 
-        col1, col2, col3 = st.columns(3)
+                    col1, col2, col3 = st.columns(3)
 
-        col1.metric("Processos consultados", len(resultado.processos))
-        col2.metric("Movimentações encontradas", len(df))
+                    col1.metric("Processos consultados", len(resultado.processos))
+                    col2.metric("Movimentações encontradas", len(df))
 
-        data_mais_recente = df["Data movimentação"].max()
-        col3.metric(
-            "Movimentação mais recente",
-            data_mais_recente.strftime("%d/%m/%Y %H:%M"),
-        )   
+                    data_mais_recente = df["Data movimentação"].max()
+                    col3.metric(
+                        "Movimentação mais recente",
+                        data_mais_recente.strftime("%d/%m/%Y %H:%M"),
+                    )   
 
-        st.divider()
+                    st.divider()
 
-        filtro_texto = st.text_input(
-            "Filtrar movimentações",
-            placeholder="Ex: Publicação, Petição, Conclusão...",
-        )
+                    filtro_texto = st.text_input(
+                        "Filtrar movimentações",
+                        placeholder="Ex: Publicação, Petição, Conclusão...",
+                    )
 
-        df_filtrado = df.copy()
+                    df_filtrado = df.copy()
 
-        if filtro_texto:
-            filtro = filtro_texto.lower()
+                    if filtro_texto:
+                        filtro = filtro_texto.lower()
 
-            df_filtrado = df_filtrado[
-                df_filtrado["Descrição"].str.lower().str.contains(filtro)
-                | df_filtrado["Processo"].str.lower().str.contains(filtro)
-                | df_filtrado["Órgão julgador"].fillna("").str.lower().str.contains(filtro)
-                | df_filtrado["Código"].astype(str).str.contains(filtro)
-            ]
-        df_visual = df_filtrado.drop(
-            columns=["Data movimentação"],
-        )
-        st.dataframe(
-            df_visual,
-            use_container_width=True,
-            hide_index=True,
-        )
+                        df_filtrado = df_filtrado[
+                            df_filtrado["Descrição"].str.lower().str.contains(filtro)
+                            | df_filtrado["Processo"].str.lower().str.contains(filtro)
+                            | df_filtrado["Órgão julgador"].fillna("").str.lower().str.contains(filtro)
+                            | df_filtrado["Código"].astype(str).str.contains(filtro)
+                        ]
+                    df_visual = df_filtrado.drop(
+                        columns=["Data movimentação"],
+                    )
+                    st.dataframe(
+                        df_visual,
+                        use_container_width=True,
+                        hide_index=True,
+                    )
 
-        csv = df_visual.to_csv(index=False).encode("utf-8-sig")
+                    csv = df_visual.to_csv(index=False).encode("utf-8-sig")
 
-        st.download_button(
-            label="Baixar resultado filtrado em CSV",
-            data=csv,
-            file_name="resultado_consulta_processos.csv",
-            mime="text/csv",
-        )
+                    st.download_button(
+                        label="Baixar resultado filtrado em CSV",
+                        data=csv,
+                        file_name="resultado_consulta_processos.csv",
+                        mime="text/csv",
+                    )
 
 with tab_historico:
     st.subheader("Histórico local de movimentações")
@@ -326,15 +327,42 @@ with tab_monitorados:
         )
 
     else:
-        df_monitorados = pd.DataFrame(
-            processos_monitorados
-        )
+        for processo in processos_monitorados:
+            col1, col2 = st.columns([5, 1])
 
-        st.dataframe(
-            df_monitorados,
-            use_container_width=True,
-            hide_index=True,
-        )
+            with col1:
+                st.write(
+                    f"📌 {processo['numero_processo']} "
+                    f"({processo['base']})"
+                )
+
+            with col2:
+                remover = st.button(
+                    "🗑️ Remover",
+                    key=(
+                        f"remover_"
+                        f"{processo['numero_processo']}"
+                    ),
+                )
+
+            if remover:
+                removido = remover_processo_monitorado(
+                    numero_processo=processo[
+                        "numero_processo"
+                    ],
+                    base=processo["base"],
+                )
+
+                if removido:
+                    st.success(
+                        "Processo removido dos monitorados."
+                    )
+                    st.rerun()
+
+                else:
+                    st.error(
+                        "Não foi possível remover o processo."
+                    )
     if consultar_monitorados:
         if not processos_monitorados:
             st.warning("Nenhum processo monitorado para consultar.")
