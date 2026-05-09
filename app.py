@@ -388,6 +388,39 @@ with tab_monitorados:
             st.info("Nenhuma movimentação encontrada para os processos monitorados.")
         else:
             df_monitorados_resultado = pd.DataFrame(linhas_monitorados)
+            total_processos_monitorados = len(processos_monitorados)
+
+            processos_com_novidade = (
+                df_monitorados_resultado[
+                    df_monitorados_resultado["Nova"] == "Sim"
+                ]["Processo"]
+                .nunique()
+            )
+
+            novas_movimentacoes = (
+                df_monitorados_resultado["Nova"]
+                .eq("Sim")
+                .sum()
+            )
+
+            col1, col2, col3 = st.columns(3)
+
+            col1.metric(
+                "📌 Processos monitorados",
+                total_processos_monitorados,
+            )
+
+            col2.metric(
+                "🆕 Processos com novidade",
+                int(processos_com_novidade),
+            )
+
+            col3.metric(
+                "📄 Novas movimentações",
+                int(novas_movimentacoes),
+            )
+
+            st.divider()
 
             novas_qtd = (
                 df_monitorados_resultado["Nova"]
@@ -397,13 +430,29 @@ with tab_monitorados:
 
             st.metric("Novas movimentações encontradas", int(novas_qtd))
 
+            mostrar_apenas_novas = st.checkbox(
+                "Mostrar apenas movimentações novas",
+                value=False,
+            )
+
+            df_monitorados_filtrado = (
+                df_monitorados_resultado.copy()
+            )
+
+            if mostrar_apenas_novas:
+                df_monitorados_filtrado = (
+                    df_monitorados_filtrado[
+                        df_monitorados_filtrado["Nova"] == "Sim"
+                    ]
+                )
+
             st.dataframe(
-                df_monitorados_resultado,
+                df_monitorados_filtrado,
                 use_container_width=True,
                 hide_index=True,
             )
 
-            csv_monitorados = df_monitorados_resultado.to_csv(
+            csv_monitorados = df_monitorados_filtrado.to_csv(
                 index=False
             ).encode("utf-8-sig")
 
