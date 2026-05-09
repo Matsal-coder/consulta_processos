@@ -101,11 +101,16 @@ with tab_consulta:
         with st.spinner("Consultando processos..."):
             resultado = consultar_processos(payload)
 
+        st.session_state["resultado_consulta"] = resultado
+
+    resultado = st.session_state.get("resultado_consulta")
+
+    if resultado:
         st.subheader("Resultado da consulta")
 
         linhas = []
 
-        for processo in resultado.processos:
+        for processo in resultado.processos:    
             st.write(f"### Processo {processo.numero_processo}")
             col1, col2 = st.columns([4, 1])
 
@@ -169,6 +174,7 @@ with tab_consulta:
                 linhas.append(
                     {
                         "Processo": processo.numero_processo,
+                        "Data movimentação": atualizacao.data_movimentacao,
                         "Data": atualizacao.data_movimentacao.strftime("%d/%m/%Y %H:%M"),
                         "Descrição": atualizacao.descricao,
                         "Código": atualizacao.codigo,
@@ -183,50 +189,64 @@ with tab_consulta:
                     }
                 )
 
-        if linhas:
-            df = pd.DataFrame(linhas)
+    if linhas:
+        df = pd.DataFrame(linhas)
+        df["Data movimentação"] = pd.to_datetime(
+            df["Data movimentação"],
+            utc=True,
+        )
 
-            col1, col2, col3 = st.columns(3)
+        df = df.sort_values(
+            by="Data movimentação",
+            ascending=False,
+        )
 
-            col1.metric("Processos consultados", len(resultado.processos))
-            col2.metric("Movimentações encontradas", len(df))
+        col1, col2, col3 = st.columns(3)
 
-            data_mais_recente = df["Data"].max()
-            col3.metric("Movimentação mais recente", data_mais_recente)
+        col1.metric("Processos consultados", len(resultado.processos))
+        col2.metric("Movimentações encontradas", len(df))
 
-            st.divider()
+        data_mais_recente = df["Data movimentação"].max()
+        col3.metric(
+            "Movimentação mais recente",
+            data_mais_recente.strftime("%d/%m/%Y %H:%M"),
+        )   
 
-            filtro_texto = st.text_input(
-                "Filtrar movimentações",
-                placeholder="Ex: Publicação, Petição, Conclusão...",
-            )
+        st.divider()
 
-            df_filtrado = df.copy()
+        filtro_texto = st.text_input(
+            "Filtrar movimentações",
+            placeholder="Ex: Publicação, Petição, Conclusão...",
+        )
 
-            if filtro_texto:
-                filtro = filtro_texto.lower()
+        df_filtrado = df.copy()
 
-                df_filtrado = df_filtrado[
-                    df_filtrado["Descrição"].str.lower().str.contains(filtro)
-                    | df_filtrado["Processo"].str.lower().str.contains(filtro)
-                    | df_filtrado["Órgão julgador"].fillna("").str.lower().str.contains(filtro)
-                    | df_filtrado["Código"].astype(str).str.contains(filtro)
-                ]
+        if filtro_texto:
+            filtro = filtro_texto.lower()
 
-            st.dataframe(
-                df_filtrado,
-                use_container_width=True,
-                hide_index=True,
-            )
+            df_filtrado = df_filtrado[
+                df_filtrado["Descrição"].str.lower().str.contains(filtro)
+                | df_filtrado["Processo"].str.lower().str.contains(filtro)
+                | df_filtrado["Órgão julgador"].fillna("").str.lower().str.contains(filtro)
+                | df_filtrado["Código"].astype(str).str.contains(filtro)
+            ]
+        df_visual = df_filtrado.drop(
+            columns=["Data movimentação"],
+        )
+        st.dataframe(
+            df_visual,
+            use_container_width=True,
+            hide_index=True,
+        )
 
-            csv = df_filtrado.to_csv(index=False).encode("utf-8-sig")
+        csv = df_visual.to_csv(index=False).encode("utf-8-sig")
 
-            st.download_button(
-                label="Baixar resultado filtrado em CSV",
-                data=csv,
-                file_name="resultado_consulta_processos.csv",
-                mime="text/csv",
-            )
+        st.download_button(
+            label="Baixar resultado filtrado em CSV",
+            data=csv,
+            file_name="resultado_consulta_processos.csv",
+            mime="text/csv",
+        )
 
 with tab_historico:
     st.subheader("Histórico local de movimentações")
