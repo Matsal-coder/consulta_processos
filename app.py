@@ -33,23 +33,7 @@ ENABLE_LOCAL_HISTORY = os.getenv("ENABLE_LOCAL_HISTORY", "false").lower() == "tr
 if ENABLE_LOCAL_HISTORY:
     initialize_database()
 
-st.set_page_config(
-    page_title="Consulta de Processos",
-    page_icon="⚖️",
-    layout="wide",
-)
-
-st.title("⚖️ Consulta de Processos")
-
-tab_consulta, tab_historico, tab_monitorados = st.tabs(
-    [
-        "🔎 Consulta",
-        "🗂 Histórico local",
-        "⭐ Monitorados",
-    ]
-)
-
-with tab_consulta:
+def render_consulta_tab() -> None:
     st.write("Consulte movimentações processuais usando a API pública do DataJud/CNJ.")
 
     numeros_processos_texto = st.text_area(
@@ -249,7 +233,7 @@ with tab_consulta:
                         mime="text/csv",
                     )
 
-with tab_historico:
+def render_historico_tab() -> None:
     st.subheader("Histórico local de movimentações")
 
     if not ENABLE_LOCAL_HISTORY:
@@ -309,7 +293,7 @@ with tab_historico:
                 mime="text/csv",
             )
 
-with tab_monitorados:
+def render_monitorados_tab() -> None:
     st.subheader("Processos monitorados")
 
     processos_monitorados = (
@@ -510,3 +494,29 @@ with tab_monitorados:
                 file_name="resultado_processos_monitorados.csv",
                 mime="text/csv",
             )
+
+
+def main() -> None:
+    st.set_page_config(
+    page_title="Consulta de Processos",
+    page_icon="⚖️",
+    layout="wide",
+    )
+    st.title("⚖️ Consulta de Processos")
+
+    tab_consulta, tab_historico, tab_monitorados = st.tabs(
+        ["🔎 Consulta", "🗂 Histórico local", "⭐ Monitorados"]
+    )
+
+    with tab_consulta:
+        render_consulta_tab()
+
+    with tab_historico:
+        render_historico_tab()
+
+    with tab_monitorados:
+        render_monitorados_tab()
+
+
+if __name__ == "__main__":
+    main()
