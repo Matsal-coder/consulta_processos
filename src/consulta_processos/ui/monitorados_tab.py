@@ -1,5 +1,4 @@
 from datetime import date
-
 import pandas as pd
 import streamlit as st
 
@@ -17,6 +16,7 @@ from consulta_processos.monitoring_repository import (
 def render_monitorados_tab(
     enable_local_history: bool,
 ) -> None:
+    
     st.subheader("Processos monitorados")
 
     processos_monitorados = (
@@ -27,6 +27,7 @@ def render_monitorados_tab(
         "Consultar processos monitorados",
         type="primary",
     )
+
 
     if not processos_monitorados:
         st.info(
@@ -93,6 +94,11 @@ def render_monitorados_tab(
         with st.spinner("Consultando processos monitorados..."):
             resultado_monitorados = consultar_processos(payload)
 
+        st.session_state["resultado_monitorados"] = resultado_monitorados
+        
+    resultado_monitorados = st.session_state.get("resultado_monitorados") 
+    
+    if resultado_monitorados:
         linhas_monitorados = []
 
         for processo in resultado_monitorados.processos:
@@ -125,6 +131,7 @@ def render_monitorados_tab(
                             if atualizacao.nova is False
                             else "Histórico desativado"
                         ),
+                        "Data movimentação": atualizacao.data_movimentacao,
                         "Data": atualizacao.data_movimentacao.strftime("%d/%m/%Y %H:%M"),
                         "Descrição": atualizacao.descricao,
                         "Código": atualizacao.codigo,
@@ -143,6 +150,15 @@ def render_monitorados_tab(
             st.info("Nenhuma movimentação encontrada para os processos monitorados.")
         else:
             df_monitorados_resultado = pd.DataFrame(linhas_monitorados)
+            df_monitorados_resultado["Data movimentação"] = pd.to_datetime(
+                df_monitorados_resultado["Data movimentação"],
+                utc=True,
+            )
+
+            df_monitorados_resultado = df_monitorados_resultado.sort_values(
+                by="Data movimentação",
+                ascending=False,
+            )
             total_processos_monitorados = len(processos_monitorados)
 
             processos_com_novidade = (
@@ -177,14 +193,6 @@ def render_monitorados_tab(
 
             st.divider()
 
-            novas_qtd = (
-                df_monitorados_resultado["Nova"]
-                .eq("Sim")
-                .sum()
-            )
-
-            st.metric("Novas movimentações encontradas", int(novas_qtd))
-
             mostrar_apenas_novas = st.checkbox(
                 "Mostrar apenas movimentações novas",
                 value=False,
@@ -201,13 +209,38 @@ def render_monitorados_tab(
                     ]
                 )
 
+            df_novidades = df_monitorados_resultado[
+                df_monitorados_resultado["Nova"] == "Sim"
+            ].copy()
+            df_monitorados_visual = df_monitorados_filtrado.drop(
+                columns=["Data movimentação"],
+            )
+
+
+            if df_novidades.empty:
+                st.info("Nenhuma novidade encontrada nesta consulta.")
+            else:
+                st.success(
+                    f"{len(df_novidades)} nova(s) movimentação(ões) encontrada(s)."
+                )
+                df_novidades_visual = df_novidades.drop(
+                    columns=["Data movimentação"],
+                )
+
+                st.download_button(
+                    label="Baixar relatório de novidades em CSV",
+                    data=df_novidades_visual.to_csv(index=False).encode("utf-8-sig"),
+                    file_name="relatorio_novidades.csv",
+                    mime="text/csv",
+                )
+
             st.dataframe(
-                df_monitorados_filtrado,
+                df_monitorados_visual,
                 use_container_width=True,
                 hide_index=True,
             )
 
-            csv_monitorados = df_monitorados_filtrado.to_csv(
+            csv_monitorados = df_monitorados_visual.to_csv(
                 index=False
             ).encode("utf-8-sig")
 
@@ -216,4 +249,4 @@ def render_monitorados_tab(
                 data=csv_monitorados,
                 file_name="resultado_processos_monitorados.csv",
                 mime="text/csv",
-            )
+            )   
