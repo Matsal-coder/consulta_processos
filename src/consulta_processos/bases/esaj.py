@@ -1,28 +1,17 @@
 from __future__ import annotations
 
-from dataclasses import dataclass
+from consulta_processos.bases.base import (
+    BaseConsultaProcessual,
+    MovimentoProcessual,
+    ResultadoConsultaProcessual,
+)
 
 import requests
 from bs4 import BeautifulSoup
 
-@dataclass
-class MovimentoProcessual:
-    data: str | None
-    descricao: str
-    fonte: str = "e-SAJ"
 
-
-@dataclass
-class ResultadoESAJ:
-    numero_processo: str
-    tribunal: str
-    sistema: str
-    url: str
-    movimentos: list[MovimentoProcessual]
-    erro: str | None = None
-
-
-class ESAJClient:
+class ESAJClient(BaseConsultaProcessual):
+    nome = "esaj"
     BASE_URLS = {
         "tjsp": "https://esaj.tjsp.jus.br",
         "tjam": "https://consultasaj.tjam.jus.br",
@@ -85,6 +74,7 @@ class ESAJClient:
                 MovimentoProcessual(
                     data=data,
                     descricao=descricao,
+                    fonte=f"e-SAJ/{self.tribunal.upper()}",
                 )
             )
 
@@ -93,7 +83,7 @@ class ESAJClient:
     def consultar(
         self,
         numero_processo: str,
-    ) -> ResultadoESAJ:
+    ) -> ResultadoConsultaProcessual:
 
         session = requests.Session()
 
@@ -107,7 +97,7 @@ class ESAJClient:
         }
 
         open_url = f"{self.base_url}/cpopg/open.do"
-        show_url = self._build_url()
+        search_url = self._build_url()
 
         params = {
             "conversationId": "",
@@ -126,7 +116,7 @@ class ESAJClient:
             )
 
             response = session.get(
-                show_url,
+                search_url,
                 params=params,
                 headers=headers,
                 timeout=30,
@@ -135,11 +125,12 @@ class ESAJClient:
             response.raise_for_status()
 
         except requests.RequestException as exc:
-            return ResultadoESAJ(
+            return ResultadoConsultaProcessual(
                 numero_processo=numero_processo,
                 tribunal=self.tribunal,
                 sistema="e-SAJ",
-                url=show_url,
+                fonte=f"e-SAJ/{self.tribunal.upper()}",
+                url=search_url,
                 movimentos=[],
                 erro=str(exc),
             )
@@ -155,10 +146,11 @@ class ESAJClient:
             response.text
         )
 
-        return ResultadoESAJ(
+        return ResultadoConsultaProcessual(
             numero_processo=numero_processo,
             tribunal=self.tribunal,
             sistema="e-SAJ",
+            fonte=f"e-SAJ/{self.tribunal.upper()}",
             url=response.url,
             movimentos=movimentos,
             erro=None,
