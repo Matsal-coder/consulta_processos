@@ -1,26 +1,37 @@
 from datetime import date, datetime, timezone
-from consulta_processos.models import (
-    AtualizacaoProcesso,
-    ConsultaInput,
-    ResultadoConsultaProcesso,
+
+from consulta_processos.bases.base import (
+    MovimentoProcessual,
+    ResultadoConsultaProcessual,
 )
+from consulta_processos.models import ConsultaInput
 from consulta_processos.services import consultar_processos
-import pytest
-from consulta_processos.exceptions import BaseNaoSuportadaError
 
-def test_consultar_processos_com_base_tjrj_datajud(monkeypatch):
-    monkeypatch.setenv("DATAJUD_API_KEY", "fake-api-key")
 
-    def fake_consultar_processo_datajud_tjrj(
+def test_consultar_processos(monkeypatch):
+
+    def fake_consultar_atualizacoes_por_base(
         numero_processo: str,
+        base: str,
         data_base: date,
-        api_key: str,
     ):
         assert numero_processo == "0964024-67.2024.8.19.0001"
+        assert base == "datajud_tjrj"
         assert data_base == date(2025, 1, 1)
-        assert api_key == "fake-api-key"
 
-        return ResultadoConsultaProcesso(
+        return ResultadoConsultaProcessual(
+            numero_processo=numero_processo,
+            tribunal="tjrj",
+            sistema="DataJud",
+            fonte="DataJud/TJRJ",
+            url=None,
+            movimentos=[
+                MovimentoProcessual(
+                    data="2025-01-23T00:00:00+00:00",
+                    descricao="Publicação",
+                    fonte="DataJud/TJRJ",
+                )
+            ],
             data_ultima_atualizacao_fonte=datetime(
                 2026,
                 3,
@@ -29,19 +40,12 @@ def test_consultar_processos_com_base_tjrj_datajud(monkeypatch):
                 40,
                 tzinfo=timezone.utc,
             ),
-            atualizacoes=[
-                AtualizacaoProcesso(
-                    codigo=92,
-                    descricao="Publicação",
-                    data_movimentacao=datetime(2025, 1, 23, tzinfo=timezone.utc),
-                    orgao_julgador="7ª Vara da Fazenda Pública da Comarca da Capital",
-                )
-            ],
+            erro=None,
         )
 
     monkeypatch.setattr(
-        "consulta_processos.services.consultar_processo_datajud_tjrj",
-        fake_consultar_processo_datajud_tjrj,
+        "consulta_processos.services.consultar_atualizacoes_por_base",
+        fake_consultar_atualizacoes_por_base,
     )
 
     payload = ConsultaInput.model_validate(
@@ -49,7 +53,7 @@ def test_consultar_processos_com_base_tjrj_datajud(monkeypatch):
             "processos": [
                 {
                     "numero_processo": "0964024-67.2024.8.19.0001",
-                    "base": "tjrj_datajud",
+                    "base": "datajud_tjrj",
                     "data_base": "2025-01-01",
                 }
             ]
@@ -59,32 +63,18 @@ def test_consultar_processos_com_base_tjrj_datajud(monkeypatch):
     resultado = consultar_processos(payload)
 
     assert len(resultado.processos) == 1
-    assert resultado.processos[0].numero_processo == "0964024-67.2024.8.19.0001"
-    assert resultado.processos[0].base == "tjrj_datajud"
-    assert len(resultado.processos[0].atualizacoes) == 1
-    assert resultado.processos[0].atualizacoes[0].descricao == "Publicação"
-    assert resultado.processos[0].fonte == "datajud"
+
+    processo = resultado.processos[0]
+
+    assert processo.numero_processo == "0964024-67.2024.8.19.0001"
+    assert processo.base == "datajud_tjrj"
+    assert processo.fonte == "DataJud/TJRJ"
+    assert len(processo.atualizacoes) == 1
+    assert processo.atualizacoes[0].descricao == "Publicação"
+
     assert (
-        resultado.processos[0].data_ultima_atualizacao_fonte
+        processo.data_ultima_atualizacao_fonte
         == datetime(2026, 3, 10, 14, 40, tzinfo=timezone.utc)
     )
-    assert resultado.processos[0].observacao is not None
 
-
-def test_consultar_processos_com_base_nao_suportada(monkeypatch):
-    monkeypatch.setenv("DATAJUD_API_KEY", "fake-api-key")
-
-    payload = ConsultaInput.model_validate(
-        {
-            "processos": [
-                {
-                    "numero_processo": "0000000-00.0000.0.00.0000",
-                    "base": "tjsp",
-                    "data_base": "2025-01-01",
-                }
-            ]
-        }
-    )
-
-    with pytest.raises(BaseNaoSuportadaError, match="Base ainda não suportada"):
-        consultar_processos(payload)
+    assert processo.observacao is not None

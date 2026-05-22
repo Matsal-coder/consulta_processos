@@ -1,9 +1,12 @@
-from datetime import datetime, timezone
+from datetime import date, datetime, timezone
 
 from fastapi.testclient import TestClient
 
 from consulta_processos.api import app
-from consulta_processos.models import AtualizacaoProcesso, ResultadoConsultaProcesso
+from consulta_processos.bases.base import (
+    MovimentoProcessual,
+    ResultadoConsultaProcessual,
+)
 
 
 client = TestClient(app)
@@ -17,14 +20,25 @@ def test_health_check():
 
 
 def test_consultar_processos(monkeypatch):
-    monkeypatch.setenv("DATAJUD_API_KEY", "fake-api-key")
 
-    def fake_consultar_processo_datajud_tjrj(
-        numero_processo,
-        data_base,
-        api_key,
+    def fake_consultar_atualizacoes_por_base(
+        numero_processo: str,
+        base: str,
+        data_base: date,
     ):
-        return ResultadoConsultaProcesso(
+        return ResultadoConsultaProcessual(
+            numero_processo=numero_processo,
+            tribunal="tjrj",
+            sistema="DataJud",
+            fonte="DataJud/TJRJ",
+            url=None,
+            movimentos=[
+                MovimentoProcessual(
+                    data="2025-01-23T00:00:00+00:00",
+                    descricao="Publicação",
+                    fonte="DataJud/TJRJ",
+                )
+            ],
             data_ultima_atualizacao_fonte=datetime(
                 2026,
                 3,
@@ -33,24 +47,12 @@ def test_consultar_processos(monkeypatch):
                 40,
                 tzinfo=timezone.utc,
             ),
-            atualizacoes=[
-                AtualizacaoProcesso(
-                    codigo=92,
-                    descricao="Publicação",
-                    data_movimentacao=datetime(
-                        2025,
-                        1,
-                        23,
-                        tzinfo=timezone.utc,
-                    ),
-                    orgao_julgador="7ª Vara da Fazenda Pública da Comarca da Capital",
-                )
-            ],
+            erro=None,
         )
 
     monkeypatch.setattr(
-        "consulta_processos.services.consultar_processo_datajud_tjrj",
-        fake_consultar_processo_datajud_tjrj,
+        "consulta_processos.services.consultar_atualizacoes_por_base",
+        fake_consultar_atualizacoes_por_base,
     )
 
     response = client.post(
@@ -59,7 +61,7 @@ def test_consultar_processos(monkeypatch):
             "processos": [
                 {
                     "numero_processo": "0964024-67.2024.8.19.0001",
-                    "base": "tjrj_datajud",
+                    "base": "datajud_tjrj",
                     "data_base": "2025-01-01",
                 }
             ]
@@ -71,8 +73,16 @@ def test_consultar_processos(monkeypatch):
     data = response.json()
 
     assert len(data["processos"]) == 1
-    assert data["processos"][0]["numero_processo"] == "0964024-67.2024.8.19.0001"
-    assert data["processos"][0]["base"] == "tjrj_datajud"
-    assert data["processos"][0]["fonte"] == "datajud"
-    assert len(data["processos"][0]["atualizacoes"]) == 1
-    assert data["processos"][0]["atualizacoes"][0]["descricao"] == "Publicação"
+
+    processo = data["processos"][0]
+
+    assert processo["numero_processo"] == "0964024-67.2024.8.19.0001"
+    assert processo["base"] == "datajud_tjrj"
+    assert processo["fonte"] == "DataJud/TJRJ"
+
+    assert len(processo["atualizacoes"]) == 1
+
+    assert (
+        processo["atualizacoes"][0]["descricao"]
+        == "Publicação"
+    )

@@ -6,7 +6,7 @@ def test_validar_input():
         "processos": [
             {
                 "numero_processo": "0000000-00.0000.0.00.0000",
-                "base": "tjsp",
+                "base": "esaj_tjsp",
                 "data_base": "2024-01-01"
             }
         ]
@@ -15,4 +15,4 @@ def test_validar_input():
     resultado = ConsultaInput.model_validate(payload)
 
     assert len(resultado.processos) == 1
-    assert resultado.processos[0].base == "tjsp"
+    assert resultado.processos[0].base == "esaj_tjsp"

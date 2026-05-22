@@ -11,3 +11,5 @@ data/*.db
 data/*.sqlite
 
 debug_*.html
+
+*.egg-info/
