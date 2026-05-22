@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+from datetime import datetime
 from abc import ABC, abstractmethod
 from dataclasses import dataclass
 
@@ -19,6 +20,7 @@ class ResultadoConsultaProcessual:
     fonte: str
     url: str | None
     movimentos: list[MovimentoProcessual]
+    data_ultima_atualizacao_fonte: datetime | None = None
     erro: str | None = None
 
 

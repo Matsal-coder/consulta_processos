@@ -6,6 +6,12 @@ from consulta_processos.exceptions import FonteExternaError
 
 DATAJUD_ENDPOINTS = {
     "tjrj": "https://api-publica.datajud.cnj.jus.br/api_publica_tjrj/_search",
+    "tjsp": "https://api-publica.datajud.cnj.jus.br/api_publica_tjsp/_search",
+    "tjes": "https://api-publica.datajud.cnj.jus.br/api_publica_tjes/_search",
+    "tjba": "https://api-publica.datajud.cnj.jus.br/api_publica_tjba/_search",
+    "tjam": "https://api-publica.datajud.cnj.jus.br/api_publica_tjam/_search",
+    "trf2": "https://api-publica.datajud.cnj.jus.br/api_publica_trf2/_search",
+
 }
 
 
@@ -19,6 +25,13 @@ class DataJudClient:
         tribunal: str,
         numero_processo: str,
     ) -> dict:
+        tribunal = tribunal.lower()
+
+        if tribunal not in DATAJUD_ENDPOINTS:
+            raise FonteExternaError(
+                f"Tribunal não suportado pelo DataJud: {tribunal}"
+            )
+
         endpoint = DATAJUD_ENDPOINTS[tribunal]
 
         numero_limpo = self._limpar_numero_processo(numero_processo)

@@ -1,15 +1,14 @@
-from consulta_processos.bases.registry import (
-    consultar_processo,
-)
+from consulta_processos.bases.registry import consultar_processo
 
 
 resultado = consultar_processo(
     numero_processo="1020749-11.2023.8.26.0068",
-    base="esaj_tjsp",
+    base="datajud_tjsp",
 )
 
 print()
 print("Fonte:", resultado.fonte)
+print("Erro:", resultado.erro)
 print("Quantidade:", len(resultado.movimentos))
 print()
 
