@@ -1,6 +1,7 @@
 from __future__ import annotations
 
-from datetime import date, datetime
+from datetime import date
+from consulta_processos.utils.dates import parse_date
 
 from consulta_processos.bases.base import ResultadoConsultaProcessual
 from consulta_processos.bases.registry import consultar_processo
@@ -32,33 +33,9 @@ def _data_movimento_maior_ou_igual(
     data_movimento: str | None,
     data_base: date,
 ) -> bool:
-    if not data_movimento:
-        return False
-
-    data_convertida = _parse_data_movimento(data_movimento)
+    data_convertida = parse_date(data_movimento)
 
     if not data_convertida:
         return False
 
     return data_convertida >= data_base
-
-
-def _parse_data_movimento(
-    data_movimento: str,
-) -> date | None:
-    formatos = [
-        "%d/%m/%Y",
-        "%Y-%m-%dT%H:%M:%S.%f%z",
-        "%Y-%m-%dT%H:%M:%S%z",
-    ]
-
-    for formato in formatos:
-        try:
-            return datetime.strptime(
-                data_movimento,
-                formato,
-            ).date()
-        except ValueError:
-            continue
-
-    return None

@@ -1,6 +1,7 @@
 from datetime import datetime
 
 from consulta_processos.bases.service import consultar_atualizacoes_por_base
+from consulta_processos.utils.dates import parse_datetime
 from consulta_processos.models import (
     AtualizacaoProcesso,
     ConsultaInput,
@@ -23,9 +24,7 @@ def consultar_processos(payload: ConsultaInput) -> ConsultaResultado:
             AtualizacaoProcesso(
                 codigo=0,
                 descricao=movimento.descricao,
-                data_movimentacao=_parse_datetime_movimento(
-                    movimento.data
-                ),
+                data_movimentacao=parse_datetime(movimento.data),
                 orgao_julgador=None,
             )
             for movimento in resultado_consulta.movimentos
