@@ -5,7 +5,16 @@ from pydantic import BaseModel, Field
 
 class ProcessoConsulta(BaseModel):
     numero_processo: str = Field(..., description="Número CNJ do processo")
-    base: Literal["tjrj_datajud", "tjrj_eproc", "tjsp", "trf2", "djen"]
+    base: Literal[
+        "esaj_tjsp",
+        "esaj_tjam",
+        "datajud_tjrj",
+        "datajud_tjsp",
+        "datajud_tjes",
+        "datajud_tjba",
+        "datajud_tjam",
+        "datajud_trf2",
+    ]
     data_base: date
 
 

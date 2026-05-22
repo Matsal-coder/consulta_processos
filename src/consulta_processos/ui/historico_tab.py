@@ -29,7 +29,10 @@ def render_historico_tab(
             )
 
             df_historico["data_movimentacao"] = pd.to_datetime(
-                df_historico["data_movimentacao"]
+                df_historico["data_movimentacao"],
+                format="mixed",
+                errors="coerce",
+                utc=True,
             )
 
             df_historico["created_at"] = pd.to_datetime(

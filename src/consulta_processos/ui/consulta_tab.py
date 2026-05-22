@@ -33,10 +33,21 @@ def render_consulta_tab(
         value=date.today(),
     )
 
+    BASE_OPTIONS = {
+        "esaj_tjsp": "TJSP - e-SAJ",
+        "esaj_tjam": "TJAM - e-SAJ",
+        "datajud_tjrj": "TJRJ - DataJud",
+        "datajud_tjsp": "TJSP - DataJud",
+        "datajud_tjes": "TJES - DataJud",
+        "datajud_tjba": "TJBA - DataJud",
+        "datajud_tjam": "TJAM - DataJud",
+        "datajud_trf2": "TRF2 - DataJud",
+    }
+
     base = st.selectbox(
         "Base de consulta",
-        options=["tjrj_datajud"],
-        format_func=lambda x: "TJRJ - DataJud" if x == "tjrj_datajud" else x,
+        options=list(BASE_OPTIONS.keys()),
+        format_func=lambda x: BASE_OPTIONS[x],
     )
 
     consultar = st.button("Consultar processo", type="primary")
