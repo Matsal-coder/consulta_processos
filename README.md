@@ -1,6 +1,9 @@
 # Consulta Processos API
 
-Projeto educacional para consulta automatizada de movimentações processuais utilizando a API pública do DataJud/CNJ.
+Projeto educacional para consulta automatizada de movimentações processuais.
+Bases atualmente suportadas:
+- TJSP e-SAJ
+- DataJud (TJRJ, TJSP, TJES, TJBA, TJAM, TRF2)
 
 ## Funcionalidades
 
