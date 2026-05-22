@@ -9,3 +9,5 @@ outputs/
 
 data/*.db
 data/*.sqlite
+
+debug_*.html
