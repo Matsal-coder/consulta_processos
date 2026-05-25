@@ -9,11 +9,29 @@ from pathlib import Path
 from streamlit.web import cli as stcli
 
 
-def get_runtime_root() -> Path:
-    if getattr(sys, "frozen", False):
-        return Path(sys._MEIPASS)
+def get_app_path() -> Path:
+    candidates = []
 
-    return Path(__file__).resolve().parents[2]
+    if getattr(sys, "frozen", False):
+        candidates.extend(
+            [
+                Path(sys.executable).parent / "app.py",
+                Path(sys.executable).parent / "_internal" / "app.py",
+                Path(getattr(sys, "_MEIPASS", "")) / "app.py",
+            ]
+        )
+    else:
+        project_root = Path(__file__).resolve().parents[2]
+        candidates.append(project_root / "app.py")
+
+    for candidate in candidates:
+        if candidate.exists():
+            return candidate
+
+    raise FileNotFoundError(
+        "Não encontrei o app.py. Caminhos testados: "
+        + ", ".join(str(path) for path in candidates)
+    )
 
 
 def open_browser() -> None:
@@ -22,41 +40,20 @@ def open_browser() -> None:
 
 
 def main() -> None:
-    try:
-        runtime_root = get_runtime_root()
-        app_path = runtime_root / "app.py"
+    app_path = get_app_path()
 
-        log_path = Path(sys.executable).parent / "juriscan_error.log"
+    threading.Thread(target=open_browser, daemon=True).start()
 
-        with log_path.open("w", encoding="utf-8") as log_file:
-            log_file.write(f"runtime_root={runtime_root}\n")
-            log_file.write(f"app_path={app_path}\n")
-            log_file.write(f"app_exists={app_path.exists()}\n")
+    sys.argv = [
+        "streamlit",
+        "run",
+        str(app_path),
+        "--global.developmentMode=false",
+        "--server.headless=true",
+        "--server.port=8501",
+    ]
 
-        if not app_path.exists():
-            raise FileNotFoundError(f"Não encontrei o app.py em: {app_path}")
-
-        threading.Thread(target=open_browser, daemon=True).start()
-
-        sys.argv = [
-            "streamlit",
-            "run",
-            str(app_path),
-            "--global.developmentMode=false",
-            "--server.headless=true",
-            "--server.port=8501",
-        ]
-
-        stcli.main()
-
-    except Exception as exc:
-        log_path = Path(sys.executable).parent / "juriscan_error.log"
-
-        with log_path.open("a", encoding="utf-8") as log_file:
-            log_file.write("\nERRO:\n")
-            log_file.write(repr(exc))
-
-        raise
+    stcli.main()
 
 
 if __name__ == "__main__":
