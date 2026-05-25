@@ -1,17 +1,20 @@
 import json
 from pathlib import Path
+from consulta_processos.paths import get_config_dir
+
+MONITORED_PROCESSES_FILENAME = "processos_monitorados.json"
 
 
-MONITORED_PROCESSES_PATH = Path(
-    "config/processos_monitorados.json"
-)
+def get_monitored_processes_path() -> Path:
+    return get_config_dir() / MONITORED_PROCESSES_FILENAME
 
 
 def carregar_processos_monitorados() -> list[dict]:
-    if not MONITORED_PROCESSES_PATH.exists():
+    path = get_monitored_processes_path()
+    if not path.exists():
         return []
 
-    content = MONITORED_PROCESSES_PATH.read_text(
+    content = path.read_text(
         encoding="utf-8"
     )
 
@@ -24,12 +27,13 @@ def carregar_processos_monitorados() -> list[dict]:
 def salvar_processos_monitorados(
     processos: list[dict],
 ) -> None:
-    MONITORED_PROCESSES_PATH.parent.mkdir(
+    path = get_monitored_processes_path()
+    path.parent.mkdir(
         parents=True,
         exist_ok=True,
     )
 
-    MONITORED_PROCESSES_PATH.write_text(
+    path.write_text(
         json.dumps(
             processos,
             indent=2,

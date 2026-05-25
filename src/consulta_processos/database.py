@@ -2,17 +2,18 @@ import os
 import sqlite3
 from pathlib import Path
 
+from consulta_processos.paths import get_data_dir
 
-DEFAULT_DB_PATH = Path("data/consulta_processos.db")
+DEFAULT_DB_NAME = "consulta_processos.db"
 
 
 def get_database_path() -> Path:
-    return Path(
-        os.getenv(
-            "CONSULTA_PROCESSOS_DB_PATH",
-            DEFAULT_DB_PATH,
-        )
-    )
+    custom_path = os.getenv("CONSULTA_PROCESSOS_DB_PATH")
+
+    if custom_path:
+        return Path(custom_path)
+
+    return get_data_dir() / DEFAULT_DB_NAME
 
 
 def get_connection() -> sqlite3.Connection:
