@@ -57,10 +57,11 @@ class EprocClient(BaseConsultaProcessual):
             driver = Driver(
                 browser="chrome",
                 headless=self.headless,
+                uc=True
             )
 
             driver.get(url)
-            driver.sleep(3)
+            driver.sleep(5)
 
             driver.type(
                 "input[id^='txtNum']",

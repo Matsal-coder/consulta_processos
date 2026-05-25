@@ -1,24 +1,28 @@
 from datetime import date, datetime
 from typing import Literal
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field, field_validator
+
+from consulta_processos.bases.catalog import (
+    FONTES_PROCESSUAIS,
+)
 
 
 class ProcessoConsulta(BaseModel):
-    numero_processo: str = Field(..., description="Número CNJ do processo")
-    base: Literal[
-        "esaj_tjsp",
-        "esaj_tjam",
-        "eproc_jfrj",
-        "eproc_trf2",
-        "eproc_jfes",
-        "datajud_tjrj",
-        "datajud_tjsp",
-        "datajud_tjes",
-        "datajud_tjba",
-        "datajud_tjam",
-        "datajud_trf2",
-    ]
+    numero_processo: str
+    base: str
     data_base: date
+
+    @field_validator("base")
+    @classmethod
+    def validar_base(cls, value: str) -> str:
+        value = value.lower()
+
+        if value not in FONTES_PROCESSUAIS:
+            raise ValueError(
+                f"Base não suportada: {value}"
+            )
+
+        return value
 
 
 class ConsultaInput(BaseModel):

@@ -12,6 +12,7 @@ from consulta_processos.history_repository import (
 from consulta_processos.monitoring_repository import (
     adicionar_processo_monitorado
 )
+from consulta_processos.bases.catalog import FONTES_PROCESSUAIS
 
 def render_consulta_tab(
     enable_local_history: bool,
@@ -34,17 +35,9 @@ def render_consulta_tab(
     )
 
     BASE_OPTIONS = {
-        "esaj_tjsp": "TJSP - e-SAJ",
-        "esaj_tjam": "TJAM - e-SAJ",
-        "eproc_jfrj": "JFRJ - eproc",
-        "eproc_trf2": "TRF2 - eproc",
-        "eproc_jfes": "JFES - eproc",
-        "datajud_tjrj": "TJRJ - DataJud",
-        "datajud_tjsp": "TJSP - DataJud",
-        "datajud_tjes": "TJES - DataJud",
-        "datajud_tjba": "TJBA - DataJud",
-        "datajud_tjam": "TJAM - DataJud",
-        "datajud_trf2": "TRF2 - DataJud",
+        key: fonte.label
+        for key, fonte in FONTES_PROCESSUAIS.items()
+        if fonte.ativa
     }
 
     base = st.selectbox(

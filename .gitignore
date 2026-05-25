@@ -13,3 +13,4 @@ data/*.sqlite
 debug_*.html
 
 *.egg-info/
+downloaded_files/
