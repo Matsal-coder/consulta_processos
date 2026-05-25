@@ -13,7 +13,11 @@ from consulta_processos.ui.consulta_tab import render_consulta_tab
 from consulta_processos.ui.historico_tab import render_historico_tab
 from consulta_processos.ui.monitorados_tab import render_monitorados_tab
 from consulta_processos.paths import get_env_path
+from consulta_processos.bootstrap import (
+    bootstrap_local_structure,
+)
 
+bootstrap_local_structure()
 load_dotenv(get_env_path())
 
 ENABLE_LOCAL_HISTORY = os.getenv("ENABLE_LOCAL_HISTORY", "false").lower() == "true"
