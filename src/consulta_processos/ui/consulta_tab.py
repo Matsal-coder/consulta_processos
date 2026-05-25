@@ -36,6 +36,9 @@ def render_consulta_tab(
     BASE_OPTIONS = {
         "esaj_tjsp": "TJSP - e-SAJ",
         "esaj_tjam": "TJAM - e-SAJ",
+        "eproc_jfrj": "JFRJ - eproc",
+        "eproc_trf2": "TRF2 - eproc",
+        "eproc_jfes": "JFES - eproc",
         "datajud_tjrj": "TJRJ - DataJud",
         "datajud_tjsp": "TJSP - DataJud",
         "datajud_tjes": "TJES - DataJud",

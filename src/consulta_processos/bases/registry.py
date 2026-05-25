@@ -4,12 +4,16 @@ from dotenv import load_dotenv
 
 from consulta_processos.bases.datajud import DataJudBaseClient
 from consulta_processos.bases.esaj import ESAJClient
+from consulta_processos.bases.eproc import EprocClient
 
 load_dotenv()
 
 BASES_DISPONIVEIS = {
     "esaj_tjsp": lambda: ESAJClient("tjsp"),
     "esaj_tjam": lambda: ESAJClient("tjam"),
+    "eproc_jfrj": lambda: EprocClient("jfrj"),
+    "eproc_trf2": lambda: EprocClient("trf2"),
+    "eproc_jfes": lambda: EprocClient("jfes"),
     "datajud_tjrj": lambda: DataJudBaseClient("tjrj", os.getenv("DATAJUD_API_KEY", "")),
     "datajud_tjsp": lambda: DataJudBaseClient("tjsp", os.getenv("DATAJUD_API_KEY", "")),
     "datajud_tjes": lambda: DataJudBaseClient("tjes", os.getenv("DATAJUD_API_KEY", "")),

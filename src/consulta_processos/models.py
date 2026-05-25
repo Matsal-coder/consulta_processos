@@ -8,6 +8,9 @@ class ProcessoConsulta(BaseModel):
     base: Literal[
         "esaj_tjsp",
         "esaj_tjam",
+        "eproc_jfrj",
+        "eproc_trf2",
+        "eproc_jfes",
         "datajud_tjrj",
         "datajud_tjsp",
         "datajud_tjes",

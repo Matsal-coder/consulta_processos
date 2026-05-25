@@ -5,6 +5,7 @@ from datetime import date, datetime
 
 FORMATOS_DATA = [
     "%d/%m/%Y",
+    "%d/%m/%Y %H:%M:%S",
     "%Y-%m-%dT%H:%M:%S.%f%z",
     "%Y-%m-%dT%H:%M:%S%z",
     "%Y-%m-%dT%H:%M:%S",

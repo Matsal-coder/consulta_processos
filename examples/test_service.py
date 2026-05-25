@@ -6,8 +6,8 @@ from consulta_processos.bases.service import (
 
 
 resultado = consultar_atualizacoes_por_base(
-    numero_processo="1020749-11.2023.8.26.0068",
-    base="esaj_tjsp",
+    numero_processo="5140460-06.2025.4.02.5101",
+    base="eproc_jfrj",
     data_base=date(2026, 5, 1),
 )
 
