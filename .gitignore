@@ -14,3 +14,7 @@ debug_*.html
 
 *.egg-info/
 downloaded_files/
+
+build/
+dist/
+*.spec
