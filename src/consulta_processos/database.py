@@ -34,16 +34,12 @@ def initialize_database() -> None:
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
                 numero_processo TEXT NOT NULL,
                 base TEXT NOT NULL,
-                codigo INTEGER NOT NULL,
                 descricao TEXT NOT NULL,
                 data_movimentacao TEXT NOT NULL,
-                orgao_julgador TEXT,
-                data_ultima_atualizacao_fonte TEXT,
                 created_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP,
                 UNIQUE (
                     numero_processo,
                     base,
-                    codigo,
                     descricao,
                     data_movimentacao
                 )

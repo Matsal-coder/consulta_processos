@@ -113,11 +113,11 @@ def render_monitorados_tab(
                     numero_processo=processo.numero_processo,
                     base=processo.base,
                     atualizacoes=processo.atualizacoes,
-                    data_ultima_atualizacao_fonte=(
-                        processo.data_ultima_atualizacao_fonte.isoformat()
-                        if processo.data_ultima_atualizacao_fonte
-                        else None
-                    ),
+                    # data_ultima_atualizacao_fonte=(
+                    #     processo.data_ultima_atualizacao_fonte.isoformat()
+                    #     if processo.data_ultima_atualizacao_fonte
+                    #     else None
+                    # ),
                 )
 
             for atualizacao in processo.atualizacoes:
@@ -134,15 +134,13 @@ def render_monitorados_tab(
                         "Data movimentação": atualizacao.data_movimentacao,
                         "Data": atualizacao.data_movimentacao.strftime("%d/%m/%Y %H:%M"),
                         "Descrição": atualizacao.descricao,
-                        "Código": atualizacao.codigo,
-                        "Órgão julgador": atualizacao.orgao_julgador,
-                        "Última atualização DataJud": (
-                            processo.data_ultima_atualizacao_fonte.strftime(
-                                "%d/%m/%Y %H:%M"
-                            )
-                            if processo.data_ultima_atualizacao_fonte
-                            else None
-                        ),
+                        # "Última atualização": (
+                        #     processo.data_ultima_atualizacao_fonte.strftime(
+                        #         "%d/%m/%Y %H:%M"
+                        #     )
+                        #     if processo.data_ultima_atualizacao_fonte
+                        #     else None
+                        # ),
                     }
                 )
 

@@ -14,7 +14,6 @@ def movimento_existe(
             FROM movimentacoes_consultadas
             WHERE numero_processo = ?
               AND base = ?
-              AND codigo = ?
               AND descricao = ?
               AND data_movimentacao = ?
             LIMIT 1;
@@ -22,7 +21,6 @@ def movimento_existe(
             (
                 numero_processo,
                 base,
-                atualizacao.codigo,
                 atualizacao.descricao,
                 atualizacao.data_movimentacao.isoformat(),
             ),
@@ -34,8 +32,7 @@ def movimento_existe(
 def salvar_movimento(
     numero_processo: str,
     base: str,
-    atualizacao: AtualizacaoProcesso,
-    data_ultima_atualizacao_fonte: str | None,
+    atualizacao: AtualizacaoProcesso
 ) -> bool:
     """
     Salva uma movimentação no histórico local.
@@ -49,22 +46,16 @@ def salvar_movimento(
             INSERT OR IGNORE INTO movimentacoes_consultadas (
                 numero_processo,
                 base,
-                codigo,
                 descricao,
-                data_movimentacao,
-                orgao_julgador,
-                data_ultima_atualizacao_fonte
+                data_movimentacao
             )
-            VALUES (?, ?, ?, ?, ?, ?, ?);
+            VALUES (?, ?, ?, ?);
             """,
             (
                 numero_processo,
                 base,
-                atualizacao.codigo,
                 atualizacao.descricao,
                 atualizacao.data_movimentacao.isoformat(),
-                atualizacao.orgao_julgador,
-                data_ultima_atualizacao_fonte,
             ),
         )
 
@@ -75,7 +66,6 @@ def salvar_movimentacoes_do_processo(
     numero_processo: str,
     base: str,
     atualizacoes: list[AtualizacaoProcesso],
-    data_ultima_atualizacao_fonte: str | None,
 ) -> int:
     novas = 0
 
@@ -84,7 +74,6 @@ def salvar_movimentacoes_do_processo(
             numero_processo=numero_processo,
             base=base,
             atualizacao=atualizacao,
-            data_ultima_atualizacao_fonte=data_ultima_atualizacao_fonte,
         )
 
         if foi_nova:
@@ -121,11 +110,8 @@ def listar_movimentacoes_salvas() -> list[dict]:
             SELECT
                 numero_processo,
                 base,
-                codigo,
                 descricao,
                 data_movimentacao,
-                orgao_julgador,
-                data_ultima_atualizacao_fonte,
                 created_at
             FROM movimentacoes_consultadas
             ORDER BY data_movimentacao DESC;

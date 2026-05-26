@@ -131,11 +131,11 @@ def render_consulta_tab(
                     numero_processo=processo.numero_processo,
                     base=processo.base,
                     atualizacoes=processo.atualizacoes,
-                    data_ultima_atualizacao_fonte=(
-                        processo.data_ultima_atualizacao_fonte.isoformat()
-                        if processo.data_ultima_atualizacao_fonte
-                        else None
-                    ),
+                    # data_ultima_atualizacao_fonte=(
+                    #     processo.data_ultima_atualizacao_fonte.isoformat()
+                    #     if processo.data_ultima_atualizacao_fonte
+                    #     else None
+                    # ),
                 )
 
                 st.success(f"{novas} movimentação(ões) nova(s) salva(s) no histórico local.")
@@ -151,8 +151,6 @@ def render_consulta_tab(
                         "Data movimentação": atualizacao.data_movimentacao,
                         "Data": atualizacao.data_movimentacao.strftime("%d/%m/%Y %H:%M"),
                         "Descrição": atualizacao.descricao,
-                        "Código": atualizacao.codigo,
-                        "Órgão julgador": atualizacao.orgao_julgador,
                         "Nova": (
                             "Sim"
                             if atualizacao.nova is True
@@ -201,8 +199,6 @@ def render_consulta_tab(
                 df_filtrado = df_filtrado[
                     df_filtrado["Descrição"].str.lower().str.contains(filtro)
                     | df_filtrado["Processo"].str.lower().str.contains(filtro)
-                    | df_filtrado["Órgão julgador"].fillna("").str.lower().str.contains(filtro)
-                    | df_filtrado["Código"].astype(str).str.contains(filtro)
                 ]
             df_visual = df_filtrado.drop(
                 columns=["Data movimentação"],
