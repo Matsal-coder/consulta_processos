@@ -2,7 +2,9 @@ from datetime import date
 
 import pandas as pd
 import streamlit as st
+from pydantic import ValidationError
 
+from consulta_processos.exceptions import ConsultaProcessosError
 from consulta_processos.models import ConsultaInput
 from consulta_processos.services import consultar_processos
 from consulta_processos.history_repository import (
@@ -59,23 +61,38 @@ def render_consulta_tab(
             st.error("Informe ao menos um número de processo.")
             st.stop()
 
-        payload = ConsultaInput.model_validate(
-            {
-                "processos": [
-                    {
-                        "numero_processo": numero,
-                        "base": base,
-                        "data_base": data_base.isoformat(),
-                    }
-                    for numero in numeros_processos
-                ]
-            }
-        )
+        try:
+            payload = ConsultaInput.model_validate(
+                {
+                    "processos": [
+                        {
+                            "numero_processo": numero,
+                            "base": base,
+                            "data_base": data_base.isoformat(),
+                        }
+                        for numero in numeros_processos
+                    ]
+                }
+            )
 
-        with st.spinner("Consultando processos..."):
-            resultado = consultar_processos(payload)
+            with st.spinner("Consultando processos..."):
+                resultado = consultar_processos(payload)
 
-        st.session_state["resultado_consulta"] = resultado
+            st.session_state["resultado_consulta"] = resultado
+
+        except ValidationError as exc:
+            st.error("Revise os dados informados. Há campos inválidos.")
+            st.exception(exc)
+
+        except ConsultaProcessosError as exc:
+            st.error(str(exc))
+
+        except Exception as exc:
+            st.error(
+                "Erro inesperado ao consultar o processo. "
+                "Tente novamente ou revise a base selecionada."
+            )
+            st.exception(exc)
 
     resultado = st.session_state.get("resultado_consulta")
 

@@ -1,5 +1,5 @@
 from datetime import date, datetime
-from pydantic import BaseModel, field_validator
+from pydantic import BaseModel, Field, field_validator
 
 from consulta_processos.bases.catalog import (
     FONTES_PROCESSUAIS,
@@ -25,15 +25,20 @@ class ProcessoConsulta(BaseModel):
 
 
 class ConsultaInput(BaseModel):
-    processos: list[ProcessoConsulta]
+    processos: list[ProcessoConsulta] = Field(
+        ...,
+        min_length=1,
+    )
 
 
 class AtualizacaoProcesso(BaseModel):
-    codigo: int
     descricao: str
     data_movimentacao: datetime
+
+    codigo: int | None = None
     orgao_julgador: str | None = None
-    nova: bool | None = None    
+
+    nova: bool = False
 
 
 class ProcessoResultado(BaseModel):
