@@ -17,4 +17,4 @@ downloaded_files/
 
 build/
 dist/
-*.spec
+*.speclogs/
