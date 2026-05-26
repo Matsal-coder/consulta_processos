@@ -16,6 +16,10 @@ from consulta_processos.monitoring_repository import (
 )
 from consulta_processos.bases.catalog import FONTES_PROCESSUAIS
 
+import logging
+
+logger = logging.getLogger(__name__)
+
 def render_consulta_tab(
     enable_local_history: bool,
 ) -> None:
@@ -81,13 +85,16 @@ def render_consulta_tab(
             st.session_state["resultado_consulta"] = resultado
 
         except ValidationError as exc:
+            logger.warning("Erro de validação no payload de consulta", exc_info=exc)
             st.error("Revise os dados informados. Há campos inválidos.")
             st.exception(exc)
 
         except ConsultaProcessosError as exc:
+            logger.warning("Erro controlado ao consultar processo", exc_info=exc)
             st.error(str(exc))
 
         except Exception as exc:
+            logger.exception("Erro inesperado ao consultar processo")
             st.error(
                 "Erro inesperado ao consultar o processo. "
                 "Tente novamente ou revise a base selecionada."

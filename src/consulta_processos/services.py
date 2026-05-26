@@ -9,11 +9,25 @@ from consulta_processos.models import (
     ProcessoResultado,
 )
 
+import logging
+
+logger = logging.getLogger(__name__)
+
 
 def consultar_processos(payload: ConsultaInput) -> ConsultaResultado:
     resultados = []
 
+    logger.info(
+        "Iniciando consulta de %s processo(s)",
+        len(payload.processos),
+    )
+
     for processo in payload.processos:
+        logger.info(
+            "Consultando processo %s na base %s",
+            processo.numero_processo,
+            processo.base,
+        )
         resultado_consulta = consultar_atualizacoes_por_base(
             numero_processo=processo.numero_processo,
             base=processo.base,
@@ -41,6 +55,12 @@ def consultar_processos(payload: ConsultaInput) -> ConsultaResultado:
                 observacao=_montar_observacao(resultado_consulta.fonte),
                 atualizacoes=atualizacoes,
             )
+        )
+        logger.info(
+            "Consulta concluída para processo %s na base %s com %s movimentação(ões)",
+            processo.numero_processo,
+            processo.base,
+            len(resultado_consulta.movimentos),
         )
 
     return ConsultaResultado(processos=resultados)
