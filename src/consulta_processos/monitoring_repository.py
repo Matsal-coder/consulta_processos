@@ -92,3 +92,43 @@ def remover_processo_monitorado(
     )
 
     return True
+
+def limpar_processos_monitorados() -> None:
+    salvar_processos_monitorados([])
+
+
+def importar_processos_monitorados(
+    processos: list[dict],
+    substituir: bool = False,
+) -> int:
+    if substituir:
+        existentes = []
+    else:
+        existentes = carregar_processos_monitorados()
+
+    adicionados = 0
+
+    for processo in processos:
+        numero_processo = processo["numero_processo"]
+        base = processo["base"]
+
+        existe = any(
+            item["numero_processo"] == numero_processo
+            and item["base"] == base
+            for item in existentes
+        )
+
+        if existe:
+            continue
+
+        existentes.append(
+            {
+                "numero_processo": numero_processo,
+                "base": base,
+            }
+        )
+        adicionados += 1
+
+    salvar_processos_monitorados(existentes)
+
+    return adicionados

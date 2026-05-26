@@ -11,7 +11,41 @@ from consulta_processos.history_repository import (
 from consulta_processos.monitoring_repository import (
     carregar_processos_monitorados,
     remover_processo_monitorado,
+    importar_processos_monitorados,
+    limpar_processos_monitorados,
 )
+
+def parse_monitorados_texto(
+    texto: str,
+) -> list[dict]:
+    processos = []
+
+    for linha in texto.splitlines():
+        linha = linha.strip()
+
+        if not linha:
+            continue
+
+        partes = [
+            parte.strip()
+            for parte in linha.split(";")
+        ]
+
+        if len(partes) != 2:
+            raise ValueError(
+                "Cada linha deve seguir o formato: numero_processo;base"
+            )
+
+        numero_processo, base = partes
+
+        processos.append(
+            {
+                "numero_processo": numero_processo,
+                "base": base,
+            }
+        )
+
+    return processos
 
 def render_monitorados_tab(
     enable_local_history: bool,
@@ -19,9 +53,74 @@ def render_monitorados_tab(
     
     st.subheader("Processos monitorados")
 
+    with st.expander("⚙️ Gestão em massa de monitorados"):
+        st.caption(
+            "Formato esperado: numero_processo;base"
+        )
+
+        texto_importacao = st.text_area(
+            "Importar monitorados",
+            placeholder=(
+                "0964024-67.2024.8.19.0001;tjrj_datajud\n"
+                "5000000-00.2025.4.02.0000;trf2_eproc"
+            ),
+            height=120,
+        )
+
+        substituir = st.checkbox(
+            "Substituir lista atual",
+            value=False,
+        )
+
+        col_importar, col_limpar = st.columns(2)
+
+        with col_importar:
+            if st.button("📥 Importar lista"):
+                try:
+                    processos_importados = parse_monitorados_texto(
+                        texto_importacao
+                    )
+
+                    adicionados = importar_processos_monitorados(
+                        processos=processos_importados,
+                        substituir=substituir,
+                    )
+
+                    st.success(
+                        f"{adicionados} processo(s) importado(s)."
+                    )
+                    st.rerun()
+
+                except ValueError as exc:
+                    st.error(str(exc))
+
+        with col_limpar:
+            if st.button("🧹 Limpar todos"):
+                limpar_processos_monitorados()
+                st.success("Lista de monitorados limpa.")
+                st.rerun()
+
     processos_monitorados = (
         carregar_processos_monitorados()
     )
+
+    if processos_monitorados:
+        df_export_monitorados = pd.DataFrame(
+            processos_monitorados
+        )
+
+        csv_monitorados_lista = (
+            df_export_monitorados
+            .to_csv(index=False, sep=";")
+            .encode("utf-8-sig")
+        )
+
+        st.download_button(
+            label="⬇️ Baixar lista de monitorados",
+            data=csv_monitorados_lista,
+            file_name="processos_monitorados.csv",
+            mime="text/csv",
+        )
 
     consultar_monitorados = st.button(
         "🔄 Atualizar monitorados",
