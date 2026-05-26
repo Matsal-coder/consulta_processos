@@ -3,7 +3,7 @@ import pandas as pd
 import streamlit as st
 
 from consulta_processos.models import ConsultaInput
-from consulta_processos.services import consultar_processos
+from consulta_processos.ui.cached_services import consultar_processos_cached
 from consulta_processos.history_repository import (
     marcar_movimentacoes_novas,
     salvar_movimentacoes_do_processo,
@@ -78,21 +78,21 @@ def render_monitorados_tab(
 
         data_base_monitorados = date.today().replace(year=date.today().year - 1)
 
-        payload = ConsultaInput.model_validate(
-            {
-                "processos": [
-                    {
-                        "numero_processo": processo["numero_processo"],
-                        "base": processo["base"],
-                        "data_base": data_base_monitorados.isoformat(),
-                    }
-                    for processo in processos_monitorados
-                ]
-            }
-        )
+        payload_dict = {
+            "processos": [
+                {
+                    "numero_processo": processo["numero_processo"],
+                    "base": processo["base"],
+                    "data_base": data_base_monitorados.isoformat(),
+                }
+                for processo in processos_monitorados
+            ]
+        }
+
+        ConsultaInput.model_validate(payload_dict)
 
         with st.spinner("Consultando processos monitorados..."):
-            resultado_monitorados = consultar_processos(payload)
+            resultado_monitorados = consultar_processos_cached(payload_dict)
 
         st.session_state["resultado_monitorados"] = resultado_monitorados
         

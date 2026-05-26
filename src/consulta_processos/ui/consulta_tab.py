@@ -6,7 +6,7 @@ from pydantic import ValidationError
 
 from consulta_processos.exceptions import ConsultaProcessosError
 from consulta_processos.models import ConsultaInput
-from consulta_processos.services import consultar_processos
+from consulta_processos.ui.cached_services import consultar_processos_cached
 from consulta_processos.history_repository import (
     marcar_movimentacoes_novas,
     salvar_movimentacoes_do_processo
@@ -66,21 +66,21 @@ def render_consulta_tab(
             st.stop()
 
         try:
-            payload = ConsultaInput.model_validate(
-                {
-                    "processos": [
-                        {
-                            "numero_processo": numero,
-                            "base": base,
-                            "data_base": data_base.isoformat(),
-                        }
-                        for numero in numeros_processos
-                    ]
-                }
-            )
+            payload_dict = {
+                "processos": [
+                    {
+                        "numero_processo": numero,
+                        "base": base,
+                        "data_base": data_base.isoformat(),
+                    }
+                    for numero in numeros_processos
+                ]
+            }
+
+            ConsultaInput.model_validate(payload_dict)
 
             with st.spinner("Consultando processos..."):
-                resultado = consultar_processos(payload)
+                resultado = consultar_processos_cached(payload_dict)
 
             st.session_state["resultado_consulta"] = resultado
 
