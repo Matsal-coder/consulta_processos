@@ -1,4 +1,4 @@
-from datetime import date
+from datetime import date, timedelta
 import pandas as pd
 import streamlit as st
 
@@ -24,8 +24,12 @@ def render_monitorados_tab(
     )
 
     consultar_monitorados = st.button(
-        "Consultar processos monitorados",
+        "🔄 Atualizar monitorados",
         type="primary",
+    )
+
+    st.caption(
+        "Consulta automática dos processos monitorados considerando os últimos 7 dias."
     )
 
 
@@ -76,7 +80,7 @@ def render_monitorados_tab(
             st.warning("Nenhum processo monitorado para consultar.")
             st.stop()
 
-        data_base_monitorados = date.today().replace(year=date.today().year - 1)
+        data_base_monitorados = date.today() - timedelta(days=7)
 
         payload_dict = {
             "processos": [
