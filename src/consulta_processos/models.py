@@ -1,6 +1,5 @@
 from datetime import date, datetime
-from typing import Literal
-from pydantic import BaseModel, Field, field_validator
+from pydantic import BaseModel, field_validator
 
 from consulta_processos.bases.catalog import (
     FONTES_PROCESSUAIS,
