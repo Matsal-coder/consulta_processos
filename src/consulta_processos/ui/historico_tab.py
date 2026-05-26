@@ -35,8 +35,12 @@ def render_historico_tab(
                 utc=True,
             )
 
-            df_historico["created_at"] = pd.to_datetime(
-                df_historico["created_at"]
+            df_historico["created_at"] = (
+                pd.to_datetime(
+                    df_historico["created_at"],
+                    utc=True,
+                )
+                .dt.tz_convert("America/Sao_Paulo")
             )
 
             filtro_processo = st.text_input(
@@ -53,6 +57,11 @@ def render_historico_tab(
                         na=False,
                     )
                 ]
+
+            df_historico["created_at"] = (
+                df_historico["created_at"]
+                .dt.strftime("%d/%m/%Y %H:%M")
+            )
 
             st.dataframe(
                 df_historico,

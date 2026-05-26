@@ -4,3 +4,6 @@
 2026-05-25 23:30:35,127 | INFO | consulta_processos.services | Iniciando consulta de 1 processo(s)
 2026-05-25 23:30:35,128 | INFO | consulta_processos.services | Consultando processo 0636130-85.2019.8.04.0001 na base esaj_tjam
 2026-05-25 23:30:36,304 | INFO | consulta_processos.services | Consulta concluída para processo 0636130-85.2019.8.04.0001 na base esaj_tjam com 5 movimentação(ões)
+2026-05-25 23:44:38,904 | INFO | consulta_processos.services | Iniciando consulta de 1 processo(s)
+2026-05-25 23:44:38,905 | INFO | consulta_processos.services | Consultando processo 1020749-11.2023.8.26.0068 na base esaj_tjsp
+2026-05-25 23:44:39,770 | INFO | consulta_processos.services | Consulta concluída para processo 1020749-11.2023.8.26.0068 na base esaj_tjsp com 5 movimentação(ões)
