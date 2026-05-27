@@ -6,6 +6,7 @@ from consulta_processos.monitoring_repository import (
     remover_processo_monitorado,
     importar_processos_monitorados,
     limpar_processos_monitorados,
+    listar_clientes_monitorados,
 )
 
 
@@ -244,3 +245,71 @@ def test_limpar_processos_monitorados(
     limpar_processos_monitorados()
 
     assert carregar_processos_monitorados() == []
+
+def test_adicionar_processo_monitorado_com_cliente(
+    tmp_path,
+    monkeypatch,
+):
+    monitorados_path = (
+        tmp_path / "processos_monitorados.json"
+    )
+
+    monitorados_path.write_text(
+        "[]",
+        encoding="utf-8",
+    )
+
+    monkeypatch.setattr(
+        "consulta_processos.monitoring_repository.get_monitored_processes_path",
+        lambda: monitorados_path,
+    )
+
+    adicionar_processo_monitorado(
+        numero_processo="0964024-67.2024.8.19.0001",
+        base="tjrj_datajud",
+        cliente="Cliente XPTO",
+    )
+
+    monitorados = (
+        carregar_processos_monitorados()
+    )
+
+    assert monitorados[0]["cliente"] == "Cliente XPTO"
+
+def test_listar_clientes_monitorados(
+    tmp_path,
+    monkeypatch,
+):
+    monitorados_path = (
+        tmp_path / "processos_monitorados.json"
+    )
+
+    monitorados_path.write_text(
+        json.dumps(
+            [
+                {
+                    "cliente": "Cliente B",
+                    "numero_processo": "1",
+                    "base": "tjrj_datajud",
+                },
+                {
+                    "cliente": "Cliente A",
+                    "numero_processo": "2",
+                    "base": "trf2_eproc",
+                },
+            ]
+        ),
+        encoding="utf-8",
+    )
+
+    monkeypatch.setattr(
+        "consulta_processos.monitoring_repository.get_monitored_processes_path",
+        lambda: monitorados_path,
+    )
+
+    clientes = listar_clientes_monitorados()
+
+    assert clientes == [
+        "Cliente A",
+        "Cliente B",
+    ]
