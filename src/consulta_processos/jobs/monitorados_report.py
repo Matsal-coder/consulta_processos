@@ -216,7 +216,10 @@ def main() -> None:
     report_path = gerar_relatorio_monitorados()
 
     if report_path is None:
-        print("Nenhum processo monitorado encontrado.")
+        print(
+            "Nenhuma nova movimentação encontrada "
+            "nos processos monitorados."
+        )
         return
 
     print(f"Relatório gerado em: {report_path}")
