@@ -38,6 +38,8 @@ A aplicação foi construída com foco em:
 * Atualizar todos automaticamente;
 * Identificação de novas movimentações;
 * Histórico local persistente.
+* Relatórios automáticos por cliente/processo
+* Envio automático de email
 
 ---
 
@@ -69,11 +71,31 @@ Cliente XPTO;0964024-67.2024.8.19.0001;tjrj_datajud
 
 ## Relatórios automáticos
 
-Job disponível:
+### Relatório local
 
 ```bash
 python -m consulta_processos.jobs.monitorados_report
 ```
+
+### Relatório por email
+
+```bash
+python -m consulta_processos.jobs.email_monitorados_report
+```
+#### Configuração de email
+
+Necessário configurar SMTP no `.env`.
+
+Exemplo:
+
+EMAIL_ENABLED=true
+EMAIL_SMTP_HOST=smtp.gmail.com
+EMAIL_SMTP_PORT=587
+EMAIL_USERNAME=
+EMAIL_PASSWORD=
+EMAIL_FROM=
+EMAIL_TO=
+
 
 Funções:
 
@@ -243,7 +265,6 @@ ruff check .
 
 ## Curto prazo
 
-* envio automático de emails;
 * scheduler Windows;
 * melhorias UX desktop.
 
