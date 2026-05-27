@@ -56,14 +56,14 @@ def render_monitorados_tab(
 
     with st.expander("⚙️ Gestão em massa de monitorados"):
         st.caption(
-            "Formato esperado: numero_processo;base;cliente"
+            "Formato esperado: cliente;numero_processo;base"
         )
 
         texto_importacao = st.text_area(
             "Importar monitorados",
             placeholder=(
-                "0964024-67.2024.8.19.0001;datajud_tjrj\n"
-                "5000000-00.2025.4.02.0000;eproc_trf2"
+                "Cliente1;0964024-67.2024.8.19.0001;datajud_tjrj\n"
+                "Cliente2;5000000-00.2025.4.02.0000;eproc_trf2"
             ),
             height=120,
         )
@@ -104,6 +104,14 @@ def render_monitorados_tab(
     processos_monitorados = (
         carregar_processos_monitorados()
     )
+
+    cliente_por_processo_base = {
+        (
+            processo["numero_processo"],
+            processo["base"],
+        ): processo.get("cliente", "Sem cliente")
+        for processo in processos_monitorados
+    }
 
     if processos_monitorados:
         df_export_monitorados = pd.DataFrame(
@@ -217,16 +225,19 @@ def render_monitorados_tab(
                     numero_processo=processo.numero_processo,
                     base=processo.base,
                     atualizacoes=processo.atualizacoes,
-                    # data_ultima_atualizacao_fonte=(
-                    #     processo.data_ultima_atualizacao_fonte.isoformat()
-                    #     if processo.data_ultima_atualizacao_fonte
-                    #     else None
-                    # ),
+                )
+                cliente = cliente_por_processo_base.get(
+                    (
+                        processo.numero_processo,
+                        processo.base,
+                    ),
+                    "Sem cliente",
                 )
 
             for atualizacao in processo.atualizacoes:
                 linhas_monitorados.append(
                     {
+                        "Cliente": cliente,
                         "Processo": processo.numero_processo,
                         "Nova": (
                             "Sim"
@@ -238,13 +249,6 @@ def render_monitorados_tab(
                         "Data movimentação": atualizacao.data_movimentacao,
                         "Data": atualizacao.data_movimentacao.strftime("%d/%m/%Y %H:%M"),
                         "Descrição": atualizacao.descricao,
-                        # "Última atualização": (
-                        #     processo.data_ultima_atualizacao_fonte.strftime(
-                        #         "%d/%m/%Y %H:%M"
-                        #     )
-                        #     if processo.data_ultima_atualizacao_fonte
-                        #     else None
-                        # ),
                     }
                 )
 

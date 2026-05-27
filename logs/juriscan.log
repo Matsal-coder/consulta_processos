@@ -20,3 +20,55 @@
 2026-05-26 19:54:03,075 | INFO | consulta_processos.services | Consulta concluída para processo 0636130-85.2019.8.04.0001 na base esaj_tjam com 0 movimentação(ões)
 2026-05-26 19:54:03,075 | INFO | consulta_processos.services | Consultando processo 1020749-11.2023.8.26.0068 na base esaj_tjsp
 2026-05-26 19:54:03,833 | INFO | consulta_processos.services | Consulta concluída para processo 1020749-11.2023.8.26.0068 na base esaj_tjsp com 2 movimentação(ões)
+2026-05-26 22:02:55,283 | INFO | consulta_processos.services | Iniciando consulta de 6 processo(s)
+2026-05-26 22:02:55,283 | INFO | consulta_processos.services | Consultando processo 3016257-70.2025.8.19.0001 na base eproc_tjrj
+2026-05-26 22:03:24,371 | INFO | consulta_processos.services | Consulta concluída para processo 3016257-70.2025.8.19.0001 na base eproc_tjrj com 2 movimentação(ões)
+2026-05-26 22:03:24,371 | INFO | consulta_processos.services | Consultando processo 5140460-06.2025.4.02.5101 na base eproc_jfrj
+2026-05-26 22:03:46,226 | INFO | consulta_processos.services | Consulta concluída para processo 5140460-06.2025.4.02.5101 na base eproc_jfrj com 2 movimentação(ões)
+2026-05-26 22:03:46,227 | INFO | consulta_processos.services | Consultando processo 5081564-38.2023.4.02.5101 na base eproc_trf2
+2026-05-26 22:04:10,523 | INFO | consulta_processos.services | Consulta concluída para processo 5081564-38.2023.4.02.5101 na base eproc_trf2 com 0 movimentação(ões)
+2026-05-26 22:04:10,524 | INFO | consulta_processos.services | Consultando processo 5000041-05.2026.4.02.5002 na base eproc_jfes
+2026-05-26 22:04:42,440 | INFO | consulta_processos.services | Consulta concluída para processo 5000041-05.2026.4.02.5002 na base eproc_jfes com 0 movimentação(ões)
+2026-05-26 22:04:42,440 | INFO | consulta_processos.services | Consultando processo 0636130-85.2019.8.04.0001 na base esaj_tjam
+2026-05-26 22:04:43,477 | INFO | consulta_processos.services | Consulta concluída para processo 0636130-85.2019.8.04.0001 na base esaj_tjam com 0 movimentação(ões)
+2026-05-26 22:04:43,478 | INFO | consulta_processos.services | Consultando processo 1020749-11.2023.8.26.0068 na base esaj_tjsp
+2026-05-26 22:04:44,288 | INFO | consulta_processos.services | Consulta concluída para processo 1020749-11.2023.8.26.0068 na base esaj_tjsp com 2 movimentação(ões)
+2026-05-26 22:08:15,953 | INFO | consulta_processos.services | Iniciando consulta de 6 processo(s)
+2026-05-26 22:08:15,954 | INFO | consulta_processos.services | Consultando processo 3016257-70.2025.8.19.0001 na base eproc_tjrj
+2026-05-26 22:08:43,837 | INFO | consulta_processos.services | Consulta concluída para processo 3016257-70.2025.8.19.0001 na base eproc_tjrj com 2 movimentação(ões)
+2026-05-26 22:08:43,837 | INFO | consulta_processos.services | Consultando processo 5140460-06.2025.4.02.5101 na base eproc_jfrj
+2026-05-26 22:09:08,413 | INFO | consulta_processos.services | Consulta concluída para processo 5140460-06.2025.4.02.5101 na base eproc_jfrj com 2 movimentação(ões)
+2026-05-26 22:09:08,415 | INFO | consulta_processos.services | Consultando processo 5081564-38.2023.4.02.5101 na base eproc_trf2
+2026-05-26 22:09:37,111 | INFO | consulta_processos.services | Consulta concluída para processo 5081564-38.2023.4.02.5101 na base eproc_trf2 com 0 movimentação(ões)
+2026-05-26 22:09:37,112 | INFO | consulta_processos.services | Consultando processo 5000041-05.2026.4.02.5002 na base eproc_jfes
+2026-05-26 22:10:02,744 | INFO | consulta_processos.services | Consulta concluída para processo 5000041-05.2026.4.02.5002 na base eproc_jfes com 0 movimentação(ões)
+2026-05-26 22:10:02,744 | INFO | consulta_processos.services | Consultando processo 0636130-85.2019.8.04.0001 na base esaj_tjam
+2026-05-26 22:10:08,420 | INFO | consulta_processos.services | Consulta concluída para processo 0636130-85.2019.8.04.0001 na base esaj_tjam com 0 movimentação(ões)
+2026-05-26 22:10:08,420 | INFO | consulta_processos.services | Consultando processo 1020749-11.2023.8.26.0068 na base esaj_tjsp
+2026-05-26 22:10:09,135 | INFO | consulta_processos.services | Consulta concluída para processo 1020749-11.2023.8.26.0068 na base esaj_tjsp com 2 movimentação(ões)
+2026-05-26 22:13:31,311 | INFO | consulta_processos.services | Iniciando consulta de 6 processo(s)
+2026-05-26 22:13:31,312 | INFO | consulta_processos.services | Consultando processo 3016257-70.2025.8.19.0001 na base eproc_tjrj
+2026-05-26 22:13:59,544 | INFO | consulta_processos.services | Consulta concluída para processo 3016257-70.2025.8.19.0001 na base eproc_tjrj com 2 movimentação(ões)
+2026-05-26 22:13:59,544 | INFO | consulta_processos.services | Consultando processo 5140460-06.2025.4.02.5101 na base eproc_jfrj
+2026-05-26 22:14:21,951 | INFO | consulta_processos.services | Consulta concluída para processo 5140460-06.2025.4.02.5101 na base eproc_jfrj com 0 movimentação(ões)
+2026-05-26 22:14:21,952 | INFO | consulta_processos.services | Consultando processo 5081564-38.2023.4.02.5101 na base eproc_trf2
+2026-05-26 22:14:56,195 | INFO | consulta_processos.services | Consulta concluída para processo 5081564-38.2023.4.02.5101 na base eproc_trf2 com 0 movimentação(ões)
+2026-05-26 22:14:56,195 | INFO | consulta_processos.services | Consultando processo 5000041-05.2026.4.02.5002 na base eproc_jfes
+2026-05-26 22:15:18,156 | INFO | consulta_processos.services | Consulta concluída para processo 5000041-05.2026.4.02.5002 na base eproc_jfes com 0 movimentação(ões)
+2026-05-26 22:15:18,156 | INFO | consulta_processos.services | Consultando processo 0636130-85.2019.8.04.0001 na base esaj_tjam
+2026-05-26 22:15:23,747 | INFO | consulta_processos.services | Consulta concluída para processo 0636130-85.2019.8.04.0001 na base esaj_tjam com 0 movimentação(ões)
+2026-05-26 22:15:23,747 | INFO | consulta_processos.services | Consultando processo 1020749-11.2023.8.26.0068 na base esaj_tjsp
+2026-05-26 22:15:24,486 | INFO | consulta_processos.services | Consulta concluída para processo 1020749-11.2023.8.26.0068 na base esaj_tjsp com 2 movimentação(ões)
+2026-05-26 22:26:31,248 | INFO | consulta_processos.services | Iniciando consulta de 6 processo(s)
+2026-05-26 22:26:31,250 | INFO | consulta_processos.services | Consultando processo 3016257-70.2025.8.19.0001 na base eproc_tjrj
+2026-05-26 22:26:56,286 | INFO | consulta_processos.services | Consulta concluída para processo 3016257-70.2025.8.19.0001 na base eproc_tjrj com 2 movimentação(ões)
+2026-05-26 22:26:56,286 | INFO | consulta_processos.services | Consultando processo 5140460-06.2025.4.02.5101 na base eproc_jfrj
+2026-05-26 22:27:25,681 | INFO | consulta_processos.services | Consulta concluída para processo 5140460-06.2025.4.02.5101 na base eproc_jfrj com 2 movimentação(ões)
+2026-05-26 22:27:25,682 | INFO | consulta_processos.services | Consultando processo 5081564-38.2023.4.02.5101 na base eproc_trf2
+2026-05-26 22:27:51,540 | INFO | consulta_processos.services | Consulta concluída para processo 5081564-38.2023.4.02.5101 na base eproc_trf2 com 0 movimentação(ões)
+2026-05-26 22:27:51,540 | INFO | consulta_processos.services | Consultando processo 5000041-05.2026.4.02.5002 na base eproc_jfes
+2026-05-26 22:28:29,350 | INFO | consulta_processos.services | Consulta concluída para processo 5000041-05.2026.4.02.5002 na base eproc_jfes com 0 movimentação(ões)
+2026-05-26 22:28:29,351 | INFO | consulta_processos.services | Consultando processo 0636130-85.2019.8.04.0001 na base esaj_tjam
+2026-05-26 22:28:39,690 | INFO | consulta_processos.services | Consulta concluída para processo 0636130-85.2019.8.04.0001 na base esaj_tjam com 0 movimentação(ões)
+2026-05-26 22:28:39,690 | INFO | consulta_processos.services | Consultando processo 1020749-11.2023.8.26.0068 na base esaj_tjsp
+2026-05-26 22:28:40,457 | INFO | consulta_processos.services | Consulta concluída para processo 1020749-11.2023.8.26.0068 na base esaj_tjsp com 2 movimentação(ões)
