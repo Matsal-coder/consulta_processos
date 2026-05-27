@@ -1,10 +1,24 @@
 [project]
 name = "consulta-processos"
 version = "0.1.0"
-description = "Consulta automatizada de atualizações processuais em bases públicas"
+description = "Aplicação para consulta, monitoramento e geração de relatórios de processos judiciais"
 requires-python = ">=3.12"
 dependencies = [
+    "fastapi",
+    "uvicorn",
+    "streamlit",
+    "pandas",
     "pydantic",
+    "python-dotenv",
+    "requests",
+    "seleniumbase",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest",
+    "ruff",
+    "pyinstaller",
 ]
 
 [tool.pytest.ini_options]
@@ -14,3 +28,6 @@ testpaths = ["tests"]
 [tool.ruff]
 line-length = 100
 target-version = "py312"
+
+[tool.ruff.lint]
+select = ["E", "F", "I"]
