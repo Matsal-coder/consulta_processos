@@ -7,3 +7,16 @@
 2026-05-25 23:44:38,904 | INFO | consulta_processos.services | Iniciando consulta de 1 processo(s)
 2026-05-25 23:44:38,905 | INFO | consulta_processos.services | Consultando processo 1020749-11.2023.8.26.0068 na base esaj_tjsp
 2026-05-25 23:44:39,770 | INFO | consulta_processos.services | Consulta concluída para processo 1020749-11.2023.8.26.0068 na base esaj_tjsp com 5 movimentação(ões)
+2026-05-26 19:52:07,228 | INFO | consulta_processos.services | Iniciando consulta de 6 processo(s)
+2026-05-26 19:52:07,228 | INFO | consulta_processos.services | Consultando processo 3016257-70.2025.8.19.0001 na base eproc_tjrj
+2026-05-26 19:52:40,253 | INFO | consulta_processos.services | Consulta concluída para processo 3016257-70.2025.8.19.0001 na base eproc_tjrj com 2 movimentação(ões)
+2026-05-26 19:52:40,254 | INFO | consulta_processos.services | Consultando processo 5140460-06.2025.4.02.5101 na base eproc_jfrj
+2026-05-26 19:53:03,400 | INFO | consulta_processos.services | Consulta concluída para processo 5140460-06.2025.4.02.5101 na base eproc_jfrj com 2 movimentação(ões)
+2026-05-26 19:53:03,401 | INFO | consulta_processos.services | Consultando processo 5081564-38.2023.4.02.5101 na base eproc_trf2
+2026-05-26 19:53:29,098 | INFO | consulta_processos.services | Consulta concluída para processo 5081564-38.2023.4.02.5101 na base eproc_trf2 com 0 movimentação(ões)
+2026-05-26 19:53:29,098 | INFO | consulta_processos.services | Consultando processo 5000041-05.2026.4.02.5002 na base eproc_jfes
+2026-05-26 19:54:02,006 | INFO | consulta_processos.services | Consulta concluída para processo 5000041-05.2026.4.02.5002 na base eproc_jfes com 0 movimentação(ões)
+2026-05-26 19:54:02,006 | INFO | consulta_processos.services | Consultando processo 0636130-85.2019.8.04.0001 na base esaj_tjam
+2026-05-26 19:54:03,075 | INFO | consulta_processos.services | Consulta concluída para processo 0636130-85.2019.8.04.0001 na base esaj_tjam com 0 movimentação(ões)
+2026-05-26 19:54:03,075 | INFO | consulta_processos.services | Consultando processo 1020749-11.2023.8.26.0068 na base esaj_tjsp
+2026-05-26 19:54:03,833 | INFO | consulta_processos.services | Consulta concluída para processo 1020749-11.2023.8.26.0068 na base esaj_tjsp com 2 movimentação(ões)
