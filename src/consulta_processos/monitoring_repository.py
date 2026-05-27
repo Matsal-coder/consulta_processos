@@ -46,6 +46,7 @@ def salvar_processos_monitorados(
 def adicionar_processo_monitorado(
     numero_processo: str,
     base: str,
+    cliente: str = "Sem cliente",
 ) -> bool:
     processos = carregar_processos_monitorados()
 
@@ -60,6 +61,7 @@ def adicionar_processo_monitorado(
 
     processos.append(
         {
+            "cliente": cliente.strip() or "Sem cliente",
             "numero_processo": numero_processo,
             "base": base,
         }
@@ -111,6 +113,7 @@ def importar_processos_monitorados(
     for processo in processos:
         numero_processo = processo["numero_processo"]
         base = processo["base"]
+        cliente = processo.get("cliente", "Sem cliente").strip() or "Sem cliente"
 
         existe = any(
             item["numero_processo"] == numero_processo
@@ -123,6 +126,7 @@ def importar_processos_monitorados(
 
         existentes.append(
             {
+                "cliente": cliente,
                 "numero_processo": numero_processo,
                 "base": base,
             }
@@ -132,3 +136,13 @@ def importar_processos_monitorados(
     salvar_processos_monitorados(existentes)
 
     return adicionados
+
+def listar_clientes_monitorados() -> list[str]:
+    processos = carregar_processos_monitorados()
+
+    clientes = {
+        processo.get("cliente", "Sem cliente")
+        for processo in processos
+    }
+
+    return sorted(clientes)

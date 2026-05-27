@@ -12,7 +12,8 @@ from consulta_processos.history_repository import (
     salvar_movimentacoes_do_processo
 )
 from consulta_processos.monitoring_repository import (
-    adicionar_processo_monitorado
+    adicionar_processo_monitorado,
+    listar_clientes_monitorados,
 )
 from consulta_processos.bases.catalog import FONTES_PROCESSUAIS
 
@@ -118,8 +119,27 @@ def render_consulta_tab(
                     key=f"monitorar_{processo.numero_processo}",
                 )
 
+            clientes_existentes = listar_clientes_monitorados()
+
+            opcoes_cliente = clientes_existentes + ["Cadastrar novo cliente"]
+
+            cliente_opcao = st.selectbox(
+                "Cliente",
+                options=opcoes_cliente or ["Cadastrar novo cliente"],
+                key=f"cliente_opcao_{processo.numero_processo}",
+            )
+
+            if cliente_opcao == "Cadastrar novo cliente":
+                cliente_monitorado = st.text_input(
+                    "Nome do novo cliente",
+                    key=f"novo_cliente_{processo.numero_processo}",
+                )
+            else:
+                cliente_monitorado = cliente_opcao
+
             if monitorado:
                 foi_adicionado = adicionar_processo_monitorado(
+                    cliente=cliente_monitorado,
                     numero_processo=processo.numero_processo,
                     base=processo.base,
                 )

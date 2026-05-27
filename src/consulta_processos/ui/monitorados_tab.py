@@ -31,15 +31,16 @@ def parse_monitorados_texto(
             for parte in linha.split(";")
         ]
 
-        if len(partes) != 2:
+        if len(partes) != 3:
             raise ValueError(
-                "Cada linha deve seguir o formato: numero_processo;base"
+                "Cada linha deve seguir o formato: cliente;numero_processo;base"
             )
 
-        numero_processo, base = partes
+        cliente, numero_processo, base = partes
 
         processos.append(
             {
+                "cliente": cliente,
                 "numero_processo": numero_processo,
                 "base": base,
             }
@@ -55,14 +56,14 @@ def render_monitorados_tab(
 
     with st.expander("⚙️ Gestão em massa de monitorados"):
         st.caption(
-            "Formato esperado: numero_processo;base"
+            "Formato esperado: numero_processo;base;cliente"
         )
 
         texto_importacao = st.text_area(
             "Importar monitorados",
             placeholder=(
-                "0964024-67.2024.8.19.0001;tjrj_datajud\n"
-                "5000000-00.2025.4.02.0000;trf2_eproc"
+                "0964024-67.2024.8.19.0001;datajud_tjrj\n"
+                "5000000-00.2025.4.02.0000;eproc_trf2"
             ),
             height=120,
         )
