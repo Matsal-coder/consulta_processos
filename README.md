@@ -1,94 +1,185 @@
-# Consulta Processos API
+# JuriScan — Documentação Atualizada
 
-Projeto educacional para consulta automatizada de movimentações processuais.
-Bases atualmente suportadas:
-- TJSP e-SAJ
-- DataJud (TJRJ, TJSP, TJES, TJBA, TJAM, TRF2)
+# Visão Geral
 
-## Funcionalidades
+O JuriScan é uma aplicação desktop/web desenvolvida em Python para:
 
-- Consulta de processos por número CNJ;
-- Integração com API pública do DataJud;
-- Retorno estruturado em JSON;
-- API REST com FastAPI;
-- Documentação automática via Swagger;
-- Testes automatizados com pytest;
-- Validação de payload com Pydantic.
+* consultar movimentações processuais;
+* monitorar processos automaticamente;
+* identificar novidades;
+* salvar histórico local;
+* gerar relatórios automáticos;
+* organizar processos por cliente.
 
----
+A aplicação foi construída com foco em:
 
-# Tecnologias
-
-- Python 3.12
-- FastAPI
-- Pydantic
-- Requests
-- Pytest
-- Ruff
+* facilidade operacional;
+* arquitetura extensível;
+* suporte a múltiplas bases processuais;
+* automação futura via scheduler e email.
 
 ---
 
-# Instalação
+# Features atuais
 
-## 1. Clonar repositório
+## Consulta de processos
 
-```bash
-git clone URL_DO_REPOSITORIO
-cd consulta-processos
+* Consulta individual ou múltipla;
+* Suporte multi-base;
+* Resultado consolidado em tabela;
+* Exportação CSV.
+
+---
+
+## Monitoramento de processos
+
+* Adicionar processos aos monitorados;
+* Remover processos monitorados;
+* Atualizar todos automaticamente;
+* Identificação de novas movimentações;
+* Histórico local persistente.
+
+---
+
+## Clientes
+
+Os monitorados podem ser associados a clientes.
+
+Formato:
+
+```text
+cliente;numero_processo;base
 ```
 
-## 2. Criar ambiente virtual
+Exemplo:
 
-```bash
-python -m venv .venv
-```
-
-## 3. Ativar ambiente virtual
-
-### Windows Git Bash
-
-```bash
-source .venv/Scripts/activate
-```
-
-### Windows CMD
-
-```cmd
-.venv\Scripts\activate
+```text
+Cliente XPTO;0964024-67.2024.8.19.0001;tjrj_datajud
 ```
 
 ---
 
-## 4. Instalar dependências
+## Gestão em massa
+
+* Importação em lote;
+* Exportação CSV;
+* Limpeza completa dos monitorados.
+
+---
+
+## Relatórios automáticos
+
+Job disponível:
 
 ```bash
-pip install -r requirements.txt
-pip install -e .
+python -m consulta_processos.jobs.monitorados_report
 ```
+
+Funções:
+
+* consulta todos os monitorados;
+* identifica novidades;
+* salva histórico local;
+* gera relatório consolidado;
+* gera relatórios por cliente/processo.
+
+Estrutura:
+
+```text
+reports/
+├── relatorio_completo_YYYY-MM-DD_HH-MM.csv
+└── clientes/
+    └── Cliente/
+        └── Processo/
+            └── relatorio_YYYY-MM-DD_HH-MM.csv
+```
+
+---
+
+# Bases suportadas
+
+## DataJud
+
+* TJRJ
+* Outros tribunais compatíveis
+
+## EPROC
+
+* TRF2
+* JFRJ
+* JFES
+
+## ESAJ
+
+* Bases ESAJ compatíveis
+
+---
+
+# Estrutura do projeto
+
+```text
+src/consulta_processos/
+├── bases/
+├── jobs/
+├── ui/
+├── utils/
+├── database.py
+├── history_repository.py
+├── monitoring_repository.py
+├── services.py
+└── desktop_launcher.py
+```
+
+---
+
+# Banco de dados
+
+Atualmente o SQLite armazena:
+
+## movimentacoes_consultadas
+
+* numero_processo
+* base
+* descricao
+* data_movimentacao
+* created_at
 
 ---
 
 # Configuração
 
-## Criar arquivo `.env`
+## .env
 
-Copie `.env.example`:
-
-```bash
-cp .env.example .env
-```
-
-E preencha:
+Exemplo:
 
 ```env
-DATAJUD_API_KEY=sua_chave_aqui
+DATAJUD_API_KEY=sua_chave
+
+ENABLE_LOCAL_HISTORY=true
+CONSULTA_PROCESSOS_DB_PATH=data/consulta_processos.db
 ```
 
 ---
 
-# Rodando a API
+# Executando localmente
 
-## Opção 1 — Terminal
+## Instalar dependências
+
+```bash
+pip install -r requirements.txt
+```
+
+---
+
+## Rodar Streamlit
+
+```bash
+streamlit run app.py
+```
+
+---
+
+## Rodar API
 
 ```bash
 uvicorn consulta_processos.api:app --reload
@@ -96,43 +187,43 @@ uvicorn consulta_processos.api:app --reload
 
 ---
 
-## Opção 2 — Windows
+## Rodar job de relatório
 
-Execute:
+```bash
+python -m consulta_processos.jobs.monitorados_report
+```
+
+---
+
+# Executável Desktop
+
+Geração via PyInstaller.
+
+Exemplo:
+
+```bash
+pyinstaller \
+  --onedir \
+  --name JuriScan \
+  --paths src \
+  --add-data "app.py;." \
+  --add-data "src/consulta_processos;consulta_processos" \
+  --collect-all streamlit \
+  --collect-all seleniumbase \
+  src/consulta_processos/desktop_launcher.py
+```
+
+Executável final:
 
 ```text
-run_api.bat
+dist/JuriScan/JuriScan.exe
 ```
 
 ---
 
-# Documentação Swagger
+# Testes
 
-Após subir a API:
-
-```text
-http://127.0.0.1:8000/docs
-```
-
----
-
-# Exemplo de payload
-
-```json
-{
-  "processos": [
-    {
-      "numero_processo": "0964024-67.2024.8.19.0001",
-      "base": "tjrj_datajud",
-      "data_base": "2025-01-01"
-    }
-  ]
-}
-```
-
----
-
-# Rodando testes
+## Rodar pytest
 
 ```bash
 pytest -v
@@ -140,14 +231,36 @@ pytest -v
 
 ---
 
-# Lint
+## Rodar Ruff
 
 ```bash
-ruff check src tests
+ruff check .
 ```
 
 ---
 
-# Observações
+# Roadmap
 
-A API pública do DataJud pode apresentar defasagem em relação ao sistema original do tribunal.
+## Curto prazo
+
+* envio automático de emails;
+* scheduler Windows;
+* melhorias UX desktop.
+
+---
+
+## Médio prazo
+
+* aba Cliente;
+* apelidos de processos;
+* comentários em movimentações;
+* timeline processual.
+
+---
+
+## Longo prazo
+
+* novas bases processuais;
+* OCR;
+* classificação automática de movimentações;
+* priorização inteligente.
