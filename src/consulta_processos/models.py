@@ -1,4 +1,5 @@
 from datetime import date, datetime
+
 from pydantic import BaseModel, Field, field_validator
 
 from consulta_processos.bases.catalog import (

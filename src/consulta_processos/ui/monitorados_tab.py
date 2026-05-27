@@ -1,19 +1,21 @@
 from datetime import date, timedelta
+
 import pandas as pd
 import streamlit as st
 
-from consulta_processos.models import ConsultaInput
-from consulta_processos.ui.cached_services import consultar_processos_cached
 from consulta_processos.history_repository import (
     marcar_movimentacoes_novas,
     salvar_movimentacoes_do_processo,
 )
+from consulta_processos.models import ConsultaInput
 from consulta_processos.monitoring_repository import (
     carregar_processos_monitorados,
-    remover_processo_monitorado,
     importar_processos_monitorados,
     limpar_processos_monitorados,
+    remover_processo_monitorado,
 )
+from consulta_processos.ui.cached_services import consultar_processos_cached
+
 
 def parse_monitorados_texto(
     texto: str,

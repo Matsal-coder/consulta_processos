@@ -8,7 +8,6 @@ from consulta_processos.exceptions import (
 from consulta_processos.models import ConsultaInput, ConsultaResultado
 from consulta_processos.services import consultar_processos
 
-
 app = FastAPI(
     title="Consulta Processos API",
     version="0.1.0",

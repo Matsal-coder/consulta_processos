@@ -1,23 +1,22 @@
+import logging
 from datetime import date
 
 import pandas as pd
 import streamlit as st
 from pydantic import ValidationError
 
+from consulta_processos.bases.catalog import FONTES_PROCESSUAIS
 from consulta_processos.exceptions import ConsultaProcessosError
-from consulta_processos.models import ConsultaInput
-from consulta_processos.ui.cached_services import consultar_processos_cached
 from consulta_processos.history_repository import (
     marcar_movimentacoes_novas,
-    salvar_movimentacoes_do_processo
+    salvar_movimentacoes_do_processo,
 )
+from consulta_processos.models import ConsultaInput
 from consulta_processos.monitoring_repository import (
     adicionar_processo_monitorado,
     listar_clientes_monitorados,
 )
-from consulta_processos.bases.catalog import FONTES_PROCESSUAIS
-
-import logging
+from consulta_processos.ui.cached_services import consultar_processos_cached
 
 logger = logging.getLogger(__name__)
 

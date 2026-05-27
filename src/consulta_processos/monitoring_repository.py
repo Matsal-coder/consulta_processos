@@ -1,5 +1,6 @@
 import json
 from pathlib import Path
+
 from consulta_processos.paths import get_config_dir
 
 MONITORED_PROCESSES_FILENAME = "processos_monitorados.json"

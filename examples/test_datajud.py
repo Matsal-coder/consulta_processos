@@ -1,6 +1,5 @@
 from consulta_processos.bases.registry import consultar_processo
 
-
 resultado = consultar_processo(
     numero_processo="1020749-11.2023.8.26.0068",
     base="datajud_tjsp",

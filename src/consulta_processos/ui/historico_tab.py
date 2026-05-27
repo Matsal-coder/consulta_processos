@@ -1,9 +1,7 @@
 import pandas as pd
 import streamlit as st
 
-from consulta_processos.history_repository import (
-    listar_movimentacoes_salvas
-)
+from consulta_processos.history_repository import listar_movimentacoes_salvas
 
 
 def render_historico_tab(

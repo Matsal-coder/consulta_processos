@@ -2,7 +2,6 @@ from __future__ import annotations
 
 from datetime import date, datetime
 
-
 FORMATOS_DATA = [
     "%d/%m/%Y",
     "%d/%m/%Y %H:%M:%S",

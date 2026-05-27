@@ -1,15 +1,14 @@
+import logging
 from datetime import datetime
 
 from consulta_processos.bases.service import consultar_atualizacoes_por_base
-from consulta_processos.utils.dates import parse_datetime
 from consulta_processos.models import (
     AtualizacaoProcesso,
     ConsultaInput,
     ConsultaResultado,
     ProcessoResultado,
 )
-
-import logging
+from consulta_processos.utils.dates import parse_datetime
 
 logger = logging.getLogger(__name__)
 

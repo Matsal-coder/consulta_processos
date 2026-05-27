@@ -3,10 +3,10 @@ import json
 from consulta_processos.monitoring_repository import (
     adicionar_processo_monitorado,
     carregar_processos_monitorados,
-    remover_processo_monitorado,
     importar_processos_monitorados,
     limpar_processos_monitorados,
     listar_clientes_monitorados,
+    remover_processo_monitorado,
 )
 
 

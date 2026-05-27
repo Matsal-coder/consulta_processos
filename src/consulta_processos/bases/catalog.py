@@ -4,8 +4,8 @@ from typing import Callable
 
 from consulta_processos.bases.base import BaseConsultaProcessual
 from consulta_processos.bases.datajud import DataJudBaseClient
-from consulta_processos.bases.esaj import ESAJClient
 from consulta_processos.bases.eproc import EprocClient
+from consulta_processos.bases.esaj import ESAJClient
 
 
 @dataclass(frozen=True)

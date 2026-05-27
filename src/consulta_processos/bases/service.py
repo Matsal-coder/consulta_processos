@@ -1,10 +1,10 @@
 from __future__ import annotations
 
 from datetime import date
-from consulta_processos.utils.dates import parse_date
 
 from consulta_processos.bases.base import ResultadoConsultaProcessual
 from consulta_processos.bases.registry import consultar_processo
+from consulta_processos.utils.dates import parse_date
 
 
 def consultar_atualizacoes_por_base(

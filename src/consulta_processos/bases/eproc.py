@@ -1,8 +1,8 @@
 from __future__ import annotations
 
 from bs4 import BeautifulSoup
-from seleniumbase import Driver
 from selenium.common.exceptions import UnexpectedAlertPresentException
+from seleniumbase import Driver
 
 from consulta_processos.bases.base import (
     BaseConsultaProcessual,

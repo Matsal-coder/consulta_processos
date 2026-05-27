@@ -8,7 +8,6 @@ from consulta_processos.bases.base import (
     ResultadoConsultaProcessual,
 )
 
-
 client = TestClient(app)
 
 

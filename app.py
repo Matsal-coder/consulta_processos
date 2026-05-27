@@ -8,15 +8,15 @@ sys.path.insert(0, str(Path(__file__).parent / "src"))
 import streamlit as st
 from dotenv import load_dotenv
 
-from consulta_processos.database import initialize_database
-from consulta_processos.ui.consulta_tab import render_consulta_tab
-from consulta_processos.ui.historico_tab import render_historico_tab
-from consulta_processos.ui.monitorados_tab import render_monitorados_tab
-from consulta_processos.paths import get_env_path
-from consulta_processos.logging_config import configure_logging
 from consulta_processos.bootstrap import (
     bootstrap_local_structure,
 )
+from consulta_processos.database import initialize_database
+from consulta_processos.logging_config import configure_logging
+from consulta_processos.paths import get_env_path
+from consulta_processos.ui.consulta_tab import render_consulta_tab
+from consulta_processos.ui.historico_tab import render_historico_tab
+from consulta_processos.ui.monitorados_tab import render_monitorados_tab
 
 bootstrap_local_structure()
 configure_logging()

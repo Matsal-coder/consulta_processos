@@ -3,7 +3,6 @@ from requests import RequestException
 
 from consulta_processos.exceptions import FonteExternaError
 
-
 DATAJUD_ENDPOINTS = {
     "tjrj": "https://api-publica.datajud.cnj.jus.br/api_publica_tjrj/_search",
     "tjsp": "https://api-publica.datajud.cnj.jus.br/api_publica_tjsp/_search",

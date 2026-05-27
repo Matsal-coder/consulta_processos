@@ -6,7 +6,6 @@ from consulta_processos.paths import (
     get_env_path,
 )
 
-
 DEFAULT_ENV_CONTENT = """ENABLE_LOCAL_HISTORY=true
 DATAJUD_API_KEY=
 """

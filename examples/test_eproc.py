@@ -1,6 +1,5 @@
 from consulta_processos.bases.eproc import EprocClient
 
-
 client = EprocClient(
     "tjrj",
     headless=False,

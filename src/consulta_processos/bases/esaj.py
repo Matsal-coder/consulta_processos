@@ -1,13 +1,13 @@
 from __future__ import annotations
 
+import requests
+from bs4 import BeautifulSoup
+
 from consulta_processos.bases.base import (
     BaseConsultaProcessual,
     MovimentoProcessual,
     ResultadoConsultaProcessual,
 )
-
-import requests
-from bs4 import BeautifulSoup
 
 
 class ESAJClient(BaseConsultaProcessual):

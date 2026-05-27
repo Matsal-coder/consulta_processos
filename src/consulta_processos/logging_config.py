@@ -3,7 +3,6 @@ from pathlib import Path
 
 from consulta_processos.paths import get_app_dir
 
-
 LOG_FORMAT = (
     "%(asctime)s | %(levelname)s | "
     "%(name)s | %(message)s"
