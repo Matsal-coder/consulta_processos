@@ -16,6 +16,10 @@ from consulta_processos.monitoring_repository import (
     adicionar_processo_monitorado,
     listar_clientes_monitorados,
 )
+from consulta_processos.process_repository import (
+    listar_clientes,
+    salvar_processo,
+)
 from consulta_processos.ui.cached_services import consultar_processos_cached
 
 logger = logging.getLogger(__name__)
@@ -108,9 +112,16 @@ def render_consulta_tab(
 
         linhas = []
 
-        for processo in resultado.processos:    
-            st.write(f"### Processo {processo.numero_processo}")
+        for processo in resultado.processos:
+            st.write(
+                f"### Processo {processo.numero_processo}"
+            )
+
             col1, col2 = st.columns([4, 1])
+
+            # =========================
+            # MONITORAR
+            # =========================
 
             with col2:
                 monitorado = st.button(
@@ -118,88 +129,282 @@ def render_consulta_tab(
                     key=f"monitorar_{processo.numero_processo}",
                 )
 
-            clientes_existentes = listar_clientes_monitorados()
+            clientes_existentes = (
+                listar_clientes_monitorados()
+            )
 
-            opcoes_cliente = clientes_existentes + ["Cadastrar novo cliente"]
+            opcoes_cliente = (
+                clientes_existentes
+                + ["Cadastrar novo cliente"]
+            )
 
             cliente_opcao = st.selectbox(
                 "Cliente",
-                options=opcoes_cliente or ["Cadastrar novo cliente"],
-                key=f"cliente_opcao_{processo.numero_processo}",
+                options=(
+                    opcoes_cliente
+                    or ["Cadastrar novo cliente"]
+                ),
+                key=(
+                    f"cliente_opcao_"
+                    f"{processo.numero_processo}"
+                ),
             )
 
-            if cliente_opcao == "Cadastrar novo cliente":
+            if (
+                cliente_opcao
+                == "Cadastrar novo cliente"
+            ):
                 cliente_monitorado = st.text_input(
                     "Nome do novo cliente",
-                    key=f"novo_cliente_{processo.numero_processo}",
+                    key=(
+                        f"novo_cliente_"
+                        f"{processo.numero_processo}"
+                    ),
                 )
             else:
                 cliente_monitorado = cliente_opcao
 
             if monitorado:
-                foi_adicionado = adicionar_processo_monitorado(
-                    cliente=cliente_monitorado,
-                    numero_processo=processo.numero_processo,
+                if not cliente_monitorado.strip():
+                    st.error(
+                        "Informe o cliente "
+                        "antes de monitorar "
+                        "o processo."
+                    )
+
+                    st.stop()
+
+                foi_adicionado = (
+                    adicionar_processo_monitorado(
+                        cliente=cliente_monitorado,
+                        numero_processo=(
+                            processo.numero_processo
+                        ),
+                        base=processo.base,
+                    )
+                )
+
+                salvar_processo(
+                    numero_processo=(
+                        processo.numero_processo
+                    ),
                     base=processo.base,
+                    cliente=cliente_monitorado,
                 )
 
                 if foi_adicionado:
-                    st.success("Processo adicionado aos monitorados.")
+                    st.success(
+                        "Processo adicionado "
+                        "aos monitorados."
+                    )
                 else:
-                    st.info("Processo já estava monitorado.")
-            st.write(f"**Fonte:** {processo.fonte}")
+                    st.info(
+                        "Processo já estava "
+                        "monitorado."
+                    )
 
-            if processo.data_ultima_atualizacao_fonte:
+            # =========================
+            # SALVAR PROCESSO
+            # =========================
+
+            with st.expander(
+                (
+                    f"💾 Salvar processo "
+                    f"{processo.numero_processo}"
+                )
+            ):
+                clientes_existentes_salvar = (
+                    listar_clientes()
+                )
+
+                opcoes_cliente_salvar = (
+                    clientes_existentes_salvar
+                    + ["Cadastrar novo cliente"]
+                )
+
+                cliente_opcao_salvar = (
+                    st.selectbox(
+                        "Cliente",
+                        options=(
+                            opcoes_cliente_salvar
+                            or [
+                                "Cadastrar novo cliente"
+                            ]
+                        ),
+                        key=(
+                            f"cliente_salvar_"
+                            f"{processo.numero_processo}"
+                        ),
+                    )
+                )
+
+                if (
+                    cliente_opcao_salvar
+                    == "Cadastrar novo cliente"
+                ):
+                    cliente_salvar = st.text_input(
+                        "Nome do novo cliente",
+                        key=(
+                            f"novo_cliente_salvar_"
+                            f"{processo.numero_processo}"
+                        ),
+                    )
+                else:
+                    cliente_salvar = (
+                        cliente_opcao_salvar
+                    )
+
+                apelido = st.text_input(
+                    "Apelido do processo (opcional)",
+                    key=(
+                        f"apelido_"
+                        f"{processo.numero_processo}"
+                    ),
+                )
+
+                salvar = st.button(
+                    "💾 Salvar processo",
+                    key=(
+                        f"salvar_processo_"
+                        f"{processo.numero_processo}"
+                    ),
+                )
+
+                if salvar:
+                    if not cliente_salvar.strip():
+                        st.error(
+                            "Informe um cliente "
+                            "antes de salvar."
+                        )
+                    else:
+                        criado = salvar_processo(
+                            numero_processo=(
+                                processo.numero_processo
+                            ),
+                            base=processo.base,
+                            cliente=cliente_salvar,
+                            apelido=(
+                                apelido or None
+                            ),
+                        )
+
+                        if criado:
+                            st.success(
+                                "Processo salvo "
+                                "com sucesso."
+                            )
+                        else:
+                            st.info(
+                                "Processo já estava "
+                                "salvo."
+                            )
+
+            # =========================
+            # METADADOS
+            # =========================
+
+            st.write(
+                f"**Fonte:** {processo.fonte}"
+            )
+
+            if (
+                processo
+                .data_ultima_atualizacao_fonte
+            ):
                 data_formatada = (
-                    processo.data_ultima_atualizacao_fonte
+                    processo
+                    .data_ultima_atualizacao_fonte
                     .strftime("%d/%m/%Y %H:%M")
                 )
 
                 st.write(
-                    f"**Última atualização da fonte:** {data_formatada}"
+                    f"**Última atualização da fonte:** "
+                    f"{data_formatada}"
                 )
 
             if processo.observacao:
                 st.warning(processo.observacao)
 
+            # =========================
+            # HISTÓRICO LOCAL
+            # =========================
+
             if enable_local_history:
-                processo.atualizacoes = marcar_movimentacoes_novas(
-                    numero_processo=processo.numero_processo,
-                    base=processo.base,
-                    atualizacoes=processo.atualizacoes,
+                processo.atualizacoes = (
+                    marcar_movimentacoes_novas(
+                        numero_processo=(
+                            processo.numero_processo
+                        ),
+                        base=processo.base,
+                        atualizacoes=(
+                            processo.atualizacoes
+                        ),
+                    )
                 )
 
             if enable_local_history:
-                novas = salvar_movimentacoes_do_processo(
-                    numero_processo=processo.numero_processo,
-                    base=processo.base,
-                    atualizacoes=processo.atualizacoes,
-                    # data_ultima_atualizacao_fonte=(
-                    #     processo.data_ultima_atualizacao_fonte.isoformat()
-                    #     if processo.data_ultima_atualizacao_fonte
-                    #     else None
-                    # ),
+                novas = (
+                    salvar_movimentacoes_do_processo(
+                        numero_processo=(
+                            processo.numero_processo
+                        ),
+                        base=processo.base,
+                        atualizacoes=(
+                            processo.atualizacoes
+                        ),
+                    )
                 )
 
-                st.success(f"{novas} movimentação(ões) nova(s) salva(s) no histórico local.")
+                st.success(
+                    f"{novas} movimentação(ões) "
+                    f"nova(s) salva(s) "
+                    f"no histórico local."
+                )
+
+            # =========================
+            # TABELA
+            # =========================
 
             if not processo.atualizacoes:
-                st.info("Nenhuma movimentação encontrada a partir da data-base informada.")
+                st.info(
+                    "Nenhuma movimentação "
+                    "encontrada a partir "
+                    "da data-base informada."
+                )
+
                 continue
 
             for atualizacao in processo.atualizacoes:
                 linhas.append(
                     {
-                        "Processo": processo.numero_processo,
-                        "Data movimentação": atualizacao.data_movimentacao,
-                        "Data": atualizacao.data_movimentacao.strftime("%d/%m/%Y %H:%M"),
-                        "Descrição": atualizacao.descricao,
+                        "Processo": (
+                            processo.numero_processo
+                        ),
+                        "Data movimentação": (
+                            atualizacao
+                            .data_movimentacao
+                        ),
+                        "Data": (
+                            atualizacao
+                            .data_movimentacao
+                            .strftime(
+                                "%d/%m/%Y %H:%M"
+                            )
+                        ),
+                        "Descrição": (
+                            atualizacao.descricao
+                        ),
                         "Nova": (
                             "Sim"
                             if atualizacao.nova is True
                             else "Não"
-                            if atualizacao.nova is False
-                            else "Histórico desativado"
+                            if (
+                                atualizacao.nova
+                                is False
+                            )
+                            else (
+                                "Histórico desativado"
+                            )
                         ),
                     }
                 )

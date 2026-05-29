@@ -108,3 +108,31 @@ def salvar_comentario_movimentacao(
                 movimentacao_id,
             ),
         )
+
+def listar_movimentacoes_processo(
+    numero_processo: str,
+    base: str,
+) -> list[dict]:
+    with get_connection() as connection:
+        rows = connection.execute(
+            """
+            SELECT
+                id,
+                numero_processo,
+                base,
+                descricao,
+                data_movimentacao,
+                comentario,
+                created_at
+            FROM movimentacoes_consultadas
+            WHERE numero_processo = ?
+              AND base = ?
+            ORDER BY data_movimentacao DESC;
+            """,
+            (
+                numero_processo,
+                base,
+            ),
+        ).fetchall()
+
+    return [dict(row) for row in rows]

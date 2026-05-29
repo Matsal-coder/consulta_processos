@@ -14,6 +14,7 @@ from consulta_processos.bootstrap import (
 from consulta_processos.database import initialize_database
 from consulta_processos.logging_config import configure_logging
 from consulta_processos.paths import get_env_path
+from consulta_processos.ui.clientes_tab import render_clientes_tab
 from consulta_processos.ui.consulta_tab import render_consulta_tab
 from consulta_processos.ui.historico_tab import render_historico_tab
 from consulta_processos.ui.monitorados_tab import render_monitorados_tab
@@ -37,8 +38,8 @@ def main() -> None:
 
     st.title("⚖️ Consulta de Processos")
 
-    tab_consulta, tab_historico, tab_monitorados = st.tabs(
-        ["🔎 Consulta", "🗂 Histórico local", "⭐ Monitorados"]
+    tab_consulta, tab_historico, tab_monitorados, tab_clientes = st.tabs(
+        ["🔎 Consulta", "🗂 Histórico local", "⭐ Monitorados", "👥 Clientes"]
     )
 
     with tab_consulta:
@@ -55,6 +56,9 @@ def main() -> None:
         render_monitorados_tab(
             enable_local_history=ENABLE_LOCAL_HISTORY,
         )
+
+    with tab_clientes:
+        render_clientes_tab()
 
 
 if __name__ == "__main__":

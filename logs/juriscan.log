@@ -189,3 +189,15 @@
 2026-05-27 20:46:01,796 | INFO | consulta_processos.services | Consulta concluída para processo 0636130-85.2019.8.04.0001 na base esaj_tjam com 0 movimentação(ões)
 2026-05-27 20:46:01,796 | INFO | consulta_processos.services | Consultando processo 1020749-11.2023.8.26.0068 na base esaj_tjsp
 2026-05-27 20:46:02,387 | INFO | consulta_processos.services | Consulta concluída para processo 1020749-11.2023.8.26.0068 na base esaj_tjsp com 2 movimentação(ões)
+2026-05-28 23:35:02,640 | INFO | consulta_processos.services | Iniciando consulta de 1 processo(s)
+2026-05-28 23:35:02,641 | INFO | consulta_processos.services | Consultando processo 3016257-70.2025.8.19.0001 na base eproc_tjrj
+2026-05-28 23:35:37,176 | INFO | consulta_processos.services | Consulta concluída para processo 3016257-70.2025.8.19.0001 na base eproc_tjrj com 10 movimentação(ões)
+2026-05-28 23:45:51,822 | INFO | consulta_processos.services | Iniciando consulta de 1 processo(s)
+2026-05-28 23:45:51,823 | INFO | consulta_processos.services | Consultando processo 3016257-70.2025.8.19.0001 na base eproc_tjrj
+2026-05-28 23:46:19,611 | INFO | consulta_processos.services | Consulta concluída para processo 3016257-70.2025.8.19.0001 na base eproc_tjrj com 10 movimentação(ões)
+2026-05-28 23:50:19,074 | INFO | consulta_processos.services | Iniciando consulta de 1 processo(s)
+2026-05-28 23:50:19,075 | INFO | consulta_processos.services | Consultando processo 3016257-70.2025.8.19.0001 na base eproc_tjrj
+2026-05-28 23:50:46,533 | INFO | consulta_processos.services | Consulta concluída para processo 3016257-70.2025.8.19.0001 na base eproc_tjrj com 10 movimentação(ões)
+2026-05-29 00:44:28,407 | INFO | consulta_processos.services | Iniciando consulta de 1 processo(s)
+2026-05-29 00:44:28,459 | INFO | consulta_processos.services | Consultando processo 3016257-70.2025.8.19.0001 na base eproc_tjrj
+2026-05-29 00:44:58,883 | INFO | consulta_processos.services | Consulta concluída para processo 3016257-70.2025.8.19.0001 na base eproc_tjrj com 10 movimentação(ões)
