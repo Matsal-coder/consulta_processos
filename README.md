@@ -118,6 +118,21 @@ reports/
 
 ---
 
+## Registro de processos
+
+O sistema agora possui cadastro persistente de processos.
+
+Cada processo pode possuir:
+- cliente;
+- apelido;
+- comentários em movimentações.
+
+Estrutura:
+- processos_cadastrados
+- movimentacoes_consultadas
+
+---
+
 # Bases suportadas
 
 ## DataJud
@@ -265,17 +280,15 @@ ruff check .
 
 ## Curto prazo
 
-* scheduler Windows;
-* melhorias UX desktop.
+* aba Cliente
+* timeline processual
+* comentários em movimentações
+* apelidos de processos;
 
 ---
 
 ## Médio prazo
 
-* aba Cliente;
-* apelidos de processos;
-* comentários em movimentações;
-* timeline processual.
 
 ---
 
