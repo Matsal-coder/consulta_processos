@@ -5,6 +5,7 @@ from consulta_processos.process_repository import (
     listar_clientes,
     listar_movimentacoes_processo,
     listar_processos_por_cliente,
+    salvar_comentario_movimentacao,
 )
 
 
@@ -66,20 +67,54 @@ def render_clientes_tab() -> None:
     )
 
     if movimentacoes:
-        df_movimentacoes = pd.DataFrame(
-            movimentacoes
-        )
+        df_movimentacoes = pd.DataFrame(movimentacoes)
 
-        st.subheader(
-            "Timeline do processo"
-        )
+        st.subheader("Timeline do processo")
 
         st.dataframe(
             df_movimentacoes,
             use_container_width=True,
             hide_index=True,
         )
-    else:
-        st.info(
-            "Nenhuma movimentação encontrada."
+
+        st.divider()
+
+        st.subheader("Comentário da movimentação")
+
+        movimentacao_opcoes = {
+            (
+                f"{movimentacao['data_movimentacao']} — "
+                f"{movimentacao['descricao'][:80]}"
+            ): movimentacao
+            for movimentacao in movimentacoes
+        }
+
+        movimentacao_label = st.selectbox(
+            "Selecione a movimentação",
+            options=list(movimentacao_opcoes.keys()),
         )
+
+        movimentacao_selecionada = movimentacao_opcoes[
+            movimentacao_label
+        ]
+
+        comentario = st.text_area(
+            "Comentário",
+            value=movimentacao_selecionada.get("comentario") or "",
+            key=f"comentario_{movimentacao_selecionada['id']}",
+        )
+
+        if st.button(
+            "Salvar comentário",
+            key=f"salvar_comentario_{movimentacao_selecionada['id']}",
+        ):
+            salvar_comentario_movimentacao(
+                movimentacao_id=movimentacao_selecionada["id"],
+                comentario=comentario,
+            )
+
+            st.success("Comentário salvo.")
+            st.rerun()
+
+    else:
+        st.info("Nenhuma movimentação encontrada.")
