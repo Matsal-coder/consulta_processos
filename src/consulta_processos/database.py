@@ -37,11 +37,28 @@ def initialize_database() -> None:
                 descricao TEXT NOT NULL,
                 data_movimentacao TEXT NOT NULL,
                 created_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP,
+                comentario TEXT,
                 UNIQUE (
                     numero_processo,
                     base,
                     descricao,
                     data_movimentacao
+                )
+            );
+            """
+        )
+        connection.execute(
+            """
+            CREATE TABLE IF NOT EXISTS processos_cadastrados (
+                numero_processo TEXT NOT NULL,
+                base TEXT NOT NULL,
+                cliente TEXT NOT NULL,
+                apelido TEXT,
+                created_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP,
+
+                PRIMARY KEY (
+                    numero_processo,
+                    base
                 )
             );
             """
