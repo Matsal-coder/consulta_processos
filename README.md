@@ -10,13 +10,18 @@ O JuriScan é uma aplicação desktop/web desenvolvida em Python para:
 * salvar histórico local;
 * gerar relatórios automáticos;
 * organizar processos por cliente.
+* cadastro persistente de processos
+* organização por cliente
+* apelidos de processos
+* timeline de movimentações
+* comentários em movimentações
 
 A aplicação foi construída com foco em:
 
 * facilidade operacional;
 * arquitetura extensível;
 * suporte a múltiplas bases processuais;
-* automação futura via scheduler e email.
+* automação via scheduler e email.
 
 ---
 
@@ -43,9 +48,17 @@ A aplicação foi construída com foco em:
 
 ---
 
-## Clientes
+## Aba Clientes
 
-Os monitorados podem ser associados a clientes.
+A aplicação possui uma aba dedicada para organização processual por cliente.
+
+Funcionalidades atuais:
+
+- visualizar clientes cadastrados;
+- visualizar processos vinculados;
+- apelidos de processos;
+- timeline completa de movimentações;
+- comentários internos por movimentação.
 
 Formato:
 
@@ -61,13 +74,19 @@ Cliente XPTO;0964024-67.2024.8.19.0001;tjrj_datajud
 
 ---
 
-## Gestão em massa
+## Fluxo operacional
 
-* Importação em lote;
-* Exportação CSV;
-* Limpeza completa dos monitorados.
-
----
+Consulta
+↓
+Salvar processo
+↓
+Vincular cliente
+↓
+Monitorar processo
+↓
+Receber relatórios automáticos
+↓
+Organizar timeline e comentários
 
 ## Relatórios automáticos
 
@@ -171,15 +190,22 @@ src/consulta_processos/
 
 # Banco de dados
 
-Atualmente o SQLite armazena:
+## processos_cadastrados
+
+- numero_processo
+- base
+- cliente
+- apelido
+- created_at
 
 ## movimentacoes_consultadas
 
-* numero_processo
-* base
-* descricao
-* data_movimentacao
-* created_at
+- numero_processo
+- base
+- descricao
+- data_movimentacao
+- comentario
+- created_at
 
 ---
 
@@ -278,23 +304,12 @@ ruff check .
 
 # Roadmap
 
-## Curto prazo
+## Próximas features
 
-* aba Cliente
-* timeline processual
-* comentários em movimentações
-* apelidos de processos;
-
----
-
-## Médio prazo
-
-
----
-
-## Longo prazo
-
-* novas bases processuais;
-* OCR;
-* classificação automática de movimentações;
-* priorização inteligente.
+- filtros avançados na timeline;
+- exclusão/edição de processos;
+- tags/status processuais;
+- notificações por cliente;
+- export PDF;
+- timeline visual;
+- OCR/documentos.
