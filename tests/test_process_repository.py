@@ -3,6 +3,7 @@ from consulta_processos.process_repository import (
     atualizar_apelido,
     listar_clientes,
     listar_processos_por_cliente,
+    remover_processo,
     salvar_comentario_movimentacao,
     salvar_processo,
 )
@@ -170,3 +171,30 @@ def test_salvar_comentario_movimentacao(tmp_path, monkeypatch):
         ).fetchone()
 
     assert row["comentario"] == "Comentário de teste"
+
+def test_remover_processo(tmp_path, monkeypatch):
+    db_path = tmp_path / "consulta_processos_test.db"
+
+    monkeypatch.setenv(
+        "CONSULTA_PROCESSOS_DB_PATH",
+        str(db_path),
+    )
+
+    initialize_database()
+
+    salvar_processo(
+        numero_processo="123",
+        base="tjrj_datajud",
+        cliente="Cliente XPTO",
+    )
+
+    remover_processo(
+        numero_processo="123",
+        base="tjrj_datajud",
+    )
+
+    processos = listar_processos_por_cliente(
+        "Cliente XPTO",
+    )
+
+    assert processos == []
