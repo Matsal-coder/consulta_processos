@@ -2,9 +2,11 @@ import pandas as pd
 import streamlit as st
 
 from consulta_processos.process_repository import (
+    atualizar_apelido,
     listar_clientes,
     listar_movimentacoes_processo,
     listar_processos_por_cliente,
+    remover_processo,
     salvar_comentario_movimentacao,
 )
 
@@ -60,6 +62,45 @@ def render_clientes_tab() -> None:
     )
 
     numero_processo, base = processo_selecionado
+
+    processo_dict = next(
+        processo
+        for processo in processos
+        if (
+            processo["numero_processo"],
+            processo["base"],
+        ) == processo_selecionado
+    )
+
+    st.subheader("Dados do processo")
+
+    novo_apelido = st.text_input(
+        "Apelido",
+        value=processo_dict.get("apelido") or "",
+    )
+
+    if st.button(
+        "Salvar apelido",
+    ):
+        atualizar_apelido(
+            numero_processo=numero_processo,
+            base=base,
+            apelido=novo_apelido,
+        )
+
+        st.success("Apelido atualizado.")
+        st.rerun()
+
+    if st.button(
+        "🗑 Remover processo salvo",
+    ):
+        remover_processo(
+            numero_processo=numero_processo,
+            base=base,
+        )
+
+        st.success("Processo removido.")
+        st.rerun()
 
     movimentacoes = listar_movimentacoes_processo(
         numero_processo=numero_processo,

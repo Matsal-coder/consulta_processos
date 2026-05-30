@@ -136,3 +136,20 @@ def listar_movimentacoes_processo(
         ).fetchall()
 
     return [dict(row) for row in rows]
+
+def remover_processo(
+    numero_processo: str,
+    base: str,
+) -> None:
+    with get_connection() as connection:
+        connection.execute(
+            """
+            DELETE FROM processos_cadastrados
+            WHERE numero_processo = ?
+              AND base = ?;
+            """,
+            (
+                numero_processo,
+                base,
+            ),
+        )
