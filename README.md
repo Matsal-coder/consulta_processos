@@ -58,7 +58,9 @@ Funcionalidades atuais:
 - visualizar processos vinculados;
 - apelidos de processos;
 - timeline completa de movimentações;
-- comentários internos por movimentação.
+- comentários internos por movimentação;
+- edição de apelido dos processos;
+- remoção de processos salvos;
 
 Formato:
 
