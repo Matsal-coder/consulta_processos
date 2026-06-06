@@ -1,24 +1,27 @@
 from __future__ import annotations
 
-import os
 import smtplib
 from email.message import EmailMessage
 
+from consulta_processos.settings import get_settings
+
 
 def is_email_enabled() -> bool:
-    return os.getenv("EMAIL_ENABLED", "false").lower() == "true"
+    return get_settings().email_enabled
 
 
 def enviar_email(
     assunto: str,
     corpo_html: str,
 ) -> None:
-    smtp_host = os.getenv("EMAIL_SMTP_HOST")
-    smtp_port = int(os.getenv("EMAIL_SMTP_PORT", "587"))
-    username = os.getenv("EMAIL_USERNAME")
-    password = os.getenv("EMAIL_PASSWORD")
-    email_from = os.getenv("EMAIL_FROM")
-    email_to = os.getenv("EMAIL_TO")
+    settings = get_settings()
+
+    smtp_host = settings.email_smtp_host
+    smtp_port = settings.email_smtp_port
+    username = settings.email_username
+    password = settings.email_password
+    email_from = settings.email_from
+    email_to = settings.email_to
 
     if not all(
         [

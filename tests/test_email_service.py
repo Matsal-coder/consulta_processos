@@ -20,9 +20,9 @@ def test_is_email_enabled_true(
 def test_is_email_enabled_false(
     monkeypatch,
 ):
-    monkeypatch.delenv(
+    monkeypatch.setenv(
         "EMAIL_ENABLED",
-        raising=False,
+        "false",
     )
 
     assert is_email_enabled() is False
@@ -31,9 +31,13 @@ def test_is_email_enabled_false(
 def test_enviar_email_sem_configuracao(
     monkeypatch,
 ):
-    monkeypatch.delenv(
+    monkeypatch.setenv(
+        "EMAIL_ENABLED",
+        "true",
+    )
+    monkeypatch.setenv(
         "EMAIL_SMTP_HOST",
-        raising=False,
+        "",
     )
 
     with pytest.raises(ValueError):

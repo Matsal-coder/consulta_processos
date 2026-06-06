@@ -1,17 +1,17 @@
-import os
 import sqlite3
 from pathlib import Path
 
 from consulta_processos.paths import get_data_dir
+from consulta_processos.settings import get_settings
 
 DEFAULT_DB_NAME = "consulta_processos.db"
 
 
 def get_database_path() -> Path:
-    custom_path = os.getenv("CONSULTA_PROCESSOS_DB_PATH")
+    settings = get_settings()
 
-    if custom_path:
-        return Path(custom_path)
+    if settings.consulta_processos_db_path:
+        return settings.consulta_processos_db_path
 
     return get_data_dir() / DEFAULT_DB_NAME
 

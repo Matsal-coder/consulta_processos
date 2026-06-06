@@ -103,20 +103,6 @@ python -m consulta_processos.jobs.monitorados_report
 ```bash
 python -m consulta_processos.jobs.email_monitorados_report
 ```
-#### Configuração de email
-
-Necessário configurar SMTP no `.env`.
-
-Exemplo:
-
-EMAIL_ENABLED=true
-EMAIL_SMTP_HOST=smtp.gmail.com
-EMAIL_SMTP_PORT=587
-EMAIL_USERNAME=
-EMAIL_PASSWORD=
-EMAIL_FROM=
-EMAIL_TO=
-
 
 Funções:
 
@@ -136,6 +122,30 @@ reports/
         └── Processo/
             └── relatorio_YYYY-MM-DD_HH-MM.csv
 ```
+
+---
+
+## Configurações (.env)
+
+O projeto utiliza `pydantic-settings` para centralizar
+configurações da aplicação.
+
+Exemplo:
+
+```env
+ENABLE_LOCAL_HISTORY=true
+
+CONSULTA_PROCESSOS_DB_PATH=data/consulta_processos.db
+
+DATAJUD_API_KEY=xxxxx
+
+EMAIL_ENABLED=true
+EMAIL_SMTP_HOST=smtp.gmail.com
+EMAIL_SMTP_PORT=587
+EMAIL_USERNAME=usuario@gmail.com
+EMAIL_PASSWORD=senha
+EMAIL_FROM=usuario@gmail.com
+EMAIL_TO=destinatario@gmail.com
 
 ---
 

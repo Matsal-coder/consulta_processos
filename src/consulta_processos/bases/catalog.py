@@ -1,4 +1,3 @@
-import os
 from dataclasses import dataclass
 from typing import Callable
 
@@ -6,6 +5,7 @@ from consulta_processos.bases.base import BaseConsultaProcessual
 from consulta_processos.bases.datajud import DataJudBaseClient
 from consulta_processos.bases.eproc import EprocClient
 from consulta_processos.bases.esaj import ESAJClient
+from consulta_processos.settings import get_settings
 
 
 @dataclass(frozen=True)
@@ -70,7 +70,7 @@ FONTES_PROCESSUAIS = {
         tribunal="tjrj",
         factory=lambda: DataJudBaseClient(
             tribunal="tjrj",
-            api_key=os.getenv("DATAJUD_API_KEY", ""),
+            api_key=get_settings().datajud_api_key,
         ),
     ),
     "datajud_tjsp": FonteProcessualConfig(
@@ -80,7 +80,7 @@ FONTES_PROCESSUAIS = {
         tribunal="tjsp",
         factory=lambda: DataJudBaseClient(
             tribunal="tjsp",
-            api_key=os.getenv("DATAJUD_API_KEY", ""),
+            api_key=get_settings().datajud_api_key,
         ),
     ),
     "datajud_tjes": FonteProcessualConfig(
@@ -90,7 +90,7 @@ FONTES_PROCESSUAIS = {
         tribunal="tjes",
         factory=lambda: DataJudBaseClient(
             tribunal="tjes",
-            api_key=os.getenv("DATAJUD_API_KEY", ""),
+            api_key=get_settings().datajud_api_key,
         ),
     ),
     "datajud_tjba": FonteProcessualConfig(
@@ -100,7 +100,7 @@ FONTES_PROCESSUAIS = {
         tribunal="tjba",
         factory=lambda: DataJudBaseClient(
             tribunal="tjba",
-            api_key=os.getenv("DATAJUD_API_KEY", ""),
+            api_key=get_settings().datajud_api_key,
         ),
     ),
     "datajud_tjam": FonteProcessualConfig(
@@ -110,7 +110,7 @@ FONTES_PROCESSUAIS = {
         tribunal="tjam",
         factory=lambda: DataJudBaseClient(
             tribunal="tjam",
-            api_key=os.getenv("DATAJUD_API_KEY", ""),
+            api_key=get_settings().datajud_api_key,
         ),
     ),
     "datajud_trf2": FonteProcessualConfig(
@@ -120,7 +120,7 @@ FONTES_PROCESSUAIS = {
         tribunal="trf2",
         factory=lambda: DataJudBaseClient(
             tribunal="trf2",
-            api_key=os.getenv("DATAJUD_API_KEY", ""),
+            api_key=get_settings().datajud_api_key,
         ),
     ),
 }

@@ -1,4 +1,3 @@
-import os
 import sys
 from pathlib import Path
 
@@ -6,14 +5,13 @@ sys.path.insert(0, str(Path(__file__).parent))
 sys.path.insert(0, str(Path(__file__).parent / "src"))
 
 import streamlit as st
-from dotenv import load_dotenv
 
 from consulta_processos.bootstrap import (
     bootstrap_local_structure,
 )
 from consulta_processos.database import initialize_database
 from consulta_processos.logging_config import configure_logging
-from consulta_processos.paths import get_env_path
+from consulta_processos.settings import get_settings
 from consulta_processos.ui.clientes_tab import render_clientes_tab
 from consulta_processos.ui.consulta_tab import render_consulta_tab
 from consulta_processos.ui.historico_tab import render_historico_tab
@@ -21,9 +19,9 @@ from consulta_processos.ui.monitorados_tab import render_monitorados_tab
 
 bootstrap_local_structure()
 configure_logging()
-load_dotenv(get_env_path())
+settings = get_settings()
 
-ENABLE_LOCAL_HISTORY = os.getenv("ENABLE_LOCAL_HISTORY", "false").lower() == "true"
+ENABLE_LOCAL_HISTORY = settings.enable_local_history
 
 if ENABLE_LOCAL_HISTORY:
     initialize_database()
