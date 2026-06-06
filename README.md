@@ -125,27 +125,7 @@ reports/
 
 ---
 
-## Configurações (.env)
 
-O projeto utiliza `pydantic-settings` para centralizar
-configurações da aplicação.
-
-Exemplo:
-
-```env
-ENABLE_LOCAL_HISTORY=true
-
-CONSULTA_PROCESSOS_DB_PATH=data/consulta_processos.db
-
-DATAJUD_API_KEY=xxxxx
-
-EMAIL_ENABLED=true
-EMAIL_SMTP_HOST=smtp.gmail.com
-EMAIL_SMTP_PORT=587
-EMAIL_USERNAME=usuario@gmail.com
-EMAIL_PASSWORD=senha
-EMAIL_FROM=usuario@gmail.com
-EMAIL_TO=destinatario@gmail.com
 
 ---
 
@@ -223,16 +203,27 @@ src/consulta_processos/
 
 # Configuração
 
-## .env
+## Configurações (.env)
+
+O projeto utiliza `pydantic-settings` para centralizar
+configurações da aplicação.
 
 Exemplo:
 
 ```env
-DATAJUD_API_KEY=sua_chave
-
 ENABLE_LOCAL_HISTORY=true
+
 CONSULTA_PROCESSOS_DB_PATH=data/consulta_processos.db
-```
+
+DATAJUD_API_KEY=xxxxx
+
+EMAIL_ENABLED=true
+EMAIL_SMTP_HOST=smtp.gmail.com
+EMAIL_SMTP_PORT=587
+EMAIL_USERNAME=usuario@gmail.com
+EMAIL_PASSWORD=senha
+EMAIL_FROM=usuario@gmail.com
+EMAIL_TO=destinatario@gmail.com
 
 ---
 
@@ -292,6 +283,32 @@ Executável final:
 
 ```text
 dist/JuriScan/JuriScan.exe
+```
+---
+
+## Logs da Aplicação
+
+O JuriScan gera logs locais automaticamente para auxiliar
+na identificação de problemas e monitoramento da aplicação.
+
+Os logs ficam em:
+
+```text
+data/logs/juriscan.log
+```
+
+Os logs incluem:
+
+- consultas realizadas
+- erros de integração
+- geração de relatórios
+- envio de emails
+- execução de jobs
+
+Exemplo:
+
+```text
+2026-06-06 15:30:01 | INFO | consulta_processos.jobs.monitorados_report | Iniciando geração de relatório de monitorados
 ```
 
 ---
