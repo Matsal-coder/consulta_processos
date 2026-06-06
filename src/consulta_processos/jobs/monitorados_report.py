@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import csv
+import logging
 from datetime import date, datetime, timedelta
 from pathlib import Path
 
@@ -18,6 +19,7 @@ from consulta_processos.monitoring_repository import carregar_processos_monitora
 from consulta_processos.paths import get_app_dir, get_env_path
 from consulta_processos.services.consulta_service import consultar_processos
 
+logger = logging.getLogger(__name__)
 
 def get_reports_dir() -> Path:
     reports_dir = get_app_dir() / "reports"
@@ -29,8 +31,15 @@ def get_reports_dir() -> Path:
 def gerar_relatorio_monitorados(
     dias_busca: int = 7,
 ) -> Path | None:
+    
+    logger.info("Iniciando geração de relatório de monitorados")
     processos_monitorados = (
         carregar_processos_monitorados()
+    )
+
+    logger.info(
+        "Quantidade de processos monitorados: %s",
+        len(processos_monitorados),
     )
 
     if not processos_monitorados:
@@ -66,7 +75,13 @@ def gerar_relatorio_monitorados(
         }
     )
 
-    resultado = consultar_processos(payload)
+    try:
+        resultado = consultar_processos(payload)
+    except Exception:
+        logger.exception(
+            "Erro ao consultar processos monitorados"
+        )
+        raise
 
     linhas = []
 
@@ -110,6 +125,10 @@ def gerar_relatorio_monitorados(
                     "descricao": atualizacao.descricao,
                 }
             )
+    logger.info(
+        "Quantidade de movimentações novas encontradas: %s",
+        len(linhas),
+    )
 
     if not linhas:
         return None
@@ -193,6 +212,12 @@ def gerar_relatorio_monitorados(
                 writer.writeheader()
 
             writer.writerow(linha)
+            
+    logger.info(
+        "Relatório salvo em: %s",
+        report_path,
+    )
+    logger.info("Relatório de monitorados gerado com sucesso")
 
     return report_path
 
@@ -208,7 +233,7 @@ def slugify_path(value: str) -> str:
 
 def main() -> None:
     bootstrap_local_structure()
-    configure_logging()
+
     load_dotenv(get_env_path())
 
     initialize_database()
@@ -226,4 +251,5 @@ def main() -> None:
 
 
 if __name__ == "__main__":
+    configure_logging()
     main()

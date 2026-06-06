@@ -5,9 +5,11 @@ from consulta_processos.exceptions import (
     ConfiguracaoError,
     FonteExternaError,
 )
+from consulta_processos.logging_config import configure_logging
 from consulta_processos.models import ConsultaInput, ConsultaResultado
 from consulta_processos.services.consulta_service import consultar_processos
 
+configure_logging()
 app = FastAPI(
     title="Consulta Processos API",
     version="0.1.0",

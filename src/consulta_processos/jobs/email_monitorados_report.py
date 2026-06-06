@@ -162,8 +162,6 @@ def montar_tabela_html(
 def main() -> None:
     bootstrap_local_structure()
 
-    configure_logging()
-
     load_dotenv(get_env_path())
 
     initialize_database()
@@ -207,4 +205,5 @@ def main() -> None:
 
 
 if __name__ == "__main__":
+    configure_logging()
     main()

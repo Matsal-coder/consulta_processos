@@ -1,9 +1,12 @@
 from __future__ import annotations
 
+import logging
 import smtplib
 from email.message import EmailMessage
 
 from consulta_processos.settings import get_settings
+
+logger = logging.getLogger(__name__)
 
 
 def is_email_enabled() -> bool:
@@ -52,13 +55,31 @@ def enviar_email(
         subtype="html",
     )
 
-    with smtplib.SMTP(
-        smtp_host,
-        smtp_port,
-    ) as smtp:
-        smtp.starttls()
-        smtp.login(
-            username,
-            password,
+    logger.info(
+        "Enviando email: assunto=%s destinatario=%s",
+        assunto,
+        email_to,
+    )
+
+    try:
+        with smtplib.SMTP(
+            smtp_host,
+            smtp_port,
+        ) as smtp:
+            smtp.starttls()
+            smtp.login(
+                username,
+                password,
+            )
+            smtp.send_message(message)
+    except Exception:
+        logger.exception(
+            "Erro ao enviar email: destinatario=%s",
+            email_to,
         )
-        smtp.send_message(message)
+        raise
+
+    logger.info(
+        "Email enviado com sucesso: destinatario=%s",
+        email_to,
+    )
