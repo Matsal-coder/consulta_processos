@@ -16,7 +16,7 @@ from consulta_processos.logging_config import configure_logging
 from consulta_processos.models import ConsultaInput
 from consulta_processos.monitoring_repository import carregar_processos_monitorados
 from consulta_processos.paths import get_app_dir, get_env_path
-from consulta_processos.services import consultar_processos
+from consulta_processos.services.consulta_service import consultar_processos
 
 
 def get_reports_dir() -> Path:

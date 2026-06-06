@@ -5,7 +5,7 @@ from consulta_processos.bases.base import (
     ResultadoConsultaProcessual,
 )
 from consulta_processos.models import ConsultaInput
-from consulta_processos.services import consultar_processos
+from consulta_processos.services.consulta_service import consultar_processos
 
 
 def test_consultar_processos(monkeypatch):

@@ -1,7 +1,7 @@
 import streamlit as st
 
 from consulta_processos.models import ConsultaInput, ConsultaResultado
-from consulta_processos.services import consultar_processos
+from consulta_processos.services.consulta_service import consultar_processos
 
 
 @st.cache_data(
