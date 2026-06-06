@@ -44,7 +44,7 @@ def test_consultar_processos(monkeypatch):
         )
 
     monkeypatch.setattr(
-        "consulta_processos.services.consultar_atualizacoes_por_base",
+        "consulta_processos.services.consulta_service.consultar_atualizacoes_por_base",
         fake_consultar_atualizacoes_por_base,
     )
 
