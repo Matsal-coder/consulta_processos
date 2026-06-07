@@ -12,10 +12,12 @@ from consulta_processos.bootstrap import (
 from consulta_processos.database import initialize_database
 from consulta_processos.logging_config import configure_logging
 from consulta_processos.settings import get_settings
+from consulta_processos.ui.automacao_tab import render_automacao_tab
 from consulta_processos.ui.clientes_tab import render_clientes_tab
 from consulta_processos.ui.consulta_tab import render_consulta_tab
 from consulta_processos.ui.historico_tab import render_historico_tab
 from consulta_processos.ui.monitorados_tab import render_monitorados_tab
+
 
 bootstrap_local_structure()
 configure_logging()
@@ -36,8 +38,8 @@ def main() -> None:
 
     st.title("⚖️ Consulta de Processos")
 
-    tab_consulta, tab_historico, tab_monitorados, tab_clientes = st.tabs(
-        ["🔎 Consulta", "🗂 Histórico local", "⭐ Monitorados", "👥 Clientes"]
+    tab_consulta, tab_historico, tab_monitorados, tab_clientes, tab_automacao = st.tabs(
+        ["🔎 Consulta", "🗂 Histórico local", "⭐ Monitorados", "👥 Clientes", "⚙️ Automação"]
     )
 
     with tab_consulta:
@@ -57,6 +59,9 @@ def main() -> None:
 
     with tab_clientes:
         render_clientes_tab()
+    
+    with tab_automacao:
+        render_automacao_tab()
 
 
 if __name__ == "__main__":
