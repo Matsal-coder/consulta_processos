@@ -18,7 +18,6 @@ from consulta_processos.ui.consulta_tab import render_consulta_tab
 from consulta_processos.ui.historico_tab import render_historico_tab
 from consulta_processos.ui.monitorados_tab import render_monitorados_tab
 
-
 bootstrap_local_structure()
 configure_logging()
 settings = get_settings()

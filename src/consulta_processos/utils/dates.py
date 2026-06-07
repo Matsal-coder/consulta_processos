@@ -31,3 +31,11 @@ def parse_date(valor: str | None) -> date | None:
         return None
 
     return data.date()
+
+def format_datetime(
+    valor: datetime | None,
+) -> str:
+    if valor is None:
+        return "-"
+
+    return valor.strftime("%d/%m/%Y %H:%M")
