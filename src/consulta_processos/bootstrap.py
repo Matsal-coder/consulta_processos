@@ -4,6 +4,9 @@ from consulta_processos.paths import (
     get_config_dir,
     get_data_dir,
     get_env_path,
+    get_logs_dir,
+    get_monitored_processes_path,
+    get_reports_dir,
 )
 
 DEFAULT_ENV_CONTENT = """ENABLE_LOCAL_HISTORY=true
@@ -22,11 +25,7 @@ def ensure_env_file() -> None:
 
 
 def ensure_monitored_processes_file() -> None:
-    config_dir = get_config_dir()
-
-    monitorados_path = (
-        config_dir / "processos_monitorados.json"
-    )
+    monitorados_path = get_monitored_processes_path()
 
     if not monitorados_path.exists():
         monitorados_path.write_text(
@@ -38,6 +37,8 @@ def ensure_monitored_processes_file() -> None:
 def bootstrap_local_structure() -> None:
     get_data_dir()
     get_config_dir()
+    get_logs_dir()
+    get_reports_dir()
 
     ensure_env_file()
     ensure_monitored_processes_file()

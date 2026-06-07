@@ -10,7 +10,7 @@ import streamlit as st
 
 from consulta_processos.email_service import enviar_email
 from consulta_processos.logging_config import get_log_path
-from consulta_processos.paths import get_app_dir
+from consulta_processos.paths import get_app_dir, get_reports_dir
 from consulta_processos.settings import get_settings
 from consulta_processos.utils.dates import (
     format_datetime,
@@ -34,9 +34,8 @@ def render_automacao_tab() -> None:
         """
     )
 
-    app_dir = get_app_dir()
     log_path = get_log_path()
-    reports_dir = app_dir / "reports"
+    reports_dir = get_reports_dir()
 
     render_status_section(
         log_path=log_path,
@@ -59,7 +58,7 @@ def render_automacao_tab() -> None:
     render_agendamento_section()
 
 def run_email_report() -> None:
-    project_root = Path.cwd()
+    project_root = get_app_dir()
     script_path = (
         project_root
         / "scripts"

@@ -1,13 +1,6 @@
 import json
-from pathlib import Path
 
-from consulta_processos.paths import get_config_dir
-
-MONITORED_PROCESSES_FILENAME = "processos_monitorados.json"
-
-
-def get_monitored_processes_path() -> Path:
-    return get_config_dir() / MONITORED_PROCESSES_FILENAME
+from consulta_processos.paths import get_monitored_processes_path
 
 
 def carregar_processos_monitorados() -> list[dict]:

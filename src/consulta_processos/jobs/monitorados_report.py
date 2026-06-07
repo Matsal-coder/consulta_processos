@@ -16,17 +16,10 @@ from consulta_processos.history_repository import (
 from consulta_processos.logging_config import configure_logging
 from consulta_processos.models import ConsultaInput
 from consulta_processos.monitoring_repository import carregar_processos_monitorados
-from consulta_processos.paths import get_app_dir, get_env_path
+from consulta_processos.paths import get_env_path, get_reports_dir
 from consulta_processos.services.consulta_service import consultar_processos
 
 logger = logging.getLogger(__name__)
-
-def get_reports_dir() -> Path:
-    reports_dir = get_app_dir() / "reports"
-    reports_dir.mkdir(parents=True, exist_ok=True)
-
-    return reports_dir
-
 
 def gerar_relatorio_monitorados(
     dias_busca: int = 7,
