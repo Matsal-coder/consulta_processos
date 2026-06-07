@@ -9,6 +9,8 @@ outputs/
 
 data/*.db
 data/*.sqlite
+data/logs/
+data/reports/
 
 debug_*.html
 

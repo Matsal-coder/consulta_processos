@@ -313,6 +313,43 @@ Exemplo:
 
 ---
 
+## Monitoramento Automático no Windows
+
+O JuriScan pode executar consultas automáticas
+utilizando o Agendador de Tarefas do Windows.
+
+### Instalar agendamento
+
+Execute:
+
+```text
+scripts/install_windows_task.bat
+```
+
+Isso criará uma tarefa diária às 08:00.
+
+### Remover agendamento
+
+Execute:
+
+```text
+scripts/uninstall_windows_task.bat
+```
+
+### Execução manual
+
+Os scripts disponíveis ficam em:
+
+```text
+scripts/
+```
+
+- run_app.bat
+- run_api.bat
+- run_email_report.bat
+
+---
+
 # Testes
 
 ## Rodar pytest
