@@ -1,14 +1,32 @@
 class ConsultaProcessosError(Exception):
-    pass
+    """Erro base da aplicação."""
 
 
-class ConfiguracaoError(ConsultaProcessosError):
-    pass
+class ConfiguracaoError(
+    ConsultaProcessosError,
+):
+    """Erro de configuração local."""
 
 
-class BaseNaoSuportadaError(ConsultaProcessosError):
-    pass
+class BaseConsultaError(
+    ConsultaProcessosError,
+):
+    """Erro genérico relacionado a bases processuais."""
 
 
-class FonteExternaError(ConsultaProcessosError):
-    pass
+class BaseNaoSuportadaError(
+    BaseConsultaError,
+):
+    """Base solicitada não existe."""
+
+
+class FonteExternaError(
+    BaseConsultaError,
+):
+    """Erro de comunicação com fonte externa."""
+
+
+class ProcessoNaoEncontradoError(
+    BaseConsultaError,
+):
+    """Processo não encontrado na base."""

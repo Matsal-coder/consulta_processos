@@ -1,5 +1,7 @@
 from __future__ import annotations
 
+import logging
+
 from bs4 import BeautifulSoup
 from selenium.common.exceptions import UnexpectedAlertPresentException
 from seleniumbase import Driver
@@ -9,7 +11,11 @@ from consulta_processos.bases.base import (
     MovimentoProcessual,
     ResultadoConsultaProcessual,
 )
+from consulta_processos.exceptions import (
+    BaseNaoSuportadaError,
+)
 
+logger = logging.getLogger(__name__)
 
 class EprocClient(BaseConsultaProcessual):
     nome = "eproc"
@@ -30,7 +36,7 @@ class EprocClient(BaseConsultaProcessual):
         tribunal = tribunal.lower()
 
         if tribunal not in self.BASE_URLS:
-            raise ValueError(
+            raise BaseNaoSuportadaError(
                 f"Tribunal eproc não suportado: {tribunal}"
             )
 
@@ -57,7 +63,7 @@ class EprocClient(BaseConsultaProcessual):
             driver = Driver(
                 browser="chrome",
                 headless=self.headless,
-                uc=True
+                uc=True,
             )
 
             driver.get(url)
@@ -120,6 +126,11 @@ class EprocClient(BaseConsultaProcessual):
             )
         
         except Exception as exc:
+            logger.exception(
+                "Erro ao consultar processo %s no eproc %s",
+                numero_processo,
+                self.tribunal,
+            )
             return ResultadoConsultaProcessual(
                 numero_processo=numero_processo,
                 tribunal=self.tribunal,

@@ -245,3 +245,33 @@
 2026-06-06 02:33:53,757 | INFO | consulta_processos.services.consulta_service | Iniciando consulta de 1 processo(s)
 2026-06-06 02:33:53,757 | INFO | consulta_processos.services.consulta_service | Consultando processo 0964024-67.2024.8.19.0001 na base datajud_tjrj
 2026-06-06 02:33:53,757 | INFO | consulta_processos.services.consulta_service | Consulta concluída para processo 0964024-67.2024.8.19.0001 na base datajud_tjrj com 1 movimentação(ões)
+2026-06-06 02:34:42,928 | INFO | httpx | HTTP Request: GET http://testserver/health "HTTP/1.1 200 OK"
+2026-06-06 02:34:42,933 | INFO | consulta_processos.services.consulta_service | Iniciando consulta de 1 processo(s)
+2026-06-06 02:34:42,934 | INFO | consulta_processos.services.consulta_service | Consultando processo 0964024-67.2024.8.19.0001 na base datajud_tjrj
+2026-06-06 02:34:42,938 | INFO | consulta_processos.services.consulta_service | Consulta concluída para processo 0964024-67.2024.8.19.0001 na base datajud_tjrj com 1 movimentação(ões)
+2026-06-06 02:34:42,939 | INFO | httpx | HTTP Request: POST http://testserver/consultar-processos "HTTP/1.1 200 OK"
+2026-06-06 02:34:43,125 | INFO | consulta_processos.jobs.monitorados_report | Iniciando geração de relatório de monitorados
+2026-06-06 02:34:43,126 | INFO | consulta_processos.jobs.monitorados_report | Quantidade de processos monitorados: 0
+2026-06-06 02:34:43,480 | INFO | consulta_processos.services.consulta_service | Iniciando consulta de 1 processo(s)
+2026-06-06 02:34:43,480 | INFO | consulta_processos.services.consulta_service | Consultando processo 0964024-67.2024.8.19.0001 na base datajud_tjrj
+2026-06-06 02:34:43,480 | INFO | consulta_processos.services.consulta_service | Consulta concluída para processo 0964024-67.2024.8.19.0001 na base datajud_tjrj com 1 movimentação(ões)
+2026-06-06 11:03:07,071 | INFO | httpx | HTTP Request: GET http://testserver/health "HTTP/1.1 200 OK"
+2026-06-06 11:03:07,099 | INFO | consulta_processos.services.consulta_service | Iniciando consulta de 1 processo(s)
+2026-06-06 11:03:07,099 | INFO | consulta_processos.services.consulta_service | Consultando processo 0964024-67.2024.8.19.0001 na base datajud_tjrj
+2026-06-06 11:03:07,107 | INFO | consulta_processos.services.consulta_service | Consulta concluída para processo 0964024-67.2024.8.19.0001 na base datajud_tjrj com 1 movimentação(ões)
+2026-06-06 11:03:07,134 | INFO | httpx | HTTP Request: POST http://testserver/consultar-processos "HTTP/1.1 200 OK"
+2026-06-06 11:03:07,325 | INFO | consulta_processos.jobs.monitorados_report | Iniciando geração de relatório de monitorados
+2026-06-06 11:03:07,326 | INFO | consulta_processos.jobs.monitorados_report | Quantidade de processos monitorados: 0
+2026-06-06 11:03:07,735 | INFO | consulta_processos.services.consulta_service | Iniciando consulta de 1 processo(s)
+2026-06-06 11:03:07,735 | INFO | consulta_processos.services.consulta_service | Consultando processo 0964024-67.2024.8.19.0001 na base datajud_tjrj
+2026-06-06 11:03:07,735 | INFO | consulta_processos.services.consulta_service | Consulta concluída para processo 0964024-67.2024.8.19.0001 na base datajud_tjrj com 1 movimentação(ões)
+2026-06-06 21:56:32,018 | INFO | httpx | HTTP Request: GET http://testserver/health "HTTP/1.1 200 OK"
+2026-06-06 21:56:32,025 | INFO | consulta_processos.services.consulta_service | Iniciando consulta de 1 processo(s)
+2026-06-06 21:56:32,026 | INFO | consulta_processos.services.consulta_service | Consultando processo 0964024-67.2024.8.19.0001 na base datajud_tjrj
+2026-06-06 21:56:32,033 | INFO | consulta_processos.services.consulta_service | Consulta concluída para processo 0964024-67.2024.8.19.0001 na base datajud_tjrj com 1 movimentação(ões)
+2026-06-06 21:56:32,036 | INFO | httpx | HTTP Request: POST http://testserver/consultar-processos "HTTP/1.1 200 OK"
+2026-06-06 21:56:32,232 | INFO | consulta_processos.jobs.monitorados_report | Iniciando geração de relatório de monitorados
+2026-06-06 21:56:32,233 | INFO | consulta_processos.jobs.monitorados_report | Quantidade de processos monitorados: 0
+2026-06-06 21:56:32,653 | INFO | consulta_processos.services.consulta_service | Iniciando consulta de 1 processo(s)
+2026-06-06 21:56:32,654 | INFO | consulta_processos.services.consulta_service | Consultando processo 0964024-67.2024.8.19.0001 na base datajud_tjrj
+2026-06-06 21:56:32,654 | INFO | consulta_processos.services.consulta_service | Consulta concluída para processo 0964024-67.2024.8.19.0001 na base datajud_tjrj com 1 movimentação(ões)

@@ -1,5 +1,7 @@
 from __future__ import annotations
 
+import logging
+
 import requests
 from bs4 import BeautifulSoup
 
@@ -8,7 +10,11 @@ from consulta_processos.bases.base import (
     MovimentoProcessual,
     ResultadoConsultaProcessual,
 )
+from consulta_processos.exceptions import (
+    BaseNaoSuportadaError,
+)
 
+logger = logging.getLogger(__name__)
 
 class ESAJClient(BaseConsultaProcessual):
     nome = "esaj"
@@ -21,7 +27,7 @@ class ESAJClient(BaseConsultaProcessual):
         tribunal = tribunal.lower()
 
         if tribunal not in self.BASE_URLS:
-            raise ValueError(
+            raise BaseNaoSuportadaError(
                 f"Tribunal e-SAJ não suportado: {tribunal}"
             )
 
@@ -125,6 +131,11 @@ class ESAJClient(BaseConsultaProcessual):
             response.raise_for_status()
 
         except requests.RequestException as exc:
+            logger.exception(
+                "Erro ao consultar processo %s no e-SAJ %s",
+                numero_processo,
+                self.tribunal,
+            )
             return ResultadoConsultaProcessual(
                 numero_processo=numero_processo,
                 tribunal=self.tribunal,
