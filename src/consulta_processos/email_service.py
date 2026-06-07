@@ -4,6 +4,7 @@ import logging
 import smtplib
 from email.message import EmailMessage
 
+from consulta_processos.exceptions import ConfiguracaoError
 from consulta_processos.settings import get_settings
 
 logger = logging.getLogger(__name__)
@@ -35,7 +36,7 @@ def enviar_email(
             email_to,
         ]
     ):
-        raise ValueError(
+        raise ConfiguracaoError(
             "Configurações de email incompletas. "
             "Verifique EMAIL_SMTP_HOST, EMAIL_USERNAME, "
             "EMAIL_PASSWORD, EMAIL_FROM e EMAIL_TO."

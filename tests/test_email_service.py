@@ -4,6 +4,7 @@ from consulta_processos.email_service import (
     enviar_email,
     is_email_enabled,
 )
+from consulta_processos.exceptions import ConfiguracaoError
 
 
 def test_is_email_enabled_true(
@@ -40,7 +41,7 @@ def test_enviar_email_sem_configuracao(
         "",
     )
 
-    with pytest.raises(ValueError):
+    with pytest.raises(ConfiguracaoError):
         enviar_email(
             assunto="Teste",
             corpo_html="<p>Teste</p>",
