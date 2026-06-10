@@ -18,7 +18,6 @@ from consulta_processos.ui.consulta_tab import render_consulta_tab
 from consulta_processos.ui.historico_tab import render_historico_tab
 from consulta_processos.ui.monitorados_tab import render_monitorados_tab
 
-bootstrap_local_structure()
 configure_logging()
 settings = get_settings()
 
@@ -29,6 +28,7 @@ if ENABLE_LOCAL_HISTORY:
 
 
 def main() -> None:
+    bootstrap_local_structure()
     st.set_page_config(
         page_title="Consulta de Processos",
         page_icon="⚖️",

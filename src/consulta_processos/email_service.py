@@ -5,7 +5,7 @@ import smtplib
 from email.message import EmailMessage
 
 from consulta_processos.exceptions import ConfiguracaoError
-from consulta_processos.settings import get_settings
+from consulta_processos.settings import Settings, get_settings
 
 logger = logging.getLogger(__name__)
 
@@ -14,11 +14,42 @@ def is_email_enabled() -> bool:
     return get_settings().email_enabled
 
 
+def validate_email_configuration(settings: Settings) -> None:
+    missing_fields = []
+
+    if not settings.email_smtp_host:
+        missing_fields.append("EMAIL_SMTP_HOST")
+
+    if not settings.email_username:
+        missing_fields.append("EMAIL_USERNAME")
+
+    if not settings.email_password:
+        missing_fields.append("EMAIL_PASSWORD")
+
+    if not settings.email_from:
+        missing_fields.append("EMAIL_FROM")
+
+    if not settings.email_to:
+        missing_fields.append("EMAIL_TO")
+
+    if missing_fields:
+        raise ConfiguracaoError(
+            "Configurações de email incompletas. "
+            f"Campos ausentes: {', '.join(missing_fields)}."
+        )
+
+
 def enviar_email(
     assunto: str,
     corpo_html: str,
 ) -> None:
     settings = get_settings()
+
+    if not settings.email_enabled:
+        logger.info("Email automático desabilitado.")
+        return
+
+    validate_email_configuration(settings)
 
     smtp_host = settings.email_smtp_host
     smtp_port = settings.email_smtp_port
@@ -26,21 +57,6 @@ def enviar_email(
     password = settings.email_password
     email_from = settings.email_from
     email_to = settings.email_to
-
-    if not all(
-        [
-            smtp_host,
-            username,
-            password,
-            email_from,
-            email_to,
-        ]
-    ):
-        raise ConfiguracaoError(
-            "Configurações de email incompletas. "
-            "Verifique EMAIL_SMTP_HOST, EMAIL_USERNAME, "
-            "EMAIL_PASSWORD, EMAIL_FROM e EMAIL_TO."
-        )
 
     message = EmailMessage()
     message["Subject"] = assunto

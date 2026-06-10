@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+from consulta_processos.database import initialize_database
 from consulta_processos.paths import (
     get_config_dir,
     get_data_dir,
@@ -9,29 +10,44 @@ from consulta_processos.paths import (
     get_reports_dir,
 )
 
-DEFAULT_ENV_CONTENT = """ENABLE_LOCAL_HISTORY=true
+DEFAULT_ENV_CONTENT = """# Configurações do JuriScan
+
+# DataJud / CNJ
 DATAJUD_API_KEY=
+
+# Histórico local
+ENABLE_LOCAL_HISTORY=true
+
+# Email automático
+EMAIL_ENABLED=false
+EMAIL_SMTP_HOST=smtp.gmail.com
+EMAIL_SMTP_PORT=587
+EMAIL_USERNAME=
+EMAIL_PASSWORD=
+EMAIL_FROM=
+EMAIL_TO=
+
+# Jobs automáticos
+JURISCAN_REPORT_LOOKBACK_DAYS=7
 """
 
 
 def ensure_env_file() -> None:
     env_path = get_env_path()
 
-    if not env_path.exists():
-        env_path.write_text(
-            DEFAULT_ENV_CONTENT,
-            encoding="utf-8",
-        )
+    if env_path.exists():
+        return
+
+    env_path.write_text(DEFAULT_ENV_CONTENT, encoding="utf-8")
 
 
 def ensure_monitored_processes_file() -> None:
-    monitorados_path = get_monitored_processes_path()
+    monitored_path = get_monitored_processes_path()
 
-    if not monitorados_path.exists():
-        monitorados_path.write_text(
-            "[]",
-            encoding="utf-8",
-        )
+    if monitored_path.exists():
+        return
+
+    monitored_path.write_text("[]\n", encoding="utf-8")
 
 
 def bootstrap_local_structure() -> None:
@@ -42,3 +58,4 @@ def bootstrap_local_structure() -> None:
 
     ensure_env_file()
     ensure_monitored_processes_file()
+    initialize_database()

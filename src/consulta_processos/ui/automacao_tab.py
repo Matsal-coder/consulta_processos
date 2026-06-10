@@ -15,6 +15,9 @@ from consulta_processos.settings import get_settings
 from consulta_processos.utils.dates import (
     format_datetime,
 )
+from consulta_processos.jobs.monitorados_report import (
+    gerar_relatorio_monitorados,
+)
 
 logger = logging.getLogger(__name__)
 
@@ -58,35 +61,30 @@ def render_automacao_tab() -> None:
     render_agendamento_section()
 
 def run_email_report() -> None:
-    project_root = get_app_dir()
-    script_path = (
-        project_root
-        / "scripts"
-        / "run_email_report.bat"
-    )
-
-    if not script_path.exists():
-        st.error(
-            "Script de monitoramento não encontrado: "
-            f"{script_path}"
-        )
-        return
-
     with st.spinner("Executando monitoramento..."):
-        result = subprocess.run(
-            [str(script_path)],
-            cwd=project_root,
-            capture_output=True,
-            text=True,
-            shell=True,
-            check=False,
-        )
+        try:
+            report_path = gerar_relatorio_monitorados()
 
-    if result.returncode == 0:
-        st.success("Monitoramento executado com sucesso.")
-    else:
-        st.error("Erro ao executar monitoramento.")
-        st.code(result.stderr or result.stdout)
+            if report_path is None:
+                st.info(
+                    "Nenhum processo monitorado cadastrado. "
+                    "Nada foi executado."
+                )
+                return
+
+            html = report_path.read_text(encoding="utf-8")
+
+            enviar_email(
+                assunto="Relatório de processos monitorados",
+                corpo_html=html,
+            )
+
+        except Exception as exc:
+            st.error("Erro ao executar monitoramento.")
+            st.exception(exc)
+            return
+
+    st.success("Monitoramento executado com sucesso.")
 
 def get_latest_file_mtime(
     directory: Path,
