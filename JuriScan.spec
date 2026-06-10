@@ -1,9 +1,21 @@
 # -*- mode: python ; coding: utf-8 -*-
 from PyInstaller.utils.hooks import collect_all
 
-datas = [('app.py', '.'), ('src/consulta_processos', 'consulta_processos')]
+datas = [
+    ('app.py', '.'),
+    ('src/consulta_processos', 'consulta_processos'),
+    ('scripts', 'scripts'),
+]
 binaries = []
-hiddenimports = ['seleniumbase', 'selenium', 'pydantic', 'pydantic_core', 'requests', 'dotenv']
+hiddenimports = [
+    'seleniumbase',
+    'selenium',
+    'pydantic',
+    'pydantic_core',
+    'pydantic_settings',
+    'requests',
+    'dotenv',
+]
 tmp_ret = collect_all('streamlit')
 datas += tmp_ret[0]; binaries += tmp_ret[1]; hiddenimports += tmp_ret[2]
 tmp_ret = collect_all('seleniumbase')
@@ -12,8 +24,11 @@ tmp_ret = collect_all('selenium')
 datas += tmp_ret[0]; binaries += tmp_ret[1]; hiddenimports += tmp_ret[2]
 tmp_ret = collect_all('pydantic')
 datas += tmp_ret[0]; binaries += tmp_ret[1]; hiddenimports += tmp_ret[2]
+tmp_ret = collect_all('pydantic_settings')
+datas += tmp_ret[0]; binaries += tmp_ret[1]; hiddenimports += tmp_ret[2]
 tmp_ret = collect_all('pandas')
 datas += tmp_ret[0]; binaries += tmp_ret[1]; hiddenimports += tmp_ret[2]
+
 
 
 a = Analysis(
@@ -40,8 +55,8 @@ exe = EXE(
     debug=False,
     bootloader_ignore_signals=False,
     strip=False,
-    upx=True,
-    console=True,
+    upx=False,
+    console=False,
     disable_windowed_traceback=False,
     argv_emulation=False,
     target_arch=None,
@@ -53,7 +68,7 @@ coll = COLLECT(
     a.binaries,
     a.datas,
     strip=False,
-    upx=True,
+    upx=False,
     upx_exclude=[],
     name='JuriScan',
 )
