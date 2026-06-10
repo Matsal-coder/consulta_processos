@@ -63,3 +63,10 @@ Que também pode ser aberto diretamente pela aba Automação no app
 Feche a aba do navegador.
 
 Se o aplicativo continuar rodando, feche o JuriScan pela barra de tarefas do Windows.
+
+## Atualizações
+
+Consulte:
+```text
+UPDATE_GUIDE.md
+```

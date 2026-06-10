@@ -17,6 +17,7 @@ if errorlevel 1 (
 
 echo Copiando arquivos de distribuicao...
 copy /Y MANUAL_USUARIO.md dist\JuriScan\MANUAL_USUARIO.md
+copy /Y docs\UPDATE_GUIDE.md dist\JuriScan\UPDATE_GUIDE.md
 
 echo.
 echo Build finalizado.
