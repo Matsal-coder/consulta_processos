@@ -2,21 +2,20 @@ from __future__ import annotations
 
 import logging
 import os
-import subprocess
 from datetime import datetime
 from pathlib import Path
 
 import streamlit as st
 
 from consulta_processos.email_service import enviar_email
+from consulta_processos.jobs.monitorados_report import (
+    gerar_relatorio_monitorados,
+)
 from consulta_processos.logging_config import get_log_path
-from consulta_processos.paths import get_app_dir, get_reports_dir
+from consulta_processos.paths import get_reports_dir
 from consulta_processos.settings import get_settings
 from consulta_processos.utils.dates import (
     format_datetime,
-)
-from consulta_processos.jobs.monitorados_report import (
-    gerar_relatorio_monitorados,
 )
 
 logger = logging.getLogger(__name__)

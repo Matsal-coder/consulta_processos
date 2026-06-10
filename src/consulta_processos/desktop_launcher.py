@@ -9,7 +9,6 @@ from pathlib import Path
 
 from streamlit.web import cli as stcli
 
-
 HOST = "localhost"
 PORT = 8501
 STARTUP_TIMEOUT_SECONDS = 30
