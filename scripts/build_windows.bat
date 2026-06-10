@@ -15,6 +15,9 @@ if errorlevel 1 (
     exit /b 1
 )
 
+echo Copiando arquivos de distribuicao...
+copy /Y MANUAL_USUARIO.md dist\JuriScan\MANUAL_USUARIO.md
+
 echo.
 echo Build finalizado.
 echo Saida: dist\JuriScan\JuriScan.exe

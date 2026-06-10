@@ -5,6 +5,7 @@ datas = [
     ('app.py', '.'),
     ('src/consulta_processos', 'consulta_processos'),
     ('scripts', 'scripts'),
+    ('MANUAL_USUARIO.md', '.'),
 ]
 binaries = []
 hiddenimports = [
