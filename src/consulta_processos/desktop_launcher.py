@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import socket
 import sys
 import threading
 import time
@@ -7,6 +8,11 @@ import webbrowser
 from pathlib import Path
 
 from streamlit.web import cli as stcli
+
+
+HOST = "localhost"
+PORT = 8501
+STARTUP_TIMEOUT_SECONDS = 30
 
 
 def get_app_path() -> Path:
@@ -34,15 +40,31 @@ def get_app_path() -> Path:
     )
 
 
-def open_browser() -> None:
-    time.sleep(3)
-    webbrowser.open("http://localhost:8501")
+def wait_for_streamlit() -> bool:
+    deadline = time.time() + STARTUP_TIMEOUT_SECONDS
+
+    while time.time() < deadline:
+        try:
+            with socket.create_connection((HOST, PORT), timeout=1):
+                return True
+        except OSError:
+            time.sleep(0.5)
+
+    return False
+
+
+def open_browser_when_ready() -> None:
+    if wait_for_streamlit():
+        webbrowser.open(f"http://{HOST}:{PORT}")
 
 
 def main() -> None:
     app_path = get_app_path()
 
-    threading.Thread(target=open_browser, daemon=True).start()
+    threading.Thread(
+        target=open_browser_when_ready,
+        daemon=True,
+    ).start()
 
     sys.argv = [
         "streamlit",
@@ -50,7 +72,7 @@ def main() -> None:
         str(app_path),
         "--global.developmentMode=false",
         "--server.headless=true",
-        "--server.port=8501",
+        f"--server.port={PORT}",
     ]
 
     stcli.main()
