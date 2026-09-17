@@ -6,9 +6,7 @@ client = EprocClient(
     salvar_debug_html=True,
 )
 
-resultado = client.consultar(
-    "3016257-70.2025.8.19.0001"
-)
+resultado = client.consultar("3016257-70.2025.8.19.0001")
 
 print()
 print("Fonte:", resultado.fonte)

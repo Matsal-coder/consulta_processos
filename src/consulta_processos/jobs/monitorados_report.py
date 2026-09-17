@@ -21,14 +21,13 @@ from consulta_processos.services.consulta_service import consultar_processos
 
 logger = logging.getLogger(__name__)
 
+
 def gerar_relatorio_monitorados(
     dias_busca: int = 7,
 ) -> Path | None:
-    
+
     logger.info("Iniciando geração de relatório de monitorados")
-    processos_monitorados = (
-        carregar_processos_monitorados()
-    )
+    processos_monitorados = carregar_processos_monitorados()
 
     logger.info(
         "Quantidade de processos monitorados: %s",
@@ -49,17 +48,13 @@ def gerar_relatorio_monitorados(
         for item in processos_monitorados
     }
 
-    data_base = (
-        date.today() - timedelta(days=dias_busca)
-    )
+    data_base = date.today() - timedelta(days=dias_busca)
 
     payload = ConsultaInput.model_validate(
         {
             "processos": [
                 {
-                    "numero_processo": processo[
-                        "numero_processo"
-                    ],
+                    "numero_processo": processo["numero_processo"],
                     "base": processo["base"],
                     "data_base": data_base.isoformat(),
                 }
@@ -71,20 +66,16 @@ def gerar_relatorio_monitorados(
     try:
         resultado = consultar_processos(payload)
     except Exception:
-        logger.exception(
-            "Erro ao consultar processos monitorados"
-        )
+        logger.exception("Erro ao consultar processos monitorados")
         raise
 
     linhas = []
 
     for processo in resultado.processos:
-        processo.atualizacoes = (
-            marcar_movimentacoes_novas(
-                numero_processo=processo.numero_processo,
-                base=processo.base,
-                atualizacoes=processo.atualizacoes,
-            )
+        processo.atualizacoes = marcar_movimentacoes_novas(
+            numero_processo=processo.numero_processo,
+            base=processo.base,
+            atualizacoes=processo.atualizacoes,
         )
 
         salvar_movimentacoes_do_processo(
@@ -111,10 +102,7 @@ def gerar_relatorio_monitorados(
                     "processo": processo.numero_processo,
                     "base": processo.base,
                     "fonte": processo.fonte,
-                    "data": (
-                        atualizacao.data_movimentacao
-                        .strftime("%d/%m/%Y %H:%M")
-                    ),
+                    "data": (atualizacao.data_movimentacao.strftime("%d/%m/%Y %H:%M")),
                     "descricao": atualizacao.descricao,
                 }
             )
@@ -128,14 +116,9 @@ def gerar_relatorio_monitorados(
 
     reports_dir = get_reports_dir()
 
-    timestamp = datetime.now().strftime(
-        "%Y-%m-%d_%H-%M"
-    )
+    timestamp = datetime.now().strftime("%Y-%m-%d_%H-%M")
 
-    report_path = (
-        reports_dir
-        / f"relatorio_completo_{timestamp}.csv"
-    )
+    report_path = reports_dir / f"relatorio_completo_{timestamp}.csv"
 
     fieldnames = [
         "cliente",
@@ -181,14 +164,9 @@ def gerar_relatorio_monitorados(
             exist_ok=True,
         )
 
-        cliente_report_path = (
-            cliente_dir
-            / f"relatorio_{timestamp}.csv"
-        )
+        cliente_report_path = cliente_dir / f"relatorio_{timestamp}.csv"
 
-        arquivo_existe = (
-            cliente_report_path.exists()
-        )
+        arquivo_existe = cliente_report_path.exists()
 
         with cliente_report_path.open(
             "a",
@@ -205,7 +183,7 @@ def gerar_relatorio_monitorados(
                 writer.writeheader()
 
             writer.writerow(linha)
-            
+
     logger.info(
         "Relatório salvo em: %s",
         report_path,
@@ -213,6 +191,7 @@ def gerar_relatorio_monitorados(
     logger.info("Relatório de monitorados gerado com sucesso")
 
     return report_path
+
 
 def slugify_path(value: str) -> str:
     invalid_chars = '<>:"/\\|?*'
@@ -224,6 +203,7 @@ def slugify_path(value: str) -> str:
 
     return sanitized or "Sem cliente"
 
+
 def main() -> None:
     bootstrap_local_structure()
 
@@ -234,10 +214,7 @@ def main() -> None:
     report_path = gerar_relatorio_monitorados()
 
     if report_path is None:
-        print(
-            "Nenhuma nova movimentação encontrada "
-            "nos processos monitorados."
-        )
+        print("Nenhuma nova movimentação encontrada nos processos monitorados.")
         return
 
     print(f"Relatório gerado em: {report_path}")

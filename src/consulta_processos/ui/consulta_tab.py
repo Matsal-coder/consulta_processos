@@ -23,6 +23,7 @@ from consulta_processos.ui.cached_services import consultar_processos_cached
 
 logger = logging.getLogger(__name__)
 
+
 def render_consulta_tab(
     enable_local_history: bool,
 ) -> None:
@@ -31,9 +32,7 @@ def render_consulta_tab(
     numeros_processos_texto = st.text_area(
         "Números dos processos",
         placeholder=(
-            "Digite um processo por linha:\n"
-            "1111111-11.1111.1.11.1111\n"
-            "0000000-00.0000.0.00.0000"
+            "Digite um processo por linha:\n1111111-11.1111.1.11.1111\n0000000-00.0000.0.00.0000"
         ),
         height=150,
     )
@@ -43,11 +42,7 @@ def render_consulta_tab(
         value=date.today(),
     )
 
-    BASE_OPTIONS = {
-        key: fonte.label
-        for key, fonte in FONTES_PROCESSUAIS.items()
-        if fonte.ativa
-    }
+    BASE_OPTIONS = {key: fonte.label for key, fonte in FONTES_PROCESSUAIS.items() if fonte.ativa}
 
     base = st.selectbox(
         "Base de consulta",
@@ -59,9 +54,7 @@ def render_consulta_tab(
 
     if consultar:
         numeros_processos = [
-            numero.strip()
-            for numero in numeros_processos_texto.splitlines()
-            if numero.strip()
+            numero.strip() for numero in numeros_processos_texto.splitlines() if numero.strip()
         ]
 
         if not numeros_processos:
@@ -182,24 +175,14 @@ def render_consulta_tab(
                         # METADADOS
                         # =========================
 
-                        st.write(
-                            f"**Fonte:** {processo.fonte}"
-                        )
+                        st.write(f"**Fonte:** {processo.fonte}")
 
-                        if (
-                            processo
-                            .data_ultima_atualizacao_fonte
-                        ):
-                            data_formatada = (
-                                processo
-                                .data_ultima_atualizacao_fonte
-                                .strftime("%d/%m/%Y %H:%M")
+                        if processo.data_ultima_atualizacao_fonte:
+                            data_formatada = processo.data_ultima_atualizacao_fonte.strftime(
+                                "%d/%m/%Y %H:%M"
                             )
 
-                            st.write(
-                                f"**Última atualização da fonte:** "
-                                f"{data_formatada}"
-                            )
+                            st.write(f"**Última atualização da fonte:** {data_formatada}")
 
             if processo.observacao:
                 st.warning(processo.observacao)
@@ -209,81 +192,43 @@ def render_consulta_tab(
             # =========================
 
             if enable_local_history:
-                processo.atualizacoes = (
-                    marcar_movimentacoes_novas(
-                        numero_processo=(
-                            processo.numero_processo
-                        ),
-                        base=processo.base,
-                        atualizacoes=(
-                            processo.atualizacoes
-                        ),
-                    )
+                processo.atualizacoes = marcar_movimentacoes_novas(
+                    numero_processo=(processo.numero_processo),
+                    base=processo.base,
+                    atualizacoes=(processo.atualizacoes),
                 )
 
             if enable_local_history:
-                novas = (
-                    salvar_movimentacoes_do_processo(
-                        numero_processo=(
-                            processo.numero_processo
-                        ),
-                        base=processo.base,
-                        atualizacoes=(
-                            processo.atualizacoes
-                        ),
-                    )
+                novas = salvar_movimentacoes_do_processo(
+                    numero_processo=(processo.numero_processo),
+                    base=processo.base,
+                    atualizacoes=(processo.atualizacoes),
                 )
 
-                st.success(
-                    f"{novas} movimentação(ões) "
-                    f"nova(s) salva(s) "
-                    f"no histórico local."
-                )
+                st.success(f"{novas} movimentação(ões) nova(s) salva(s) no histórico local.")
 
             # =========================
             # TABELA
             # =========================
 
             if not processo.atualizacoes:
-                st.info(
-                    "Nenhuma movimentação "
-                    "encontrada a partir "
-                    "da data-base informada."
-                )
+                st.info("Nenhuma movimentação encontrada a partir da data-base informada.")
 
                 continue
 
             for atualizacao in processo.atualizacoes:
                 linhas.append(
                     {
-                        "Processo": (
-                            processo.numero_processo
-                        ),
-                        "Data movimentação": (
-                            atualizacao
-                            .data_movimentacao
-                        ),
-                        "Data": (
-                            atualizacao
-                            .data_movimentacao
-                            .strftime(
-                                "%d/%m/%Y %H:%M"
-                            )
-                        ),
-                        "Descrição": (
-                            atualizacao.descricao
-                        ),
+                        "Processo": (processo.numero_processo),
+                        "Data movimentação": (atualizacao.data_movimentacao),
+                        "Data": (atualizacao.data_movimentacao.strftime("%d/%m/%Y %H:%M")),
+                        "Descrição": (atualizacao.descricao),
                         "Nova": (
                             "Sim"
                             if atualizacao.nova is True
                             else "Não"
-                            if (
-                                atualizacao.nova
-                                is False
-                            )
-                            else (
-                                "Histórico desativado"
-                            )
+                            if (atualizacao.nova is False)
+                            else ("Histórico desativado")
                         ),
                     }
                 )
@@ -309,7 +254,7 @@ def render_consulta_tab(
             col3.metric(
                 "Movimentação mais recente",
                 data_mais_recente.strftime("%d/%m/%Y %H:%M"),
-            )   
+            )
 
             st.divider()
 

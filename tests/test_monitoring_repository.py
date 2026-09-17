@@ -14,9 +14,7 @@ def test_adiciona_processo_monitorado(tmp_path, monkeypatch):
     config_dir = tmp_path / "config"
     config_dir.mkdir()
 
-    monitorados_path = (
-        config_dir / "processos_monitorados.json"
-    )
+    monitorados_path = config_dir / "processos_monitorados.json"
 
     monitorados_path.write_text(
         "[]",
@@ -36,19 +34,14 @@ def test_adiciona_processo_monitorado(tmp_path, monkeypatch):
     monitorados = carregar_processos_monitorados()
 
     assert len(monitorados) == 1
-    assert (
-        monitorados[0]["numero_processo"]
-        == "0964024-67.2024.8.19.0001"
-    )
+    assert monitorados[0]["numero_processo"] == "0964024-67.2024.8.19.0001"
 
 
 def test_nao_duplica_monitorado(tmp_path, monkeypatch):
     config_dir = tmp_path / "config"
     config_dir.mkdir()
 
-    monitorados_path = (
-        config_dir / "processos_monitorados.json"
-    )
+    monitorados_path = config_dir / "processos_monitorados.json"
 
     monitorados_path.write_text(
         "[]",
@@ -79,9 +72,7 @@ def test_remove_processo_monitorado(tmp_path, monkeypatch):
     config_dir = tmp_path / "config"
     config_dir.mkdir()
 
-    monitorados_path = (
-        config_dir / "processos_monitorados.json"
-    )
+    monitorados_path = config_dir / "processos_monitorados.json"
 
     monitorados_path.write_text(
         json.dumps(
@@ -108,6 +99,7 @@ def test_remove_processo_monitorado(tmp_path, monkeypatch):
     monitorados = carregar_processos_monitorados()
 
     assert monitorados == []
+
 
 def test_importar_processos_monitorados_adiciona_varios(
     tmp_path,
@@ -246,13 +238,12 @@ def test_limpar_processos_monitorados(
 
     assert carregar_processos_monitorados() == []
 
+
 def test_adicionar_processo_monitorado_com_cliente(
     tmp_path,
     monkeypatch,
 ):
-    monitorados_path = (
-        tmp_path / "processos_monitorados.json"
-    )
+    monitorados_path = tmp_path / "processos_monitorados.json"
 
     monitorados_path.write_text(
         "[]",
@@ -270,19 +261,16 @@ def test_adicionar_processo_monitorado_com_cliente(
         cliente="Cliente XPTO",
     )
 
-    monitorados = (
-        carregar_processos_monitorados()
-    )
+    monitorados = carregar_processos_monitorados()
 
     assert monitorados[0]["cliente"] == "Cliente XPTO"
+
 
 def test_listar_clientes_monitorados(
     tmp_path,
     monkeypatch,
 ):
-    monitorados_path = (
-        tmp_path / "processos_monitorados.json"
-    )
+    monitorados_path = tmp_path / "processos_monitorados.json"
 
     monitorados_path.write_text(
         json.dumps(

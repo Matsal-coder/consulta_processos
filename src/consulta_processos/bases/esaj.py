@@ -16,6 +16,7 @@ from consulta_processos.exceptions import (
 
 logger = logging.getLogger(__name__)
 
+
 class ESAJClient(BaseConsultaProcessual):
     nome = "esaj"
     BASE_URLS = {
@@ -27,16 +28,14 @@ class ESAJClient(BaseConsultaProcessual):
         tribunal = tribunal.lower()
 
         if tribunal not in self.BASE_URLS:
-            raise BaseNaoSuportadaError(
-                f"Tribunal e-SAJ não suportado: {tribunal}"
-            )
+            raise BaseNaoSuportadaError(f"Tribunal e-SAJ não suportado: {tribunal}")
 
         self.tribunal = tribunal
         self.base_url = self.BASE_URLS[tribunal]
 
     def _build_url(self) -> str:
         return f"{self.base_url}/cpopg/search.do"
-    
+
     def _parse_movimentos(
         self,
         html: str,
@@ -44,30 +43,19 @@ class ESAJClient(BaseConsultaProcessual):
 
         soup = BeautifulSoup(html, "html.parser")
 
-        rows = soup.select(
-            "#tabelaUltimasMovimentacoes tr"
-        )
+        rows = soup.select("#tabelaUltimasMovimentacoes tr")
 
         movimentos = []
 
         for row in rows:
+            data_tag = row.select_one(".dataMovimentacao")
 
-            data_tag = row.select_one(
-                ".dataMovimentacao"
-            )
-
-            descricao_tag = row.select_one(
-                ".descricaoMovimentacao"
-            )
+            descricao_tag = row.select_one(".descricaoMovimentacao")
 
             if not descricao_tag:
                 continue
 
-            data = (
-                data_tag.get_text(strip=True)
-                if data_tag
-                else None
-            )
+            data = data_tag.get_text(strip=True) if data_tag else None
 
             descricao = " ".join(
                 descricao_tag.get_text(
@@ -153,9 +141,7 @@ class ESAJClient(BaseConsultaProcessual):
         ) as f:
             f.write(response.text)
 
-        movimentos = self._parse_movimentos(
-            response.text
-        )
+        movimentos = self._parse_movimentos(response.text)
 
         return ResultadoConsultaProcessual(
             numero_processo=numero_processo,

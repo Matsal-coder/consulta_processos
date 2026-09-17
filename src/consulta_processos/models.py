@@ -18,9 +18,7 @@ class ProcessoConsulta(BaseModel):
         value = value.lower()
 
         if value not in FONTES_PROCESSUAIS:
-            raise ValueError(
-                f"Base não suportada: {value}"
-            )
+            raise ValueError(f"Base não suportada: {value}")
 
         return value
 
@@ -53,6 +51,7 @@ class ProcessoResultado(BaseModel):
 
 class ConsultaResultado(BaseModel):
     processos: list[ProcessoResultado]
+
 
 class ResultadoConsultaProcesso(BaseModel):
     atualizacoes: list[AtualizacaoProcesso]

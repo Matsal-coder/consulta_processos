@@ -81,7 +81,4 @@ def test_consultar_processos(monkeypatch):
 
     assert len(processo["atualizacoes"]) == 1
 
-    assert (
-        processo["atualizacoes"][0]["descricao"]
-        == "Publicação"
-    )
+    assert processo["atualizacoes"][0]["descricao"] == "Publicação"

@@ -34,8 +34,7 @@ def validate_email_configuration(settings: Settings) -> None:
 
     if missing_fields:
         raise ConfiguracaoError(
-            "Configurações de email incompletas. "
-            f"Campos ausentes: {', '.join(missing_fields)}."
+            f"Configurações de email incompletas. Campos ausentes: {', '.join(missing_fields)}."
         )
 
 
@@ -63,9 +62,7 @@ def enviar_email(
     message["From"] = email_from
     message["To"] = email_to
 
-    message.set_content(
-        "Seu cliente de email não suporta HTML."
-    )
+    message.set_content("Seu cliente de email não suporta HTML.")
 
     message.add_alternative(
         corpo_html,

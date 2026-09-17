@@ -15,14 +15,13 @@ from consulta_processos.utils.dates import parse_date, parse_datetime
 
 logger = logging.getLogger(__name__)
 
+
 def _montar_observacao(fonte: str) -> str | None:
     if fonte.lower().startswith("datajud"):
-        return (
-            "A fonte DataJud pode ter defasagem em relação "
-            "ao sistema original do tribunal."
-        )
+        return "A fonte DataJud pode ter defasagem em relação ao sistema original do tribunal."
 
     return None
+
 
 def _data_movimento_maior_ou_igual(
     data_movimento: str | None,
@@ -34,6 +33,7 @@ def _data_movimento_maior_ou_igual(
         return False
 
     return data_convertida >= data_base
+
 
 def consultar_atualizacoes_por_base(
     numero_processo: str,
@@ -55,6 +55,7 @@ def consultar_atualizacoes_por_base(
     ]
 
     return resultado
+
 
 def consultar_processos(payload: ConsultaInput) -> ConsultaResultado:
     resultados = []
@@ -91,9 +92,7 @@ def consultar_processos(payload: ConsultaInput) -> ConsultaResultado:
                 numero_processo=processo.numero_processo,
                 base=processo.base,
                 fonte=resultado_consulta.fonte,
-                data_ultima_atualizacao_fonte=(
-                    resultado_consulta.data_ultima_atualizacao_fonte
-                ),
+                data_ultima_atualizacao_fonte=(resultado_consulta.data_ultima_atualizacao_fonte),
                 observacao=_montar_observacao(resultado_consulta.fonte),
                 atualizacoes=atualizacoes,
             )
@@ -106,4 +105,3 @@ def consultar_processos(payload: ConsultaInput) -> ConsultaResultado:
         )
 
     return ConsultaResultado(processos=resultados)
-

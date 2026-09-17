@@ -8,11 +8,7 @@ from consulta_processos.models import ConsultaInput
 
 def test_rejeita_lista_de_processos_vazia():
     with pytest.raises(ValidationError):
-        ConsultaInput.model_validate(
-            {
-                "processos": []
-            }
-        )
+        ConsultaInput.model_validate({"processos": []})
 
 
 def test_rejeita_numero_processo_vazio():

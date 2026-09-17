@@ -32,6 +32,7 @@ def parse_date(valor: str | None) -> date | None:
 
     return data.date()
 
+
 def format_datetime(
     valor: datetime | None,
 ) -> str:

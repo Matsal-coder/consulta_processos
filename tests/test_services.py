@@ -72,9 +72,8 @@ def test_consultar_processos(monkeypatch):
     assert len(processo.atualizacoes) == 1
     assert processo.atualizacoes[0].descricao == "Publicação"
 
-    assert (
-        processo.data_ultima_atualizacao_fonte
-        == datetime(2026, 3, 10, 14, 40, tzinfo=timezone.utc)
+    assert processo.data_ultima_atualizacao_fonte == datetime(
+        2026, 3, 10, 14, 40, tzinfo=timezone.utc
     )
 
     assert processo.observacao is not None

@@ -43,10 +43,7 @@ def listar_clientes() -> list[str]:
             """
         ).fetchall()
 
-    return [
-        row["cliente"]
-        for row in rows
-    ]
+    return [row["cliente"] for row in rows]
 
 
 def listar_processos_por_cliente(
@@ -109,6 +106,7 @@ def salvar_comentario_movimentacao(
             ),
         )
 
+
 def listar_movimentacoes_processo(
     numero_processo: str,
     base: str,
@@ -136,6 +134,7 @@ def listar_movimentacoes_processo(
         ).fetchall()
 
     return [dict(row) for row in rows]
+
 
 def remover_processo(
     numero_processo: str,

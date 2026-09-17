@@ -10,10 +10,7 @@ def render_historico_tab(
     st.subheader("Histórico local de movimentações")
 
     if not enable_local_history:
-        st.warning(
-            "Histórico local desabilitado. "
-            "Ative ENABLE_LOCAL_HISTORY=true no .env."
-        )
+        st.warning("Histórico local desabilitado. Ative ENABLE_LOCAL_HISTORY=true no .env.")
 
     else:
         movimentacoes_salvas = listar_movimentacoes_salvas()
@@ -22,9 +19,7 @@ def render_historico_tab(
             st.info("Nenhuma movimentação salva ainda.")
 
         else:
-            df_historico = pd.DataFrame(
-                movimentacoes_salvas
-            )
+            df_historico = pd.DataFrame(movimentacoes_salvas)
 
             df_historico["data_movimentacao"] = pd.to_datetime(
                 df_historico["data_movimentacao"],
@@ -33,13 +28,10 @@ def render_historico_tab(
                 utc=True,
             )
 
-            df_historico["created_at"] = (
-                pd.to_datetime(
-                    df_historico["created_at"],
-                    utc=True,
-                )
-                .dt.tz_convert("America/Sao_Paulo")
-            )
+            df_historico["created_at"] = pd.to_datetime(
+                df_historico["created_at"],
+                utc=True,
+            ).dt.tz_convert("America/Sao_Paulo")
 
             filtro_processo = st.text_input(
                 "Filtrar por processo",
@@ -48,18 +40,14 @@ def render_historico_tab(
 
             if filtro_processo:
                 df_historico = df_historico[
-                    df_historico["numero_processo"]
-                    .str.contains(
+                    df_historico["numero_processo"].str.contains(
                         filtro_processo,
                         case=False,
                         na=False,
                     )
                 ]
 
-            df_historico["created_at"] = (
-                df_historico["created_at"]
-                .dt.strftime("%d/%m/%Y %H:%M")
-            )
+            df_historico["created_at"] = df_historico["created_at"].dt.strftime("%d/%m/%Y %H:%M")
 
             st.dataframe(
                 df_historico,
@@ -67,9 +55,7 @@ def render_historico_tab(
                 hide_index=True,
             )
 
-            csv = df_historico.to_csv(
-                index=False
-            ).encode("utf-8-sig")
+            csv = df_historico.to_csv(index=False).encode("utf-8-sig")
 
             st.download_button(
                 label="Baixar histórico em CSV",
@@ -77,4 +63,3 @@ def render_historico_tab(
                 file_name="historico_movimentacoes.csv",
                 mime="text/csv",
             )
-

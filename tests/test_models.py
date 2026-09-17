@@ -7,7 +7,7 @@ def test_validar_input():
             {
                 "numero_processo": "0000000-00.0000.0.00.0000",
                 "base": "esaj_tjsp",
-                "data_base": "2024-01-01"
+                "data_base": "2024-01-01",
             }
         ]
     }

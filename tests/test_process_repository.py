@@ -172,6 +172,7 @@ def test_salvar_comentario_movimentacao(tmp_path, monkeypatch):
 
     assert row["comentario"] == "Comentário de teste"
 
+
 def test_remover_processo(tmp_path, monkeypatch):
     db_path = tmp_path / "consulta_processos_test.db"
 

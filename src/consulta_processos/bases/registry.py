@@ -8,9 +8,7 @@ def obter_client(base: str):
     base = base.lower()
 
     if base not in FONTES_PROCESSUAIS:
-        raise BaseNaoSuportadaError(
-        f"Base não suportada: {base}"
-    )
+        raise BaseNaoSuportadaError(f"Base não suportada: {base}")
 
     return FONTES_PROCESSUAIS[base].factory()
 

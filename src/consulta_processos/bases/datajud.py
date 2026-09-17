@@ -31,7 +31,6 @@ class DataJudBaseClient(BaseConsultaProcessual):
 
         return hits[0].get("_source", {})
 
-
     def _parse_data_ultima_atualizacao_fonte(
         self,
         source: dict,
@@ -41,9 +40,7 @@ class DataJudBaseClient(BaseConsultaProcessual):
         if not data_raw:
             return None
 
-        return datetime.fromisoformat(
-            data_raw.replace("Z", "+00:00")
-        )
+        return datetime.fromisoformat(data_raw.replace("Z", "+00:00"))
 
     def consultar(
         self,
@@ -67,9 +64,7 @@ class DataJudBaseClient(BaseConsultaProcessual):
 
         source = self._get_source(data)
 
-        data_ultima_atualizacao_fonte = self._parse_data_ultima_atualizacao_fonte(
-            source
-        )
+        data_ultima_atualizacao_fonte = self._parse_data_ultima_atualizacao_fonte(source)
 
         movimentos = self._parse_movimentos(source)
 
@@ -100,17 +95,10 @@ class DataJudBaseClient(BaseConsultaProcessual):
         movimentos = []
 
         for mov in movimentos_raw:
-            data_movimento = (
-                mov.get("dataHora")
-                or mov.get("dataMovimento")
-                or mov.get("data")
-            )
+            data_movimento = mov.get("dataHora") or mov.get("dataMovimento") or mov.get("data")
 
             descricao = (
-                mov.get("nome")
-                or mov.get("descricao")
-                or mov.get("complementoTabelado")
-                or ""
+                mov.get("nome") or mov.get("descricao") or mov.get("complementoTabelado") or ""
             )
 
             complemento = mov.get("complementoTabelado")

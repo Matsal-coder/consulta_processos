@@ -8,9 +8,7 @@ def test_gerar_relatorio_sem_monitorados(
     tmp_path,
     monkeypatch,
 ):
-    monitorados_path = (
-        tmp_path / "processos_monitorados.json"
-    )
+    monitorados_path = tmp_path / "processos_monitorados.json"
 
     monitorados_path.write_text(
         "[]",
@@ -28,8 +26,6 @@ def test_gerar_relatorio_sem_monitorados(
 
 
 def test_slugify_path():
-    resultado = slugify_path(
-        'Cliente:/Teste?'
-    )
+    resultado = slugify_path("Cliente:/Teste?")
 
     assert resultado == "Cliente__Teste_"

@@ -20,6 +20,7 @@ from consulta_processos.utils.dates import (
 
 logger = logging.getLogger(__name__)
 
+
 def render_automacao_tab() -> None:
     st.header("⚙️ Automação")
 
@@ -49,7 +50,7 @@ def render_automacao_tab() -> None:
     render_acoes_manuais_section()
 
     st.divider()
-    
+
     render_arquivos_section(
         reports_dir=reports_dir,
         logs_dir=log_path.parent,
@@ -59,16 +60,14 @@ def render_automacao_tab() -> None:
 
     render_agendamento_section()
 
+
 def run_email_report() -> None:
     with st.spinner("Executando monitoramento..."):
         try:
             report_path = gerar_relatorio_monitorados()
 
             if report_path is None:
-                st.info(
-                    "Nenhum processo monitorado cadastrado. "
-                    "Nada foi executado."
-                )
+                st.info("Nenhum processo monitorado cadastrado. Nada foi executado.")
                 return
 
             html = report_path.read_text(encoding="utf-8")
@@ -85,6 +84,7 @@ def run_email_report() -> None:
 
     st.success("Monitoramento executado com sucesso.")
 
+
 def get_latest_file_mtime(
     directory: Path,
     pattern: str = "*",
@@ -92,11 +92,7 @@ def get_latest_file_mtime(
     if not directory.exists():
         return None
 
-    files = [
-        path
-        for path in directory.rglob(pattern)
-        if path.is_file()
-    ]
+    files = [path for path in directory.rglob(pattern) if path.is_file()]
 
     if not files:
         return None
@@ -106,9 +102,7 @@ def get_latest_file_mtime(
         key=lambda path: path.stat().st_mtime,
     )
 
-    return datetime.fromtimestamp(
-        latest_file.stat().st_mtime
-    )
+    return datetime.fromtimestamp(latest_file.stat().st_mtime)
 
 
 def render_status_section(
@@ -120,9 +114,7 @@ def render_status_section(
     settings = get_settings()
 
     ultima_atividade = (
-        datetime.fromtimestamp(log_path.stat().st_mtime)
-        if log_path.exists()
-        else None
+        datetime.fromtimestamp(log_path.stat().st_mtime) if log_path.exists() else None
     )
 
     ultimo_relatorio = get_latest_file_mtime(
@@ -149,17 +141,13 @@ def render_status_section(
     with col1:
         st.metric(
             "Última atividade",
-            format_datetime(ultima_atividade)
-            if ultima_atividade
-            else "Nunca",
+            format_datetime(ultima_atividade) if ultima_atividade else "Nunca",
         )
 
     with col2:
         st.metric(
             "Último relatório",
-            format_datetime(ultimo_relatorio)
-            if ultimo_relatorio
-            else "Nenhum",
+            format_datetime(ultimo_relatorio) if ultimo_relatorio else "Nenhum",
         )
 
     with col3:
@@ -168,12 +156,12 @@ def render_status_section(
             email_status,
         )
 
+
 def render_acoes_manuais_section() -> None:
     st.subheader("Ações rápidas")
 
     st.caption(
-        "Use estas ações para testar ou executar rotinas "
-        "sem depender do agendamento automático."
+        "Use estas ações para testar ou executar rotinas sem depender do agendamento automático."
     )
 
     col1, col2 = st.columns(2)
@@ -206,18 +194,13 @@ def testar_envio_email() -> None:
             """,
         )
 
-        st.success(
-            "Email de teste enviado com sucesso."
-        )
+        st.success("Email de teste enviado com sucesso.")
 
     except Exception as exc:
-        logger.exception(
-            "Erro ao enviar email de teste"
-        )
+        logger.exception("Erro ao enviar email de teste")
 
-        st.error(
-            f"Erro ao enviar email de teste: {exc}"
-        )
+        st.error(f"Erro ao enviar email de teste: {exc}")
+
 
 def render_arquivos_section(
     reports_dir: Path,
@@ -225,10 +208,7 @@ def render_arquivos_section(
 ) -> None:
     st.subheader("Arquivos")
 
-    st.caption(
-        "Abra rapidamente as pastas utilizadas "
-        "pelo monitoramento automático."
-    )
+    st.caption("Abra rapidamente as pastas utilizadas pelo monitoramento automático.")
 
     col1, col2 = st.columns(2)
 
@@ -256,13 +236,11 @@ def render_arquivos_section(
 
             os.startfile(logs_dir)
 
+
 def render_agendamento_section() -> None:
     st.subheader("Agendamento automático")
 
-    st.caption(
-        "Configure o Windows para executar o monitoramento "
-        "automaticamente todos os dias."
-    )
+    st.caption("Configure o Windows para executar o monitoramento automaticamente todos os dias.")
 
     st.info(
         """

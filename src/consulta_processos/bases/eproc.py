@@ -17,6 +17,7 @@ from consulta_processos.exceptions import (
 
 logger = logging.getLogger(__name__)
 
+
 class EprocClient(BaseConsultaProcessual):
     nome = "eproc"
 
@@ -36,9 +37,7 @@ class EprocClient(BaseConsultaProcessual):
         tribunal = tribunal.lower()
 
         if tribunal not in self.BASE_URLS:
-            raise BaseNaoSuportadaError(
-                f"Tribunal eproc não suportado: {tribunal}"
-            )
+            raise BaseNaoSuportadaError(f"Tribunal eproc não suportado: {tribunal}")
 
         self.tribunal = tribunal
         self.base_url = self.BASE_URLS[tribunal]
@@ -74,7 +73,6 @@ class EprocClient(BaseConsultaProcessual):
                 numero_processo,
             )
 
-
             driver.click("button#sbmNovo")
             driver.sleep(5)
 
@@ -91,10 +89,7 @@ class EprocClient(BaseConsultaProcessual):
                     fonte=f"eproc/{self.tribunal.upper()}",
                     url=driver.current_url,
                     movimentos=[],
-                    erro=(
-                        "Consulta eproc bloqueada ou protegida "
-                        "por validação do site."
-                    ),
+                    erro=("Consulta eproc bloqueada ou protegida por validação do site."),
                 )
 
             movimentos = self._parse_movimentos(html)
@@ -108,7 +103,7 @@ class EprocClient(BaseConsultaProcessual):
                 movimentos=movimentos,
                 erro=None,
             )
-        
+
         except UnexpectedAlertPresentException as exc:
             alerta = self._obter_texto_alerta(driver)
 
@@ -124,7 +119,7 @@ class EprocClient(BaseConsultaProcessual):
                     f"Mensagem: {alerta or str(exc)}"
                 ),
             )
-        
+
         except Exception as exc:
             logger.exception(
                 "Erro ao consultar processo %s no eproc %s",
@@ -168,16 +163,9 @@ class EprocClient(BaseConsultaProcessual):
         tabela_movimentos = None
 
         for tabela in tabelas:
-            headers = [
-                th.get_text(" ", strip=True)
-                for th in tabela.select("th")
-            ]
+            headers = [th.get_text(" ", strip=True) for th in tabela.select("th")]
 
-            if (
-                "Evento" in headers
-                and "Data/Hora" in headers
-                and "Descrição" in headers
-            ):
+            if "Evento" in headers and "Data/Hora" in headers and "Descrição" in headers:
                 tabela_movimentos = tabela
                 break
 
@@ -220,10 +208,7 @@ class EprocClient(BaseConsultaProcessual):
             "cf-challenge",
         ]
 
-        return any(
-            indicador in html_lower
-            for indicador in indicadores
-        )
+        return any(indicador in html_lower for indicador in indicadores)
 
     def _salvar_debug_html(self, html: str) -> None:
         caminho = f"debug_eproc_{self.tribunal}.html"

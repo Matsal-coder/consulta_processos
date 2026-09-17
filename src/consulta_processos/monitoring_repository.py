@@ -8,9 +8,7 @@ def carregar_processos_monitorados() -> list[dict]:
     if not path.exists():
         return []
 
-    content = path.read_text(
-        encoding="utf-8"
-    )
+    content = path.read_text(encoding="utf-8")
 
     if not content.strip():
         return []
@@ -44,11 +42,7 @@ def adicionar_processo_monitorado(
 ) -> bool:
     processos = carregar_processos_monitorados()
 
-    existe = any(
-        p["numero_processo"] == numero_processo
-        and p["base"] == base
-        for p in processos
-    )
+    existe = any(p["numero_processo"] == numero_processo and p["base"] == base for p in processos)
 
     if existe:
         return False
@@ -65,6 +59,7 @@ def adicionar_processo_monitorado(
 
     return True
 
+
 def remover_processo_monitorado(
     numero_processo: str,
     base: str,
@@ -74,20 +69,16 @@ def remover_processo_monitorado(
     processos_filtrados = [
         processo
         for processo in processos
-        if not (
-            processo["numero_processo"] == numero_processo
-            and processo["base"] == base
-        )
+        if not (processo["numero_processo"] == numero_processo and processo["base"] == base)
     ]
 
     if len(processos_filtrados) == len(processos):
         return False
 
-    salvar_processos_monitorados(
-        processos_filtrados
-    )
+    salvar_processos_monitorados(processos_filtrados)
 
     return True
+
 
 def limpar_processos_monitorados() -> None:
     salvar_processos_monitorados([])
@@ -110,8 +101,7 @@ def importar_processos_monitorados(
         cliente = processo.get("cliente", "Sem cliente").strip() or "Sem cliente"
 
         existe = any(
-            item["numero_processo"] == numero_processo
-            and item["base"] == base
+            item["numero_processo"] == numero_processo and item["base"] == base
             for item in existentes
         )
 
@@ -131,12 +121,10 @@ def importar_processos_monitorados(
 
     return adicionados
 
+
 def listar_clientes_monitorados() -> list[str]:
     processos = carregar_processos_monitorados()
 
-    clientes = {
-        processo.get("cliente", "Sem cliente")
-        for processo in processos
-    }
+    clientes = {processo.get("cliente", "Sem cliente") for processo in processos}
 
     return sorted(clientes)

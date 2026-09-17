@@ -10,7 +10,6 @@ DATAJUD_ENDPOINTS = {
     "tjba": "https://api-publica.datajud.cnj.jus.br/api_publica_tjba/_search",
     "tjam": "https://api-publica.datajud.cnj.jus.br/api_publica_tjam/_search",
     "trf2": "https://api-publica.datajud.cnj.jus.br/api_publica_trf2/_search",
-
 }
 
 
@@ -27,9 +26,7 @@ class DataJudClient:
         tribunal = tribunal.lower()
 
         if tribunal not in DATAJUD_ENDPOINTS:
-            raise FonteExternaError(
-                f"Tribunal não suportado pelo DataJud: {tribunal}"
-            )
+            raise FonteExternaError(f"Tribunal não suportado pelo DataJud: {tribunal}")
 
         endpoint = DATAJUD_ENDPOINTS[tribunal]
 

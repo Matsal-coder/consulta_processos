@@ -46,43 +46,25 @@ def carregar_linhas_csv(
 def montar_tabela_html(
     linhas: list[dict],
 ) -> str:
-    resumo_por_cliente = defaultdict(
-        lambda: defaultdict(int)
-    )
+    resumo_por_cliente = defaultdict(lambda: defaultdict(int))
 
     for linha in linhas:
-        resumo_por_cliente[
-            linha["cliente"]
-        ][linha["processo"]] += 1
+        resumo_por_cliente[linha["cliente"]][linha["processo"]] += 1
 
-    clientes_afetados = len(
-        resumo_por_cliente
-    )
+    clientes_afetados = len(resumo_por_cliente)
 
-    processos_afetados = sum(
-        len(processos)
-        for processos in resumo_por_cliente.values()
-    )
+    processos_afetados = sum(len(processos) for processos in resumo_por_cliente.values())
 
     resumo_html = ""
 
-    for cliente, processos in (
-        resumo_por_cliente.items()
-    ):
-        resumo_html += (
-            f"<h3>{cliente}</h3><ul>"
-        )
+    for cliente, processos in resumo_por_cliente.items():
+        resumo_html += f"<h3>{cliente}</h3><ul>"
 
         for (
             processo,
             quantidade,
         ) in processos.items():
-            resumo_html += (
-                f"<li>"
-                f"{processo} — "
-                f"{quantidade} movimentação(ões)"
-                f"</li>"
-            )
+            resumo_html += f"<li>{processo} — {quantidade} movimentação(ões)</li>"
 
         resumo_html += "</ul>"
 
@@ -167,37 +149,21 @@ def main() -> None:
     initialize_database()
 
     if not is_email_enabled():
-        print(
-            "Envio de email desabilitado."
-        )
+        print("Envio de email desabilitado.")
         return
 
-    report_path = (
-        gerar_relatorio_monitorados()
-    )
+    report_path = gerar_relatorio_monitorados()
 
     if report_path is None:
-        print(
-            "Nenhuma nova movimentação "
-            "encontrada. "
-            "Email não enviado."
-        )
+        print("Nenhuma nova movimentação encontrada. Email não enviado.")
         return
 
-    linhas = carregar_linhas_csv(
-        report_path
-    )
+    linhas = carregar_linhas_csv(report_path)
 
-    corpo_html = montar_tabela_html(
-        linhas
-    )
+    corpo_html = montar_tabela_html(linhas)
 
     enviar_email(
-        assunto=(
-            f"[JuriScan] "
-            f"{len(linhas)} "
-            f"nova(s) movimentação(ões)"
-        ),
+        assunto=(f"[JuriScan] {len(linhas)} nova(s) movimentação(ões)"),
         corpo_html=corpo_html,
     )
 

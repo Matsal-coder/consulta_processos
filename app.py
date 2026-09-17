@@ -58,7 +58,7 @@ def main() -> None:
 
     with tab_clientes:
         render_clientes_tab()
-    
+
     with tab_automacao:
         render_automacao_tab()
 

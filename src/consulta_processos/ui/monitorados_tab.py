@@ -28,15 +28,10 @@ def parse_monitorados_texto(
         if not linha:
             continue
 
-        partes = [
-            parte.strip()
-            for parte in linha.split(";")
-        ]
+        partes = [parte.strip() for parte in linha.split(";")]
 
         if len(partes) != 3:
-            raise ValueError(
-                "Cada linha deve seguir o formato: cliente;numero_processo;base"
-            )
+            raise ValueError("Cada linha deve seguir o formato: cliente;numero_processo;base")
 
         cliente, numero_processo, base = partes
 
@@ -50,16 +45,15 @@ def parse_monitorados_texto(
 
     return processos
 
+
 def render_monitorados_tab(
     enable_local_history: bool,
 ) -> None:
-    
+
     st.subheader("Processos monitorados")
 
     with st.expander("⚙️ Gestão em massa de monitorados"):
-        st.caption(
-            "Formato esperado: cliente;numero_processo;base"
-        )
+        st.caption("Formato esperado: cliente;numero_processo;base")
 
         texto_importacao = st.text_area(
             "Importar monitorados",
@@ -80,18 +74,14 @@ def render_monitorados_tab(
         with col_importar:
             if st.button("📥 Importar lista"):
                 try:
-                    processos_importados = parse_monitorados_texto(
-                        texto_importacao
-                    )
+                    processos_importados = parse_monitorados_texto(texto_importacao)
 
                     adicionados = importar_processos_monitorados(
                         processos=processos_importados,
                         substituir=substituir,
                     )
 
-                    st.success(
-                        f"{adicionados} processo(s) importado(s)."
-                    )
+                    st.success(f"{adicionados} processo(s) importado(s).")
                     st.rerun()
 
                 except ValueError as exc:
@@ -103,9 +93,7 @@ def render_monitorados_tab(
                 st.success("Lista de monitorados limpa.")
                 st.rerun()
 
-    processos_monitorados = (
-        carregar_processos_monitorados()
-    )
+    processos_monitorados = carregar_processos_monitorados()
 
     cliente_por_processo_base = {
         (
@@ -116,14 +104,10 @@ def render_monitorados_tab(
     }
 
     if processos_monitorados:
-        df_export_monitorados = pd.DataFrame(
-            processos_monitorados
-        )
+        df_export_monitorados = pd.DataFrame(processos_monitorados)
 
-        csv_monitorados_lista = (
-            df_export_monitorados
-            .to_csv(index=False, sep=";")
-            .encode("utf-8-sig")
+        csv_monitorados_lista = df_export_monitorados.to_csv(index=False, sep=";").encode(
+            "utf-8-sig"
         )
 
         st.download_button(
@@ -138,53 +122,36 @@ def render_monitorados_tab(
         type="primary",
     )
 
-    st.caption(
-        "Consulta automática dos processos monitorados considerando os últimos 7 dias."
-    )
-
+    st.caption("Consulta automática dos processos monitorados considerando os últimos 7 dias.")
 
     if not processos_monitorados:
-        st.info(
-            "Nenhum processo monitorado."
-        )
+        st.info("Nenhum processo monitorado.")
 
     else:
         for processo in processos_monitorados:
             col1, col2 = st.columns([5, 1])
 
             with col1:
-                st.write(
-                    f"📌 {processo['numero_processo']} "
-                    f"({processo['base']})"
-                )
+                st.write(f"📌 {processo['numero_processo']} ({processo['base']})")
 
             with col2:
                 remover = st.button(
                     "🗑️ Remover",
-                    key=(
-                        f"remover_"
-                        f"{processo['numero_processo']}"
-                    ),
+                    key=(f"remover_{processo['numero_processo']}"),
                 )
 
             if remover:
                 removido = remover_processo_monitorado(
-                    numero_processo=processo[
-                        "numero_processo"
-                    ],
+                    numero_processo=processo["numero_processo"],
                     base=processo["base"],
                 )
 
                 if removido:
-                    st.success(
-                        "Processo removido dos monitorados."
-                    )
+                    st.success("Processo removido dos monitorados.")
                     st.rerun()
 
                 else:
-                    st.error(
-                        "Não foi possível remover o processo."
-                    )
+                    st.error("Não foi possível remover o processo.")
     if consultar_monitorados:
         if not processos_monitorados:
             st.warning("Nenhum processo monitorado para consultar.")
@@ -209,9 +176,9 @@ def render_monitorados_tab(
             resultado_monitorados = consultar_processos_cached(payload_dict)
 
         st.session_state["resultado_monitorados"] = resultado_monitorados
-        
-    resultado_monitorados = st.session_state.get("resultado_monitorados") 
-    
+
+    resultado_monitorados = st.session_state.get("resultado_monitorados")
+
     if resultado_monitorados:
         linhas_monitorados = []
 
@@ -269,18 +236,11 @@ def render_monitorados_tab(
             )
             total_processos_monitorados = len(processos_monitorados)
 
-            processos_com_novidade = (
-                df_monitorados_resultado[
-                    df_monitorados_resultado["Nova"] == "Sim"
-                ]["Processo"]
-                .nunique()
-            )
+            processos_com_novidade = df_monitorados_resultado[
+                df_monitorados_resultado["Nova"] == "Sim"
+            ]["Processo"].nunique()
 
-            novas_movimentacoes = (
-                df_monitorados_resultado["Nova"]
-                .eq("Sim")
-                .sum()
-            )
+            novas_movimentacoes = df_monitorados_resultado["Nova"].eq("Sim").sum()
 
             col1, col2, col3 = st.columns(3)
 
@@ -306,16 +266,12 @@ def render_monitorados_tab(
                 value=False,
             )
 
-            df_monitorados_filtrado = (
-                df_monitorados_resultado.copy()
-            )
+            df_monitorados_filtrado = df_monitorados_resultado.copy()
 
             if mostrar_apenas_novas:
-                df_monitorados_filtrado = (
-                    df_monitorados_filtrado[
-                        df_monitorados_filtrado["Nova"] == "Sim"
-                    ]
-                )
+                df_monitorados_filtrado = df_monitorados_filtrado[
+                    df_monitorados_filtrado["Nova"] == "Sim"
+                ]
 
             df_novidades = df_monitorados_resultado[
                 df_monitorados_resultado["Nova"] == "Sim"
@@ -324,13 +280,10 @@ def render_monitorados_tab(
                 columns=["Data movimentação"],
             )
 
-
             if df_novidades.empty:
                 st.info("Nenhuma novidade encontrada nesta consulta.")
             else:
-                st.success(
-                    f"{len(df_novidades)} nova(s) movimentação(ões) encontrada(s)."
-                )
+                st.success(f"{len(df_novidades)} nova(s) movimentação(ões) encontrada(s).")
                 df_novidades_visual = df_novidades.drop(
                     columns=["Data movimentação"],
                 )
@@ -348,13 +301,11 @@ def render_monitorados_tab(
                 hide_index=True,
             )
 
-            csv_monitorados = df_monitorados_visual.to_csv(
-                index=False
-            ).encode("utf-8-sig")
+            csv_monitorados = df_monitorados_visual.to_csv(index=False).encode("utf-8-sig")
 
             st.download_button(
                 label="Baixar resultado dos monitorados em CSV",
                 data=csv_monitorados,
                 file_name="resultado_processos_monitorados.csv",
                 mime="text/csv",
-            )   
+            )

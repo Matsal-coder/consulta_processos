@@ -39,6 +39,4 @@ def test_settings_db_path(
 
     settings = Settings()
 
-    assert str(
-        settings.consulta_processos_db_path
-    ) == "test.db"
+    assert str(settings.consulta_processos_db_path) == "test.db"

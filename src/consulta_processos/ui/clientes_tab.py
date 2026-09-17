@@ -56,9 +56,7 @@ def render_clientes_tab() -> None:
     processo_selecionado = st.selectbox(
         "Selecione um processo",
         options=processos_options,
-        format_func=lambda x: (
-            f"{x[0]} ({x[1]})"
-        ),
+        format_func=lambda x: f"{x[0]} ({x[1]})",
     )
 
     numero_processo, base = processo_selecionado
@@ -69,7 +67,8 @@ def render_clientes_tab() -> None:
         if (
             processo["numero_processo"],
             processo["base"],
-        ) == processo_selecionado
+        )
+        == processo_selecionado
     )
 
     st.subheader("Dados do processo")
@@ -124,8 +123,7 @@ def render_clientes_tab() -> None:
 
         movimentacao_opcoes = {
             (
-                f"{movimentacao['data_movimentacao']} — "
-                f"{movimentacao['descricao'][:80]}"
+                f"{movimentacao['data_movimentacao']} — {movimentacao['descricao'][:80]}"
             ): movimentacao
             for movimentacao in movimentacoes
         }
@@ -135,9 +133,7 @@ def render_clientes_tab() -> None:
             options=list(movimentacao_opcoes.keys()),
         )
 
-        movimentacao_selecionada = movimentacao_opcoes[
-            movimentacao_label
-        ]
+        movimentacao_selecionada = movimentacao_opcoes[movimentacao_label]
 
         comentario = st.text_area(
             "Comentário",

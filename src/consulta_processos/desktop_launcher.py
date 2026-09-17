@@ -34,8 +34,7 @@ def get_app_path() -> Path:
             return candidate
 
     raise FileNotFoundError(
-        "Não encontrei o app.py. Caminhos testados: "
-        + ", ".join(str(path) for path in candidates)
+        "Não encontrei o app.py. Caminhos testados: " + ", ".join(str(path) for path in candidates)
     )
 
 

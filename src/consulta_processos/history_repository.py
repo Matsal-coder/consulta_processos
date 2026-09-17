@@ -29,11 +29,7 @@ def movimento_existe(
     return row is not None
 
 
-def salvar_movimento(
-    numero_processo: str,
-    base: str,
-    atualizacao: AtualizacaoProcesso
-) -> bool:
+def salvar_movimento(numero_processo: str, base: str, atualizacao: AtualizacaoProcesso) -> bool:
     """
     Salva uma movimentação no histórico local.
 
@@ -81,6 +77,7 @@ def salvar_movimentacoes_do_processo(
 
     return novas
 
+
 def marcar_movimentacoes_novas(
     numero_processo: str,
     base: str,
@@ -102,6 +99,7 @@ def marcar_movimentacoes_novas(
         )
 
     return atualizacoes_marcadas
+
 
 def listar_movimentacoes_salvas() -> list[dict]:
     with get_connection() as connection:
