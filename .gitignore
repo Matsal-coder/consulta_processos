@@ -20,3 +20,8 @@ downloaded_files/
 build/
 dist/
 *.speclogs/
+
+# Runtime-generated local state
+logs/
+reports/
+config/processos_monitorados.json
