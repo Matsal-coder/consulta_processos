@@ -174,7 +174,8 @@ src/consulta_processos/
 ├── database.py
 ├── history_repository.py
 ├── monitoring_repository.py
-├── services.py
+├── services/
+│   └── consulta_service.py
 └── desktop_launcher.py
 ```
 
@@ -232,7 +233,7 @@ EMAIL_TO=destinatario@gmail.com
 ## Instalar dependências
 
 ```bash
-pip install -r requirements.txt
+python -m pip install -r requirements.txt
 ```
 
 ---
@@ -294,7 +295,7 @@ na identificação de problemas e monitoramento da aplicação.
 Os logs ficam em:
 
 ```text
-data/logs/juriscan.log
+logs/juriscan.log
 ```
 
 Os logs incluem:
