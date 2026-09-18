@@ -303,7 +303,10 @@ Armazena:
 * base;
 * cliente;
 * apelido;
+* estado de monitoramento;
 * data de criação.
+
+O campo `monitorado` indica se o processo participa atualmente do fluxo automático de monitoramento.
 
 #### `movimentacoes_consultadas`
 
@@ -343,15 +346,7 @@ Responsável pelo histórico de movimentações e identificação de novidades j
 
 Responsável pelo estado dos processos monitorados.
 
-Atualmente essa persistência não utiliza SQLite.
-
-Os monitorados são armazenados em:
-
-```text
-config/processos_monitorados.json
-```
-
-Esse arquivo é estado local da aplicação e é criado automaticamente quando necessário.
+A persistência é feita no SQLite, utilizando o atributo `monitorado` da tabela `processos_cadastrados`.
 
 ---
 
@@ -469,7 +464,6 @@ Principais arquivos derivados:
 
 ```text
 data/consulta_processos.db
-config/processos_monitorados.json
 logs/juriscan.log
 .env
 ```
@@ -497,7 +491,6 @@ O bootstrap:
 * cria `logs/`;
 * cria `reports/`;
 * cria `.env` com configuração padrão quando inexistente;
-* cria `config/processos_monitorados.json` quando inexistente;
 * inicializa o SQLite.
 
 Isso permite que a distribuição portátil seja utilizada sem preparação manual prévia da estrutura de dados.
@@ -639,15 +632,15 @@ ruff check .
 ruff format --check .
 ```
 
-Na baseline do Bloco 1:
+Na baseline atual do Bloco 2:
 
 ```text
-pytest: 36 testes passando
+pytest: 42 testes passando
 ruff check: passando
-ruff format --check: 48 arquivos ainda necessitam formatação
+ruff format --check: passando
 ```
 
-A pendência de formatação é estado conhecido da baseline e não representa regressão introduzida pela documentação.
+A dívida global de formatação identificada no Bloco 1 foi normalizada em branch isolada antes das alterações funcionais deste bloco.
 
 ---
 
@@ -699,7 +692,7 @@ A pendência de formatação é estado conhecido da baseline e não representa r
 | Clientes              | SQLite, associados aos processos |
 | Apelidos              | SQLite                           |
 | Comentários           | SQLite                           |
-| Processos monitorados | JSON local                       |
+| Processos monitorados | SQLite, via atributo `monitorado` em `processos_cadastrados`|
 | Configuração          | `.env`                           |
 | Logs                  | arquivo local                    |
 | Relatórios            | CSV local                        |
@@ -708,17 +701,32 @@ A pendência de formatação é estado conhecido da baseline e não representa r
 
 ## 23. Dívidas técnicas confirmadas
 
-### 23.1 Persistência de monitorados separada
+### 23.1 Persistência de monitorados unificada — resolvida
 
-Os processos monitorados utilizam atualmente:
+A persistência dos processos monitorados foi unificada no SQLite.
+
+O estado de monitoramento agora é representado pelo atributo:
+
+```text
+monitorado
+```
+
+em:
+
+```text
+processos_cadastrados
+```
+
+O arquivo legado:
 
 ```text
 config/processos_monitorados.json
 ```
 
-enquanto outros dados da aplicação utilizam SQLite.
+não faz mais parte do fluxo normal da aplicação.
 
-Essa diferença está documentada como estado atual e não é corrigida neste bloco.
+Essa mudança eliminou a duplicidade entre SQLite e JSON para o estado dos processos monitorados.
+
 
 ### 23.2 Dois manifests relacionados a dependências
 
@@ -734,34 +742,37 @@ Os papéis foram definidos como:
 * `pyproject.toml`: declaração das dependências diretas e configuração de desenvolvimento;
 * `requirements.txt`: snapshot pinado utilizado para reprodução do ambiente.
 
-### 23.3 Formatação Ruff ainda não normalizada
+### 23.3 Formatação Ruff — resolvida
 
-A baseline atual possui arquivos que ainda seriam reformatados por:
+A pendência global de formatação identificada no Bloco 1 foi normalizada antes das alterações funcionais do Bloco 2.
+
+A baseline atual passa em:
 
 ```bash
-ruff format .
+ruff check .
+ruff format --check .
 ```
 
-Essa normalização não foi realizada no Bloco 1 para evitar uma alteração ampla e essencialmente estética misturada às mudanças de baseline.
+Essa normalização foi realizada em branch isolada para manter a alteração estética separada das mudanças funcionais.
 
 ---
 
 ## 24. Decisões deliberadamente adiadas
 
-Esta baseline não altera:
+As alterações deste bloco ficaram restritas à unificação da persistência dos processos monitorados.
 
-* persistência dos monitorados;
-* estrutura dos repositories;
+Permanecem deliberadamente fora do escopo:
+
 * arquitetura dos providers;
-* estrutura geral de diretórios;
-* banco de dados;
 * framework da UI;
 * mecanismo de automação;
 * formato dos relatórios;
 * estratégia de deploy;
-* funcionalidades de negócio.
-
-Esses temas devem ser avaliados nos blocos posteriores do projeto.
+* novas funcionalidades de negócio;
+* ORM;
+* migração para outro banco de dados;
+* refatoração ampla dos jobs;
+* criação de novas camadas de serviço para monitoramento.
 
 ---
 
