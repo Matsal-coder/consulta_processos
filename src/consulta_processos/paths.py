@@ -47,9 +47,5 @@ def get_database_path() -> Path:
     return get_data_dir() / "consulta_processos.db"
 
 
-def get_monitored_processes_path() -> Path:
-    return get_config_dir() / "processos_monitorados.json"
-
-
 def get_log_path() -> Path:
     return get_logs_dir() / "juriscan.log"

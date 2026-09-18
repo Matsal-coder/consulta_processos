@@ -6,7 +6,6 @@ from consulta_processos.paths import (
     get_data_dir,
     get_env_path,
     get_logs_dir,
-    get_monitored_processes_path,
     get_reports_dir,
 )
 
@@ -41,15 +40,6 @@ def ensure_env_file() -> None:
     env_path.write_text(DEFAULT_ENV_CONTENT, encoding="utf-8")
 
 
-def ensure_monitored_processes_file() -> None:
-    monitored_path = get_monitored_processes_path()
-
-    if monitored_path.exists():
-        return
-
-    monitored_path.write_text("[]\n", encoding="utf-8")
-
-
 def bootstrap_local_structure() -> None:
     get_data_dir()
     get_config_dir()
@@ -57,5 +47,4 @@ def bootstrap_local_structure() -> None:
     get_reports_dir()
 
     ensure_env_file()
-    ensure_monitored_processes_file()
     initialize_database()
