@@ -1,38 +1,34 @@
-import json
-
-from consulta_processos.paths import get_monitored_processes_path
+from consulta_processos.database import get_connection
 
 
 def carregar_processos_monitorados() -> list[dict]:
-    path = get_monitored_processes_path()
-    if not path.exists():
-        return []
+    with get_connection() as connection:
+        rows = connection.execute(
+            """
+            SELECT
+                numero_processo,
+                base,
+                cliente
+            FROM processos_cadastrados
+            WHERE monitorado = 1
+            ORDER BY created_at DESC;
+            """
+        ).fetchall()
 
-    content = path.read_text(encoding="utf-8")
-
-    if not content.strip():
-        return []
-
-    return json.loads(content)
+    return [dict(row) for row in rows]
 
 
 def salvar_processos_monitorados(
     processos: list[dict],
 ) -> None:
-    path = get_monitored_processes_path()
-    path.parent.mkdir(
-        parents=True,
-        exist_ok=True,
-    )
+    limpar_processos_monitorados()
 
-    path.write_text(
-        json.dumps(
-            processos,
-            indent=2,
-            ensure_ascii=False,
-        ),
-        encoding="utf-8",
-    )
+    for processo in processos:
+        adicionar_processo_monitorado(
+            numero_processo=processo["numero_processo"],
+            base=processo["base"],
+            cliente=processo.get("cliente", "Sem cliente"),
+        )
 
 
 def adicionar_processo_monitorado(
@@ -40,22 +36,55 @@ def adicionar_processo_monitorado(
     base: str,
     cliente: str = "Sem cliente",
 ) -> bool:
-    processos = carregar_processos_monitorados()
+    cliente = cliente.strip() or "Sem cliente"
 
-    existe = any(p["numero_processo"] == numero_processo and p["base"] == base for p in processos)
+    with get_connection() as connection:
+        row = connection.execute(
+            """
+            SELECT monitorado
+            FROM processos_cadastrados
+            WHERE numero_processo = ?
+              AND base = ?;
+            """,
+            (
+                numero_processo,
+                base,
+            ),
+        ).fetchone()
 
-    if existe:
-        return False
+        if row is not None and row["monitorado"] == 1:
+            return False
 
-    processos.append(
-        {
-            "cliente": cliente.strip() or "Sem cliente",
-            "numero_processo": numero_processo,
-            "base": base,
-        }
-    )
-
-    salvar_processos_monitorados(processos)
+        if row is None:
+            connection.execute(
+                """
+                INSERT INTO processos_cadastrados (
+                    numero_processo,
+                    base,
+                    cliente,
+                    monitorado
+                )
+                VALUES (?, ?, ?, 1);
+                """,
+                (
+                    numero_processo,
+                    base,
+                    cliente,
+                ),
+            )
+        else:
+            connection.execute(
+                """
+                UPDATE processos_cadastrados
+                SET monitorado = 1
+                WHERE numero_processo = ?
+                  AND base = ?;
+                """,
+                (
+                    numero_processo,
+                    base,
+                ),
+            )
 
     return True
 
@@ -64,24 +93,33 @@ def remover_processo_monitorado(
     numero_processo: str,
     base: str,
 ) -> bool:
-    processos = carregar_processos_monitorados()
+    with get_connection() as connection:
+        cursor = connection.execute(
+            """
+            UPDATE processos_cadastrados
+            SET monitorado = 0
+            WHERE numero_processo = ?
+              AND base = ?
+              AND monitorado = 1;
+            """,
+            (
+                numero_processo,
+                base,
+            ),
+        )
 
-    processos_filtrados = [
-        processo
-        for processo in processos
-        if not (processo["numero_processo"] == numero_processo and processo["base"] == base)
-    ]
-
-    if len(processos_filtrados) == len(processos):
-        return False
-
-    salvar_processos_monitorados(processos_filtrados)
-
-    return True
+    return cursor.rowcount == 1
 
 
 def limpar_processos_monitorados() -> None:
-    salvar_processos_monitorados([])
+    with get_connection() as connection:
+        connection.execute(
+            """
+            UPDATE processos_cadastrados
+            SET monitorado = 0
+            WHERE monitorado = 1;
+            """
+        )
 
 
 def importar_processos_monitorados(
@@ -89,9 +127,7 @@ def importar_processos_monitorados(
     substituir: bool = False,
 ) -> int:
     if substituir:
-        existentes = []
-    else:
-        existentes = carregar_processos_monitorados()
+        limpar_processos_monitorados()
 
     adicionados = 0
 
@@ -100,31 +136,27 @@ def importar_processos_monitorados(
         base = processo["base"]
         cliente = processo.get("cliente", "Sem cliente").strip() or "Sem cliente"
 
-        existe = any(
-            item["numero_processo"] == numero_processo and item["base"] == base
-            for item in existentes
+        foi_adicionado = adicionar_processo_monitorado(
+            numero_processo=numero_processo,
+            base=base,
+            cliente=cliente,
         )
 
-        if existe:
-            continue
-
-        existentes.append(
-            {
-                "cliente": cliente,
-                "numero_processo": numero_processo,
-                "base": base,
-            }
-        )
-        adicionados += 1
-
-    salvar_processos_monitorados(existentes)
+        if foi_adicionado:
+            adicionados += 1
 
     return adicionados
 
 
 def listar_clientes_monitorados() -> list[str]:
-    processos = carregar_processos_monitorados()
+    with get_connection() as connection:
+        rows = connection.execute(
+            """
+            SELECT DISTINCT cliente
+            FROM processos_cadastrados
+            WHERE monitorado = 1
+            ORDER BY cliente;
+            """
+        ).fetchall()
 
-    clientes = {processo.get("cliente", "Sem cliente") for processo in processos}
-
-    return sorted(clientes)
+    return [row["cliente"] for row in rows]

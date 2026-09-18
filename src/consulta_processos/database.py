@@ -54,6 +54,7 @@ def initialize_database() -> None:
                 base TEXT NOT NULL,
                 cliente TEXT NOT NULL,
                 apelido TEXT,
+                monitorado INTEGER NOT NULL DEFAULT 0,
                 created_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP,
 
                 PRIMARY KEY (
